@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Belleza — AGUILAR Boutique</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black:  #0a0a0a;
+      --ivory:  #f5f0e8;
+      --gold:   #8c7f6e;
+      --gold-light: #a89a87;
+      --white:  #ffffff;
+      --gray:   #6b6b6b;
+      --serif:  'Cormorant Garamond', Georgia, serif;
+      --sans:   'Montserrat', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ivory);
+      color: var(--black);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: var(--black);
+      border-bottom: 1px solid rgba(140,127,110,0.2);
+    }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; }
+    .nav-logo svg { height: 38px; width: auto; }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2.5rem;
+    }
+    .nav-links a {
+      font-family: var(--sans);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.75);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--gold-light); }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--ivory);
+      transition: all 0.3s;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      background: var(--black);
+      padding: 9rem 3rem 5rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(140,127,110,0.2);
+    }
+    .page-header .section-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 1.25rem;
+    }
+    .page-header h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 300;
+      color: var(--ivory);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .page-header h1 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+    .page-header p {
+      font-size: 0.82rem;
+      color: rgba(245,240,232,0.55);
+      max-width: 480px;
+      margin: 0 auto;
+      letter-spacing: 0.04em;
+      line-height: 1.9;
+    }
+    .header-rule {
+      width: 36px;
+      height: 1px;
+      background: var(--gold);
+      margin: 1.5rem auto;
+    }
+
+    /* ── COMING SOON BANNER ── */
+    .coming-banner {
+      background: var(--ivory);
+      border-top: 1px solid rgba(140,127,110,0.2);
+      border-bottom: 1px solid rgba(140,127,110,0.2);
+      padding: 0.85rem 2rem;
+      text-align: center;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    /* ── BRAND SECTION ── */
+    .brand-section {
+      padding: 5rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .brand-section + .brand-section {
+      border-top: 1px solid rgba(140,127,110,0.15);
+    }
+    .brand-header {
+      display: flex;
+      align-items: flex-end;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .brand-tag {
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    .brand-name {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 300;
+      color: var(--black);
+      line-height: 1;
+    }
+    .brand-desc {
+      font-size: 0.78rem;
+      color: var(--gray);
+      line-height: 1.85;
+      max-width: 360px;
+      margin-left: auto;
+      text-align: right;
+    }
+    .brand-rule {
+      width: 36px;
+      height: 1px;
+      background: var(--gold);
+      margin: 0.75rem 0;
+    }
+
+    /* ── PRODUCT GRID ── */
+    .beauty-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .beauty-card {
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.3s;
+      cursor: default;
+    }
+    .beauty-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    }
+    .beauty-img-wrap {
+      aspect-ratio: 1/1;
+      background: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .beauty-img-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(140,127,110,0.3);
+    }
+    .beauty-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+    }
+    .beauty-monogram {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      letter-spacing: 0.15em;
+      color: var(--ivory);
+      opacity: 0.9;
+      position: relative;
+    }
+    .beauty-badge {
+      position: absolute;
+      top: 0.75rem; right: 0.75rem;
+      background: var(--ivory);
+      color: var(--black);
+      font-size: 0.5rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.5rem;
+    }
+    .beauty-info {
+      padding: 1.25rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .beauty-brand-tag {
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.35rem;
+    }
+    .beauty-product-name {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--black);
+      margin-bottom: 0.3rem;
+      line-height: 1.3;
+    }
+    .beauty-product-desc {
+      font-size: 0.73rem;
+      color: var(--gray);
+      line-height: 1.75;
+      margin-bottom: 0.85rem;
+      flex: 1;
+    }
+    .beauty-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(140,127,110,0.15);
+    }
+    .beauty-authentic {
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-style: italic;
+    }
+    .beauty-coming {
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(107,107,107,0.6);
+    }
+
+    /* ── SOURCING NOTE ── */
+    .sourcing-section {
+      background: var(--black);
+      padding: 4rem 3rem;
+      text-align: center;
+    }
+    .sourcing-section p {
+      font-size: 0.78rem;
+      color: rgba(245,240,232,0.55);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.9;
+      letter-spacing: 0.03em;
+    }
+    .sourcing-section p strong {
+      color: var(--gold-light);
+      font-weight: 400;
+    }
+    .sourcing-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      padding: 2.5rem 3rem;
+      border-top: 1px solid rgba(140,127,110,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .footer-text {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: rgba(245,240,232,0.3);
+      text-transform: uppercase;
+    }
+    .footer-social {
+      display: flex;
+      gap: 2rem;
+    }
+    .footer-social a {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.45);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-social a:hover { color: var(--gold-light); }
+    .footer-back {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.45);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-back:hover { color: var(--gold-light); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 66px; left: 0; right: 0;
+        background: rgba(10,10,10,0.98);
+        padding: 2rem 1.5rem;
+        gap: 1.5rem;
+        border-top: 1px solid rgba(140,127,110,0.2);
+        z-index: 200;
+      }
+      .hamburger { display: flex; }
+      .page-header { padding: 7rem 1.5rem 3.5rem; }
+      .brand-section { padding: 3.5rem 1.5rem; }
+      .brand-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .brand-desc { text-align: left; margin-left: 0; }
+      .beauty-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .sourcing-section { padding: 3rem 1.5rem; }
+      footer { flex-direction: column; text-align: center; padding: 2rem 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .beauty-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">
+      <svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(160,50)">
+          <line x1="0" y1="-18" x2="0" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="-22" y1="-10" x2="-22" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="22" y1="-10" x2="22" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M -22,6 Q -11,-2 0,6" fill="none" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M 0,6 Q 11,-2 22,6" fill="none" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="-30" y1="6" x2="30" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="-30" y1="6" x2="-22" y2="-10" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="22" y1="-10" x2="30" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="0" cy="-18" r="1.8" fill="#9c8f7c"/>
+          <circle cx="-22" cy="-10" r="1.4" fill="#9c8f7c"/>
+          <circle cx="22" cy="-10" r="1.4" fill="#9c8f7c"/>
+        </g>
+        <text x="160" y="84" text-anchor="middle" font-family="'Cormorant Garamond',Garamond,Georgia,serif" font-size="38" font-weight="300" letter-spacing="14" fill="#9c8f7c">AGUILAR</text>
+        <text x="162" y="110" text-anchor="middle" font-family="'Montserrat','Helvetica Neue',Arial,sans-serif" font-size="7.5" font-weight="300" letter-spacing="7" fill="#9c8f7c" opacity="0.8">BOUTIQUE</text>
+        <line x1="60" y1="110" x2="108" y2="110" stroke="#9c8f7c" stroke-width="0.5" opacity="0.5"/>
+        <line x1="212" y1="110" x2="260" y2="110" stroke="#9c8f7c" stroke-width="0.5" opacity="0.5"/>
+      </svg>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Los Bolsos</a></li>
+      <li><a href="index.html#como-funciona">¿Cómo Funciona?</a></li>
+      <li><a href="index.html#nosotros">Nuestra Historia</a></li>
+      <li><a href="index.html#visitas">¿Cuándo Venimos?</a></li>
+      <li><a href="belleza.html" class="active">Belleza</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menú" onclick="document.getElementById('navLinks').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <p class="section-label">AGUILAR Boutique</p>
+    <h1>Belleza que te <em>va a encantar</em></h1>
+    <div class="header-rule"></div>
+    <p>Las mismas marcas que encuentras en Sephora, Ulta, y Amazon — traídas directo a Calera. Sin viajes, sin esperas, empacadas con cariño.</p>
+  </header>
+
+  <div class="coming-banner">Catálogo en construcción — pronto más productos disponibles</div>
+
+  <!-- NYX -->
+  <section class="brand-section" id="nyx">
+    <div class="brand-header">
+      <div>
+        <span class="brand-tag">Maquillaje</span>
+        <h2 class="brand-name">NYX Professional</h2>
+        <div class="brand-rule"></div>
+      </div>
+      <p class="brand-desc">Color vibrante, fórmulas de calidad profesional a un precio accesible. La favorita de las maquilladoras y las que saben.</p>
+    </div>
+    <div class="beauty-grid">
+
+      <div class="beauty-card">
+        <div class="beauty-img-wrap">
+          <span class="beauty-monogram">NYX</span>
+          <span class="beauty-badge">Disponible</span>
+        </div>
+        <div class="beauty-info">
+          <p class="beauty-brand-tag">NYX Professional</p>
+          <h3 class="beauty-product-name">Soft Matte Lip Cream</h3>
+          <p class="beauty-product-desc">Labial cremoso de acabado mate aterciopelado. Colores intensos que duran todo el día sin resecar.</p>
+          <div class="beauty-footer">
+            <span class="beauty-authentic">100% Auténtico</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="beauty-card">
+        <div class="beauty-img-wrap">
+          <span class="beauty-monogram">NYX</span>
+          <span class="beauty-badge">Disponible</span>
+        </div>
+        <div class="beauty-info">
+          <p class="beauty-brand-tag">NYX Professional</p>
+          <h3 class="beauty-product-name">Epic Ink Liner</h3>
+          <p class="beauty-product-desc">Delineador líquido de punta fina con tinta negra intensa. Define, no se corre, no falla.</p>
+          <div class="beauty-footer">
+            <span class="beauty-authentic">100% Auténtico</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="beauty-card">
+        <div class="beauty-img-wrap">
+          <span class="beauty-monogram">NYX</span>
+          <span class="beauty-badge">Próximamente</span>
+        </div>
+        <div class="beauty-info">
+          <p class="beauty-brand-tag">NYX Professional</p>
+          <h3 class="beauty-product-name">Can't Stop Won't Stop Foundation</h3>
+          <p class="beauty-product-desc">Base de cobertura completa de larga duración. Resistente al agua, al calor, y a todo lo que venga.</p>
+          <div class="beauty-footer">
+            <span class="beauty-coming">Próximamente</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- RARE BEAUTY -->
+  <section class="brand-section" id="rare-beauty">
+    <div class="brand-header">
+      <div>
+        <span class="brand-tag">Maquillaje Premium</span>
+        <h2 class="brand-name">Rare Beauty</h2>
+        <div class="brand-rule"></div>
+      </div>
+      <p class="brand-desc">La línea de Selena Gomez que cambió la industria. Productos que se sienten ligeros y se ven como piel real, no como máscara.</p>
+    </div>
+    <div class="beauty-grid">
+
+      <div class="beauty-card">
+        <div class="beauty-img-wrap">
+          <span class="beauty-monogram">RB</span>
+          <span class="beauty-badge">Disponible</span>
+        </div>
+        <div class="beauty-info">
+          <p class="beauty-brand-tag">Rare Beauty</p>
+          <h3 class="beauty-product-name">Soft Pinch Liquid Blush</h3>
+          <p class="beauty-product-desc">El blush viral que todos quieren. Una gota da color natural y luminoso que dura todo el día sin verse artificial.</p>
+          <div class="beauty-footer">
+            <span class="beauty-authentic">100% Auténtico</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="beauty-card">
+        <div class="beauty-img-wrap">
+          <span class="beauty-monogram">RB</span>
+          <span class="beauty-badge">Disponible</span>
+        </div>
+        <div class="beauty-info">
+          <p class="beauty-brand-tag">Rare Beauty</p>
+          <h3 class="beauty-product-name">Stay Vulnerable Melting Blush</h3>
+          <p class="beauty-product-desc">Blush en polvo de textura sedosa. Colores naturales que se funden con la piel para un acabado impecable.</p>
+          <div class="beauty-footer">
+            <span class="beauty-authentic">100% Auténtico</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="beauty-card">
+        <div class="beauty-img-wrap">
+          <span class="beauty-monogram">RB</span>
+          <span class="beauty-badge">Próximamente</span>
+        </div>
+        <div class="beauty-info">
+          <p class="beauty-brand-tag">Rare Beauty</p>
+          <h3 class="beauty-product-name">Positive Light Silky Touch Highlighter</h3>
+          <p class="beauty-product-desc">Iluminador que da un brillo suave y natural. No es glitter — es luz de piel sana.</p>
+          <div class="beauty-footer">
+            <span class="beauty-coming">Próximamente</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CERAVE -->
+  <section class="brand-section" id="cerave">
+    <div class="brand-header">
+      <div>
+        <span class="brand-tag">Skincare</span>
+        <h2 class="brand-name">CeraVe</h2>
+        <div class="brand-rule"></div>
+      </div>
+      <p class="brand-desc">La marca favorita de los dermatólogos. Fórmulas con ceramidas que cuidan, hidratan y protegen la piel sin irritar.</p>
+    </div>
+    <div class="beauty-grid">
+
+      <div class="beauty-card">
+        <div class="beauty-img-wrap">
+          <span class="beauty-monogram">CV</span>
+          <span class="beauty-badge">Disponible</span>
+        </div>
+        <div class="beauty-info">
+          <p class="beauty-brand-tag">CeraVe</p>
+          <h3 class="beauty-product-name">Moisturizing Cream</h3>
+          <p class="beauty-product-desc">La crema hidratante que no necesita presentación. Rica, no grasosa, para cara y cuerpo. Piel suave todo el día.</p>
+          <div class="beauty-footer">
+            <span class="beauty-authentic">100% Auténtico</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="beauty-card">
+        <div class="beauty-img-wrap">
+          <span class="beauty-monogram">CV</span>
+          <span class="beauty-badge">Disponible</span>
+        </div>
+        <div class="beauty-info">
+          <p class="beauty-brand-tag">CeraVe</p>
+          <h3 class="beauty-product-name">Hydrating Cleanser</h3>
+          <p class="beauty-product-desc">Limpiador facial suave que no reseca. Limpia sin quitar la barrera natural de la piel. Perfecto para uso diario.</p>
+          <div class="beauty-footer">
+            <span class="beauty-authentic">100% Auténtico</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="beauty-card">
+        <div class="beauty-img-wrap">
+          <span class="beauty-monogram">CV</span>
+          <span class="beauty-badge">Próximamente</span>
+        </div>
+        <div class="beauty-info">
+          <p class="beauty-brand-tag">CeraVe</p>
+          <h3 class="beauty-product-name">AM Facial Moisturizing Lotion SPF 30</h3>
+          <p class="beauty-product-desc">Hidratante con protección solar para el día. Ligera, sin residuo blanco, con niacinamida para unificar el tono.</p>
+          <div class="beauty-footer">
+            <span class="beauty-coming">Próximamente</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SOURCING NOTE -->
+  <section class="sourcing-section">
+    <span class="sourcing-label">Sobre nuestros productos</span>
+    <p>Todos nuestros productos de belleza son <strong>100% auténticos</strong>, adquiridos directamente en tiendas como <strong>Sephora, Ulta, Amazon</strong> y más en Estados Unidos. Nada de imitaciones — lo que traemos es exactamente lo que encuentras en esas tiendas, aquí en Calera.</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="footer-text">© 2025 AGUILAR Boutique — Calera</p>
+    <div class="footer-social">
+      <a href="#" data-placeholder="facebook">Facebook</a>
+      <a href="#" data-placeholder="instagram">Instagram</a>
+      <a href="https://wa.me/12096895213" target="_blank">WhatsApp</a>
+    </div>
+    <a class="footer-back" href="index.html">← Regresar a los bolsos</a>
+  </footer>
+
+</body>
+</html>
