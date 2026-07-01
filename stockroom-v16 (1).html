@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stockroom — Inventory Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#F5F0E8; --surface:#FFFFFF; --border:#E5DDD0; --border-strong:#D3C7B4;
+    --ink:#0A0A0A; --muted:#6B6B6B; --faint:#A89A87;
+    --accent:#8C7F6E; --accent-bg:#F0EAE1; --accent-text:#5C5142;
+    --gold:#B8963E; --gold-bg:#FAF3E3;
+    --green:#5C7A5A; --green-bg:#EBF0E8; --green-text:#3E5A3C;
+    --red:#A6483A; --red-bg:#F6E9E6; --red-text:#7E362B;
+    --amber-bg:#FAF3E3; --amber-border:#DFC48C;
+    --radius:8px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--page);color:var(--ink);font-family:'Montserrat',-apple-system,BlinkMacSystemFont,sans-serif;font-feature-settings:'tnum' 1;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1140px;margin:0 auto;padding:32px 28px 64px;}
+  h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:30px;letter-spacing:0.03em;margin:0;}
+  .sub{color:var(--muted);font-size:12.5px;margin:4px 0 0;letter-spacing:0.02em;}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+  .tabs{display:flex;gap:2px;margin-bottom:20px;border-bottom:1px solid var(--border);}
+  .tab{font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;padding:10px 6px;margin-right:26px;cursor:pointer;color:var(--faint);border-bottom:2px solid transparent;user-select:none;transition:color .12s;}
+  .tab:hover{color:var(--ink);}
+  .tab.active{color:var(--ink);border-bottom-color:var(--gold);}
+  .panel{display:none;}
+  .panel.active{display:block;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:0.07em;color:var(--faint);padding:0 8px 10px;border-bottom:1px solid var(--border);cursor:help;}
+  td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  input, select{width:100%;font-family:'Montserrat',sans-serif;font-size:13px;font-feature-settings:'tnum' 1;border:1px solid transparent;background:transparent;padding:6px 7px;border-radius:6px;color:var(--ink);}
+  input:hover, select:hover{border-color:var(--border-strong);}
+  input:focus, select:focus{outline:none;border-color:var(--gold);background:var(--gold-bg);}
+  select{cursor:pointer;}
+  .num{text-align:right;}
+  .readonly{color:var(--muted);background:none;border:none;padding:6px 2px;font-size:13px;font-style:italic;font-feature-settings:'tnum' 1;text-align:right;}
+  .btn{font-family:'Montserrat',sans-serif;font-weight:500;font-size:11.5px;text-transform:uppercase;letter-spacing:0.06em;border:1px solid var(--ink);background:var(--surface);color:var(--ink);padding:9px 16px;border-radius:2px;cursor:pointer;transition:all .12s;}
+  .btn:hover{background:var(--ink);color:var(--page);}
+  .del{background:none;border:none;color:var(--faint);cursor:pointer;font-size:16px;padding:2px 6px;line-height:1;border-radius:5px;}
+  .del:hover{color:var(--red);background:var(--red-bg);}
+  .stamp{display:inline-block;padding:3px 9px;border-radius:5px;font-weight:600;font-size:10.5px;letter-spacing:0.04em;text-transform:uppercase;}
+  .stamp.ok{color:var(--green-text);background:var(--green-bg);}
+  .stamp.reorder{color:var(--red-text);background:var(--red-bg);}
+  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px;}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
+  .stat .lbl{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--faint);margin-bottom:6px;}
+  .stat .val{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:24px;font-feature-settings:'tnum' 1;}
+  .stat .val.alert{color:var(--red);}
+  .foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
+  .status-msg{font-size:12px;color:var(--faint);}
+  .empty{padding:28px 8px;text-align:center;color:var(--faint);font-size:13px;}
+  .scanbar{background:#F4F4F2;border-color:var(--border-strong);padding:14px 18px;}
+  .scanrow{display:flex;align-items:center;gap:10px;}
+  .scandot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0;}
+  .scanbar input{font-size:13.5px;padding:9px 10px;border:1px solid var(--border-strong);background:#FFFFFF;border-radius:5px;}
+  .scanbar input:focus{border-color:var(--muted);background:#FFFFFF;}
+  .scanmsg{font-size:12px;color:var(--muted);margin-top:8px;margin-left:16px;min-height:16px;}
+  .scanmsg.ok{color:var(--green-text);}
+  .scanmsg.warn{color:var(--red-text);}
+  .cur{display:flex;align-items:center;border:1px solid var(--border);background:var(--surface);border-radius:6px;padding:0 7px;}
+  .cur:hover{border-color:var(--border-strong);}
+  .cur:focus-within{border-color:var(--gold);background:var(--gold-bg);}
+  .cur span{color:var(--faint);font-size:13px;padding-right:1px;}
+  .cur input{border:none !important;background:transparent !important;padding:6px 0 6px 2px !important;}
+  .cur input:focus{background:transparent !important;}
+  tr.grouphead td{padding:14px 8px 6px;border-bottom:none;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--faint);}
+  tr.grouphead:first-child td{padding-top:2px;}
+</style>
+</head>
+<style>
+  #lockScreen {
+    position: fixed;
+    inset: 0;
+    background: #0a0a0a;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  #lockScreen svg { height: 48px; width: auto; margin-bottom: 0.5rem; }
+  #lockScreen h2 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #f5f0e8;
+    letter-spacing: 0.1em;
+    margin: 0;
+  }
+  #lockScreen p {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.4);
+    margin: 0;
+  }
+  #lockForm {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 280px;
+  }
+  #lockInput {
+    background: rgba(245,240,232,0.06);
+    border: 1px solid rgba(245,240,232,0.2);
+    color: #f5f0e8;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.85rem 1rem;
+    letter-spacing: 0.15em;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+  }
+  #lockInput:focus { border-color: #a89a87; }
+  #lockInput::placeholder { color: rgba(245,240,232,0.25); letter-spacing: 0.1em; }
+  #lockBtn {
+    background: #f5f0e8;
+    color: #0a0a0a;
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.85rem;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  #lockBtn:hover { background: #a89a87; color: #f5f0e8; }
+  #lockError {
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #c0392b;
+    text-align: center;
+    min-height: 1rem;
+  }
+</style>
+<body>
+
+<!-- PASSWORD LOCK SCREEN -->
+<div id="lockScreen">
+  <svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(160,50)">
+      <line x1="0" y1="-18" x2="0" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="-22" y1="-10" x2="-22" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="22" y1="-10" x2="22" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M -22,6 Q -11,-2 0,6" fill="none" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M 0,6 Q 11,-2 22,6" fill="none" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="-30" y1="6" x2="30" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="-30" y1="6" x2="-22" y2="-10" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="22" y1="-10" x2="30" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+      <circle cx="0" cy="-18" r="1.8" fill="#9c8f7c"/>
+      <circle cx="-22" cy="-10" r="1.4" fill="#9c8f7c"/>
+      <circle cx="22" cy="-10" r="1.4" fill="#9c8f7c"/>
+    </g>
+    <text x="160" y="84" text-anchor="middle" font-family="'Cormorant Garamond',Georgia,serif" font-size="38" font-weight="300" letter-spacing="14" fill="#9c8f7c">AGUILAR</text>
+    <text x="162" y="110" text-anchor="middle" font-family="'Montserrat','Helvetica Neue',Arial,sans-serif" font-size="7.5" font-weight="300" letter-spacing="7" fill="#9c8f7c" opacity="0.8">BOUTIQUE</text>
+  </svg>
+  <h2>Acceso Privado</h2>
+  <p>Solo para uso interno</p>
+  <div id="lockForm">
+    <input type="password" id="lockInput" placeholder="Contraseña" autocomplete="off" />
+    <button id="lockBtn" onclick="checkPassword()">Entrar</button>
+    <p id="lockError"></p>
+  </div>
+</div>
+
+<script>
+  // Secret URL check — must include ?aguilar=admin in the URL
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('aguilar') !== 'admin') {
+    document.getElementById('lockScreen').innerHTML = '<p style="color:#f5f0e8;font-family:Montserrat,sans-serif;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;">Página no encontrada</p>';
+  }
+
+  // Check if already authenticated this session
+  if (sessionStorage.getItem('aguilar_auth') === 'yes') {
+    document.getElementById('lockScreen').style.display = 'none';
+  }
+
+  document.getElementById('lockInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPassword();
+  });
+
+  function checkPassword() {
+    const val = document.getElementById('lockInput').value;
+    if (val === 'LOL1') {
+      sessionStorage.setItem('aguilar_auth', 'yes');
+      document.getElementById('lockScreen').style.display = 'none';
+    } else {
+      document.getElementById('lockError').textContent = 'Contraseña incorrecta';
+      document.getElementById('lockInput').value = '';
+      document.getElementById('lockInput').focus();
+      setTimeout(() => document.getElementById('lockError').textContent = '', 2500);
+    }
+  }
+</script>
+
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <h1>AGUILAR <span style="color:var(--gold);">Stockroom</span></h1>
+      <p class="sub">Internal inventory, receiving, and expense records — not for public access.</p>
+    </div>
+    <span class="status-msg" id="saveStatus"></span>
+  </div>
+
+  <div class="summary" id="summary"></div>
+  <div class="summary" id="summaryByType" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));"></div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="inv">Inventory</div>
+    <div class="tab" data-tab="log">Receiving log</div>
+    <div class="tab" data-tab="exp">Expenses</div>
+  </div>
+
+  <div class="panel" id="panel-log">
+    <div class="card scanbar">
+      <div class="scanrow">
+        <span class="scandot"></span>
+        <input type="text" id="scanReceive" placeholder="Scan a barcode here to log 1 unit received" autocomplete="off">
+      </div>
+      <div class="scanmsg" id="scanReceiveMsg"></div>
+    </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:110px">Date</th>
+            <th>Supplier</th>
+            <th>Item name</th>
+            <th style="width:100px">SKU</th>
+            <th style="width:70px">Qty</th>
+            <th style="width:110px">Unit cost</th>
+            <th style="width:100px">Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="logBody"></tbody>
+      </table>
+      <div id="logEmpty" class="empty" style="display:none;">No shipments logged yet. Add your first one below.</div>
+      <div class="foot">
+        <button class="btn" id="addLogRow">+ Add shipment</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel active" id="panel-inv">
+    <div class="card scanbar">
+      <div class="scanrow">
+        <span class="scandot"></span>
+        <input type="text" id="scanSell" placeholder="Scan a barcode here to record 1 sold/used" autocomplete="off">
+      </div>
+      <div class="scanmsg" id="scanSellMsg"></div>
+    </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:100px">SKU</th>
+            <th>Item name</th>
+            <th style="width:110px">Type</th>
+            <th style="width:80px" title="Auto-calculated total received for this SKU, pulled from your Receiving log">Received</th>
+            <th style="width:80px" title="Auto-calculated total sold or used for this SKU, pulled from your Usage log below">Sold/used</th>
+            <th style="width:80px" title="Received - Sold/used">On hand</th>
+            <th style="width:80px" title="When On hand drops to this number or below, Status flips to Reorder">Reorder at</th>
+            <th style="width:80px">Unit cost</th>
+            <th style="width:100px" title="On hand x Unit cost">Value</th>
+            <th style="width:90px" title="OK means stock is above your Reorder at number. Reorder means it's time to restock">Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="invBody"></tbody>
+      </table>
+      <div id="invEmpty" class="empty" style="display:none;">No items yet. Add one below — use the same SKU in the receiving log to link shipments automatically.</div>
+      <div class="foot">
+        <button class="btn" id="addInvRow">+ Add item</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--faint);margin:0 0 12px;">Usage / sold history</p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:110px">Date</th>
+            <th>Item name</th>
+            <th style="width:100px">SKU</th>
+            <th style="width:70px">Qty</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="usageBody"></tbody>
+      </table>
+      <div id="usageEmpty" class="empty" style="display:none;">No usage history yet. Scan an item above, or add an entry below.</div>
+      <div class="foot">
+        <button class="btn" id="addUsageRow">+ Add usage entry</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-exp">
+    <div class="card" style="display:flex;align-items:center;gap:10px;padding:12px 16px;">
+      <label style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--faint);white-space:nowrap;">Filter</label>
+      <select id="expCategoryFilter" style="max-width:240px;">
+        <option value="all">All categories</option>
+        <option value="licenses">Licenses & subscriptions</option>
+        <option value="supplies">Supplies</option>
+        <option value="legal">Legal fees</option>
+        <option value="insurance">Insurance</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:110px">Date</th>
+            <th>Description</th>
+            <th style="width:150px">Category</th>
+            <th style="width:120px" title="Overhead: general business costs. Direct (COGS): tied directly to the products you sell">Cost type</th>
+            <th>Vendor</th>
+            <th style="width:110px">Cost</th>
+            <th style="width:110px" title="One-time, or a recurring subscription billed monthly or yearly">Billing</th>
+            <th style="width:110px" title="Cost converted to a per-month figure, for recurring items">Monthly equiv.</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="expBody"></tbody>
+      </table>
+      <div id="expEmpty" class="empty" style="display:none;">No expenses logged yet. Track licenses, software subscriptions, legal fees, insurance, and similar business costs here.</div>
+      <div class="foot">
+        <button class="btn" id="addExpRow">+ Add expense</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let logRows = [];
+let invItems = [];
+let expRows = [];
+let usageRows = [];
+let budget = 1500;
+let expCategoryFilter = 'all';
+let saveTimer = null;
+
+function uid(){ return Math.random().toString(36).slice(2,9); }
+function round2(n){ return Math.round((n + Number.EPSILON) * 100) / 100; }
+function money(n){ return '$' + n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+
+async function loadData(){
+  try{
+    const l = await window.storage.get('receiving-log', false);
+    logRows = l ? JSON.parse(l.value) : [];
+  }catch(e){ logRows = []; }
+  try{
+    const i = await window.storage.get('inventory-items', false);
+    invItems = i ? JSON.parse(i.value) : [];
+  }catch(e){ invItems = []; }
+  try{
+    const x = await window.storage.get('business-expenses', false);
+    expRows = x ? JSON.parse(x.value) : [];
+  }catch(e){ expRows = []; }
+  try{
+    const u = await window.storage.get('usage-log', false);
+    usageRows = u ? JSON.parse(u.value) : [];
+  }catch(e){ usageRows = []; }
+  try{
+    const b = await window.storage.get('expense-budget', false);
+    budget = b ? Number(b.value) : 1500;
+  }catch(e){ budget = 1500; }
+
+  let alreadySeeded = true;
+  try{
+    const seedFlag = await window.storage.get('seeded-expenses-v1', false);
+    alreadySeeded = !!seedFlag;
+  }catch(e){
+    alreadySeeded = false;
+  }
+  if(!alreadySeeded){
+    const seedExpenses = [
+      {id:uid(), date:'2026-01-01', desc:'Domain / hosting renewal', category:'licenses', costtype:'overhead', vendor:'GoDaddy', cost:'46.59', billing:'onetime'},
+      {id:uid(), date:'2026-01-01', desc:'Tissue paper (packaging)', category:'supplies', costtype:'cogs', vendor:'Amazon', cost:'15.04', billing:'onetime'},
+      {id:uid(), date:'2026-01-01', desc:'Gift bags (packaging)', category:'supplies', costtype:'cogs', vendor:'Amazon', cost:'52.00', billing:'onetime'},
+      {id:uid(), date:'2026-01-01', desc:'Sole Proprietor Registration + fee', category:'licenses', costtype:'overhead', vendor:'NV Secretary of State', cost:'205.00', billing:'onetime'},
+      {id:uid(), date:'2026-01-01', desc:'Claude subscription', category:'licenses', costtype:'overhead', vendor:'Anthropic', cost:'20.00', billing:'monthly'},
+      {id:uid(), date:'2026-01-01', desc:'Netlify hosting', category:'licenses', costtype:'overhead', vendor:'Netlify', cost:'9.00', billing:'monthly'}
+    ];
+    expRows = expRows.concat(seedExpenses);
+    try{ await window.storage.set('seeded-expenses-v1', 'true', false); }catch(e2){}
+    try{ await window.storage.set('business-expenses', JSON.stringify(expRows), false); }catch(e3){}
+  }
+
+  let suppliesSeeded = true;
+  try{
+    const supFlag = await window.storage.get('seeded-supplies-v1', false);
+    suppliesSeeded = !!supFlag;
+  }catch(e){
+    suppliesSeeded = false;
+  }
+  if(!suppliesSeeded){
+    logRows.push({id:uid(), date:'2026-01-01', supplier:'Amazon', item:'Tissue paper (packaging)', sku:'TISSUE-PKG', qty:1, cost:'15.04'});
+    logRows.push({id:uid(), date:'2026-01-01', supplier:'Amazon', item:'Gift bags (packaging)', sku:'GIFTBAG-PKG', qty:1, cost:'52.00'});
+    if(!findInvBySku('TISSUE-PKG')){
+      invItems.push({id:uid(), sku:'TISSUE-PKG', name:'Tissue paper (packaging)', type:'supply', reorder:2, cost:'15.04'});
+    }
+    if(!findInvBySku('GIFTBAG-PKG')){
+      invItems.push({id:uid(), sku:'GIFTBAG-PKG', name:'Gift bags (packaging)', type:'supply', reorder:2, cost:'52.00'});
+    }
+    try{ await window.storage.set('seeded-supplies-v1', 'true', false); }catch(e2){}
+    try{ await window.storage.set('receiving-log', JSON.stringify(logRows), false); }catch(e3){}
+    try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e4){}
+  }
+
+  let supplies2Seeded = true;
+  try{
+    const supFlag2 = await window.storage.get('seeded-supplies-v2', false);
+    supplies2Seeded = !!supFlag2;
+  }catch(e){
+    supplies2Seeded = false;
+  }
+  if(!supplies2Seeded){
+    logRows = logRows.filter(r => r.sku !== 'GIFTBAG-PKG');
+    invItems = invItems.filter(it => it.sku !== 'GIFTBAG-PKG');
+    if(!logRows.some(r=>r.sku==='GIFTBAG-ML24')){
+      logRows.push({id:uid(), date:'2026-06-29', supplier:'Amazon (ZenGlow)', item:'Gift bags - Black Medium/Large 12.6x4x8.7in (24pcs)', sku:'GIFTBAG-ML24', qty:24, cost:'1.00'});
+    }
+    if(!logRows.some(r=>r.sku==='GIFTBAG-XL12')){
+      logRows.push({id:uid(), date:'2026-06-29', supplier:'Amazon (MALICPLUS)', item:'Gift bags - Black Extra Large 16x6x12in (12pcs)', sku:'GIFTBAG-XL12', qty:12, cost:'2.00'});
+    }
+    if(!findInvBySku('GIFTBAG-ML24')){
+      invItems.push({id:uid(), sku:'GIFTBAG-ML24', name:'Gift bags - Black Medium/Large 12.6x4x8.7in', type:'supply', reorder:6, cost:'1.00'});
+    }
+    if(!findInvBySku('GIFTBAG-XL12')){
+      invItems.push({id:uid(), sku:'GIFTBAG-XL12', name:'Gift bags - Black Extra Large 16x6x12in', type:'supply', reorder:3, cost:'2.00'});
+    }
+    try{ await window.storage.set('seeded-supplies-v2', 'true', false); }catch(e2){}
+    try{ await window.storage.set('receiving-log', JSON.stringify(logRows), false); }catch(e3){}
+    try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e4){}
+  }
+
+  let supplies3Seeded = true;
+  try{
+    const supFlag3 = await window.storage.get('seeded-supplies-v3', false);
+    supplies3Seeded = !!supFlag3;
+  }catch(e){
+    supplies3Seeded = false;
+  }
+  if(!supplies3Seeded){
+    logRows = logRows.filter(r => r.sku !== 'TISSUE-PKG');
+    invItems = invItems.filter(it => it.sku !== 'TISSUE-PKG');
+    if(!logRows.some(r=>r.sku==='TISSUE-48SHT')){
+      logRows.push({id:uid(), date:'2026-07-09', supplier:'Amazon', item:'Tissue paper - Soft Ivory Birch 20x30in (48 sheet pack)', sku:'TISSUE-48SHT', qty:48, cost:'0.31'});
+    }
+    if(!findInvBySku('TISSUE-48SHT')){
+      invItems.push({id:uid(), sku:'TISSUE-48SHT', name:'Tissue paper - Soft Ivory Birch 20x30in', type:'supply', reorder:12, cost:'0.31'});
+    }
+    try{ await window.storage.set('seeded-supplies-v3', 'true', false); }catch(e2){}
+    try{ await window.storage.set('receiving-log', JSON.stringify(logRows), false); }catch(e3){}
+    try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e4){}
+  }
+
+  let reorderFixed = true;
+  try{
+    const rFlag = await window.storage.get('reorder-thresholds-v1', false);
+    reorderFixed = !!rFlag;
+  }catch(e){
+    reorderFixed = false;
+  }
+  if(!reorderFixed){
+    const ml24 = findInvBySku('GIFTBAG-ML24');
+    if(ml24) ml24.reorder = 4;
+    const xl12 = findInvBySku('GIFTBAG-XL12');
+    if(xl12) xl12.reorder = 4;
+    const tissue = findInvBySku('TISSUE-48SHT');
+    if(tissue) tissue.reorder = 12;
+    try{ await window.storage.set('reorder-thresholds-v1', 'true', false); }catch(e2){}
+    try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e3){}
+  }
+
+  renderLog();
+  renderInv();
+  renderUsage();
+  renderExp();
+  renderSummary();
+}
+
+function scheduleSave(){
+  const el = document.getElementById('saveStatus');
+  el.textContent = 'Saving…';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    try{
+      await window.storage.set('receiving-log', JSON.stringify(logRows), false);
+      await window.storage.set('inventory-items', JSON.stringify(invItems), false);
+      await window.storage.set('business-expenses', JSON.stringify(expRows), false);
+      await window.storage.set('usage-log', JSON.stringify(usageRows), false);
+      await window.storage.set('expense-budget', String(budget), false);
+      el.textContent = 'Saved';
+      setTimeout(()=>{ if(el.textContent==='Saved') el.textContent=''; }, 1500);
+    }catch(e){
+      el.textContent = 'Could not save — check connection';
+    }
+  }, 400);
+}
+
+function receivedFor(sku){
+  if(!sku) return 0;
+  return logRows.reduce((sum,r)=> r.sku && r.sku.trim().toUpperCase() === sku.trim().toUpperCase() ? sum + (Number(r.qty)||0) : sum, 0);
+}
+
+function soldFor(sku){
+  if(!sku) return 0;
+  return usageRows.reduce((sum,r)=> r.sku && r.sku.trim().toUpperCase() === sku.trim().toUpperCase() ? sum + (Number(r.qty)||0) : sum, 0);
+}
+
+function findInvBySku(sku){
+  const s = sku.trim().toUpperCase();
+  return invItems.find(it => (it.sku||'').trim().toUpperCase() === s);
+}
+
+function ensureInventoryItem(sku, name, cost){
+  if(!sku || !sku.trim()) return;
+  let item = findInvBySku(sku);
+  if(!item){
+    item = {id:uid(), sku:sku.trim(), name:name||'', type:'product', reorder:5, cost:cost||''};
+    invItems.push(item);
+    renderInv();
+  }else{
+    if(name && !item.name) item.name = name;
+    if(cost && (item.cost===''||item.cost===undefined)) item.cost = cost;
+  }
+}
+
+function monthlyEquiv(row){
+  const cost = Number(row.cost)||0;
+  if(row.billing === 'monthly') return cost;
+  if(row.billing === 'yearly') return cost/12;
+  return 0;
+}
+
+function renderSummary(){
+  const totalValue = invItems.reduce((s,it)=>{
+    const onHand = receivedFor(it.sku) - soldFor(it.sku);
+    return s + onHand * (Number(it.cost)||0);
+  },0);
+  const reorderCount = invItems.filter(it=>{
+    const onHand = receivedFor(it.sku) - soldFor(it.sku);
+    return it.sku && onHand <= (Number(it.reorder)||0);
+  }).length;
+  const totalReceived = logRows.reduce((s,r)=> s + (Number(r.qty)||0), 0);
+  document.getElementById('summary').innerHTML = `
+    <div class="stat"><div class="lbl">Total stock value</div><div class="val">${money(round2(totalValue))}</div></div>
+    <div class="stat"><div class="lbl">Items to reorder</div><div class="val ${reorderCount>0?'alert':''}">${reorderCount}</div></div>
+    <div class="stat"><div class="lbl">Units received (all time)</div><div class="val">${totalReceived}</div></div>
+    <div class="stat"><div class="lbl">Tracked items</div><div class="val">${invItems.length}</div></div>
+  `;
+
+  const byType = { product: {value:0}, supply: {value:0}, equipment: {value:0} };
+  invItems.forEach(it=>{
+    const key = it.type === 'supply' ? 'supply' : it.type === 'equipment' ? 'equipment' : 'product';
+    const onHand = receivedFor(it.sku) - soldFor(it.sku);
+    byType[key].value += onHand * (Number(it.cost)||0);
+  });
+  const filtered = filteredExpRows();
+  const filterLabel = expCategoryFilter === 'all' ? '' : ' (filtered)';
+  const monthlyRecurring = filtered.reduce((s,r)=> s + monthlyEquiv(r), 0);
+  const oneTimeTotal = filtered.reduce((s,r)=> s + (row_is_onetime(r) ? (Number(r.cost)||0) : 0), 0);
+  const totalSpent = filtered.reduce((s,r)=> s + (Number(r.cost)||0), 0);
+  const remaining = budget - totalSpent;
+  document.getElementById('summaryByType').innerHTML = `
+    <div class="stat"><div class="lbl">Products for sale — value</div><div class="val">${money(round2(byType.product.value))}</div></div>
+    <div class="stat"><div class="lbl">Recurring supplies — value</div><div class="val">${money(round2(byType.supply.value))}</div></div>
+    <div class="stat"><div class="lbl">Equipment — value</div><div class="val">${money(round2(byType.equipment.value))}</div></div>
+    <div class="stat"><div class="lbl">Monthly recurring costs${filterLabel}</div><div class="val">${money(round2(monthlyRecurring))}</div></div>
+    <div class="stat"><div class="lbl">One-time costs logged${filterLabel}</div><div class="val">${money(round2(oneTimeTotal))}</div></div>
+    <div class="stat"><div class="lbl">Total spent${filterLabel}</div><div class="val">${money(round2(totalSpent))}</div></div>
+    <div class="stat">
+      <div class="lbl">Budget</div>
+      <div class="cur" style="margin-top:4px;"><span>$</span><input type="number" min="0" step="1" id="budgetInput" value="${budget}" style="font-weight:700;font-size:18px;"></div>
+    </div>
+    <div class="stat"><div class="lbl">Budget remaining${filterLabel}</div><div class="val ${remaining<0?'alert':''}" id="budgetRemainingVal">${money(round2(remaining))}</div></div>
+  `;
+  const bi = document.getElementById('budgetInput');
+  if(bi){
+    bi.addEventListener('input', e=>{
+      budget = Number(e.target.value)||0;
+      const totalSpentNow = filteredExpRows().reduce((s,r)=> s + (Number(r.cost)||0), 0);
+      const remainingNow = budget - totalSpentNow;
+      const el = document.getElementById('budgetRemainingVal');
+      el.textContent = money(round2(remainingNow));
+      el.classList.toggle('alert', remainingNow < 0);
+      scheduleSave();
+    });
+  }
+}
+function row_is_onetime(r){ return r.billing !== 'monthly' && r.billing !== 'yearly'; }
+
+function logRowHTML(r){
+  const total = (Number(r.qty)||0) * (Number(r.cost)||0);
+  return `<tr data-id="${r.id}">
+      <td><input type="date" value="${r.date||''}" data-field="date"></td>
+      <td><input type="text" value="${r.supplier||''}" placeholder="Supplier name" data-field="supplier"></td>
+      <td><input type="text" value="${r.item||''}" placeholder="Item name" data-field="item"></td>
+      <td><input type="text" value="${r.sku||''}" placeholder="SKU" data-field="sku" style="text-transform:uppercase"></td>
+      <td><input type="number" min="0" step="1" value="${r.qty||''}" data-field="qty" class="num"></td>
+      <td><div class="cur"><span>$</span><input type="number" min="0" step="0.01" value="${r.cost||''}" data-field="cost" class="num"></div></td>
+      <td><div class="readonly" data-total>${money(round2(total))}</div></td>
+      <td><button class="del" data-del="${r.id}" aria-label="Delete row">&times;</button></td>
+    </tr>`;
+}
+
+function renderLog(){
+  const body = document.getElementById('logBody');
+  document.getElementById('logEmpty').style.display = logRows.length ? 'none' : 'block';
+  body.innerHTML = logRows.map(logRowHTML).join('');
+}
+
+function invRowHTML(it){
+  const received = receivedFor(it.sku);
+  const onHand = received - soldFor(it.sku);
+  const value = onHand * (Number(it.cost)||0);
+  const reorder = it.sku && onHand <= (Number(it.reorder)||0);
+  return `<tr data-id="${it.id}">
+      <td><input type="text" value="${it.sku||''}" placeholder="SKU" data-field="sku" style="text-transform:uppercase"></td>
+      <td><input type="text" value="${it.name||''}" placeholder="Item name" data-field="name"></td>
+      <td><select data-field="type">
+        <option value="product" ${!it.type||it.type==='product'?'selected':''}>Product for sale</option>
+        <option value="supply" ${it.type==='supply'?'selected':''}>Recurring supply</option>
+        <option value="equipment" ${it.type==='equipment'?'selected':''}>Equipment (one-time)</option>
+      </select></td>
+      <td><div class="readonly" data-received>${received}</div></td>
+      <td><div class="readonly" data-sold>${soldFor(it.sku)}</div></td>
+      <td><div class="readonly" data-onhand>${onHand}</div></td>
+      <td><input type="number" min="0" step="1" value="${it.reorder||''}" data-field="reorder" class="num"></td>
+      <td><div class="cur"><span>$</span><input type="number" min="0" step="0.01" value="${it.cost||''}" data-field="cost" class="num"></div></td>
+      <td><div class="readonly" data-value>${money(round2(value))}</div></td>
+      <td data-status>${it.sku ? `<span class="stamp ${reorder?'reorder':'ok'}">${reorder?'Reorder':'OK'}</span>` : ''}</td>
+      <td><button class="del" data-del="${it.id}" aria-label="Delete row">&times;</button></td>
+    </tr>`;
+}
+
+function groupHeaderRow(label){
+  return `<tr class="grouphead"><td colspan="11">${label}</td></tr>`;
+}
+
+function renderInv(){
+  const body = document.getElementById('invBody');
+  document.getElementById('invEmpty').style.display = invItems.length ? 'none' : 'block';
+  const groups = [
+    {key:'product', label:'Products for sale'},
+    {key:'supply', label:'Recurring supplies'},
+    {key:'equipment', label:'Equipment (one-time)'}
+  ];
+  let html = '';
+  groups.forEach(g=>{
+    const items = invItems.filter(it => (it.type||'product') === g.key || (g.key==='product' && !it.type));
+    if(items.length === 0) return;
+    html += groupHeaderRow(g.label);
+    html += items.map(invRowHTML).join('');
+  });
+  body.innerHTML = html;
+}
+
+function updateInvRowComputed(tr, item){
+  const received = receivedFor(item.sku);
+  tr.querySelector('[data-sold]').textContent = soldFor(item.sku);
+  const onHand = received - soldFor(item.sku);
+  const value = onHand * (Number(item.cost)||0);
+  const reorder = item.sku && onHand <= (Number(item.reorder)||0);
+  tr.querySelector('[data-received]').textContent = received;
+  tr.querySelector('[data-onhand]').textContent = onHand;
+  tr.querySelector('[data-value]').textContent = money(round2(value));
+  tr.querySelector('[data-status]').innerHTML = item.sku ? `<span class="stamp ${reorder?'reorder':'ok'}">${reorder?'Reorder':'OK'}</span>` : '';
+}
+
+function usageRowHTML(r){
+  return `<tr data-id="${r.id}">
+      <td><input type="date" value="${r.date||''}" data-field="date"></td>
+      <td><input type="text" value="${r.item||''}" placeholder="Item name" data-field="item"></td>
+      <td><input type="text" value="${r.sku||''}" placeholder="SKU" data-field="sku" style="text-transform:uppercase"></td>
+      <td><input type="number" min="0" step="1" value="${r.qty||''}" data-field="qty" class="num"></td>
+      <td><input type="text" value="${r.notes||''}" placeholder="e.g. Damaged, gift, restock count" data-field="notes"></td>
+      <td><button class="del" data-del="${r.id}" aria-label="Delete row">&times;</button></td>
+    </tr>`;
+}
+
+function renderUsage(){
+  const body = document.getElementById('usageBody');
+  document.getElementById('usageEmpty').style.display = usageRows.length ? 'none' : 'block';
+  body.innerHTML = usageRows.map(usageRowHTML).join('');
+}
+
+function expRowHTML(r){
+  const me = monthlyEquiv(r);
+  return `<tr data-id="${r.id}">
+      <td><input type="date" value="${r.date||''}" data-field="date"></td>
+      <td><input type="text" value="${r.desc||''}" placeholder="e.g. Business license renewal" data-field="desc"></td>
+      <td><select data-field="category">
+        <option value="licenses" ${!r.category||r.category==='licenses'?'selected':''}>Licenses & subscriptions</option>
+        <option value="supplies" ${r.category==='supplies'?'selected':''}>Supplies</option>
+        <option value="legal" ${r.category==='legal'?'selected':''}>Legal fees</option>
+        <option value="insurance" ${r.category==='insurance'?'selected':''}>Insurance</option>
+        <option value="other" ${r.category==='other'?'selected':''}>Other</option>
+      </select></td>
+      <td><select data-field="costtype">
+        <option value="overhead" ${!r.costtype||r.costtype==='overhead'?'selected':''}>Overhead</option>
+        <option value="cogs" ${r.costtype==='cogs'?'selected':''}>Direct (COGS)</option>
+      </select></td>
+      <td><input type="text" value="${r.vendor||''}" placeholder="Vendor/provider" data-field="vendor"></td>
+      <td><div class="cur"><span>$</span><input type="number" min="0" step="0.01" value="${r.cost||''}" data-field="cost" class="num"></div></td>
+      <td><select data-field="billing">
+        <option value="onetime" ${!r.billing||r.billing==='onetime'?'selected':''}>One-time</option>
+        <option value="monthly" ${r.billing==='monthly'?'selected':''}>Monthly</option>
+        <option value="yearly" ${r.billing==='yearly'?'selected':''}>Yearly</option>
+      </select></td>
+      <td><div class="readonly" data-monthly>${money(round2(me))}</div></td>
+      <td><button class="del" data-del="${r.id}" aria-label="Delete row">&times;</button></td>
+    </tr>`;
+}
+
+function filteredExpRows(){
+  if(expCategoryFilter === 'all') return expRows;
+  return expRows.filter(r => (r.category||'licenses') === expCategoryFilter);
+}
+
+function renderExp(){
+  const body = document.getElementById('expBody');
+  const rows = filteredExpRows();
+  document.getElementById('expEmpty').style.display = rows.length ? 'none' : 'block';
+  if(expRows.length && !rows.length){
+    document.getElementById('expEmpty').style.display = 'block';
+    document.getElementById('expEmpty').textContent = 'No expenses in this category.';
+  }else{
+    document.getElementById('expEmpty').textContent = 'No expenses logged yet. Track licenses, software subscriptions, legal fees, insurance, and similar business costs here.';
+  }
+  body.innerHTML = rows.map(expRowHTML).join('');
+}
+
+const logBody = document.getElementById('logBody');
+logBody.addEventListener('input', e=>{
+  const field = e.target.dataset.field;
+  if(!field) return;
+  const tr = e.target.closest('tr');
+  const id = tr.dataset.id;
+  const row = logRows.find(r=>r.id===id);
+  row[field] = e.target.value;
+  tr.querySelector('[data-total]').textContent = money(round2((Number(row.qty)||0)*(Number(row.cost)||0)));
+  if(field === 'sku' && row.sku && row.sku.trim()){
+    ensureInventoryItem(row.sku, row.item, row.cost);
+  }
+  renderSummary();
+  scheduleSave();
+});
+logBody.addEventListener('click', e=>{
+  const id = e.target.dataset.del;
+  if(!id) return;
+  logRows = logRows.filter(r=>r.id!==id);
+  renderLog();
+  renderInv();
+  renderSummary();
+  scheduleSave();
+});
+
+const invBody = document.getElementById('invBody');
+invBody.addEventListener('input', e=>{
+  const field = e.target.dataset.field;
+  if(!field || e.target.tagName === 'SELECT') return;
+  const tr = e.target.closest('tr');
+  const id = tr.dataset.id;
+  const item = invItems.find(r=>r.id===id);
+  item[field] = e.target.value;
+  updateInvRowComputed(tr, item);
+  renderSummary();
+  scheduleSave();
+});
+invBody.addEventListener('change', e=>{
+  if(e.target.tagName !== 'SELECT') return;
+  const tr = e.target.closest('tr');
+  const id = tr.dataset.id;
+  const item = invItems.find(r=>r.id===id);
+  item.type = e.target.value;
+  renderSummary();
+  scheduleSave();
+});
+invBody.addEventListener('click', e=>{
+  const id = e.target.dataset.del;
+  if(!id) return;
+  invItems = invItems.filter(r=>r.id!==id);
+  renderInv();
+  renderSummary();
+  scheduleSave();
+});
+
+const usageBody = document.getElementById('usageBody');
+usageBody.addEventListener('input', e=>{
+  const field = e.target.dataset.field;
+  if(!field) return;
+  const tr = e.target.closest('tr');
+  const id = tr.dataset.id;
+  const row = usageRows.find(r=>r.id===id);
+  row[field] = e.target.value;
+  renderInv();
+  renderSummary();
+  scheduleSave();
+});
+usageBody.addEventListener('click', e=>{
+  const id = e.target.dataset.del;
+  if(!id) return;
+  usageRows = usageRows.filter(r=>r.id!==id);
+  renderUsage();
+  renderInv();
+  renderSummary();
+  scheduleSave();
+});
+
+const expBody = document.getElementById('expBody');
+expBody.addEventListener('input', e=>{
+  const field = e.target.dataset.field;
+  if(!field || e.target.tagName === 'SELECT') return;
+  const tr = e.target.closest('tr');
+  const id = tr.dataset.id;
+  const row = expRows.find(r=>r.id===id);
+  row[field] = e.target.value;
+  tr.querySelector('[data-monthly]').textContent = money(round2(monthlyEquiv(row)));
+  renderSummary();
+  scheduleSave();
+});
+expBody.addEventListener('change', e=>{
+  if(e.target.tagName !== 'SELECT') return;
+  const tr = e.target.closest('tr');
+  const id = tr.dataset.id;
+  const row = expRows.find(r=>r.id===id);
+  row[e.target.dataset.field] = e.target.value;
+  tr.querySelector('[data-monthly]').textContent = money(round2(monthlyEquiv(row)));
+  renderSummary();
+  scheduleSave();
+});
+expBody.addEventListener('click', e=>{
+  const id = e.target.dataset.del;
+  if(!id) return;
+  expRows = expRows.filter(r=>r.id!==id);
+  renderExp();
+  renderSummary();
+  scheduleSave();
+});
+
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-'+tab.dataset.tab).classList.add('active');
+    if(tab.dataset.tab === 'inv'){ renderInv(); renderUsage(); }
+    if(tab.dataset.tab === 'log'){
+      setTimeout(()=> document.getElementById('scanReceive').focus(), 0);
+    }else if(tab.dataset.tab === 'inv'){
+      setTimeout(()=> document.getElementById('scanSell').focus(), 0);
+    }
+  });
+});
+
+document.getElementById('addLogRow').addEventListener('click', ()=>{
+  logRows.push({id:uid(), date:todayStr(), supplier:'', item:'', sku:'', qty:'', cost:''});
+  renderLog();
+  scheduleSave();
+});
+
+document.getElementById('addInvRow').addEventListener('click', ()=>{
+  invItems.push({id:uid(), sku:'', name:'', type:'product', reorder:5, cost:''});
+  renderInv();
+  renderSummary();
+  scheduleSave();
+});
+
+document.getElementById('addExpRow').addEventListener('click', ()=>{
+  expRows.push({id:uid(), date:todayStr(), desc:'', category:'software', vendor:'', cost:'', billing:'onetime'});
+  renderExp();
+  renderSummary();
+  scheduleSave();
+});
+
+document.getElementById('addUsageRow').addEventListener('click', ()=>{
+  usageRows.push({id:uid(), date:todayStr(), item:'', sku:'', qty:'', notes:''});
+  renderUsage();
+  scheduleSave();
+});
+
+document.getElementById('expCategoryFilter').addEventListener('change', e=>{
+  expCategoryFilter = e.target.value;
+  renderExp();
+  renderSummary();
+});
+
+function showScanMsg(el, text, cls){
+  el.textContent = text;
+  el.className = 'scanmsg ' + (cls||'');
+}
+
+function handleReceiveScan(code){
+  const sku = code.trim();
+  if(!sku) return;
+  const today = todayStr();
+  let row = logRows.find(r => (r.sku||'').trim().toUpperCase() === sku.toUpperCase() && r.date === today);
+  const matched = findInvBySku(sku);
+  const msgEl = document.getElementById('scanReceiveMsg');
+  if(row){
+    row.qty = (Number(row.qty)||0) + 1;
+    showScanMsg(msgEl, `+1 ${matched ? matched.name : sku} — now ${row.qty} received today`, 'ok');
+  }else{
+    row = {id:uid(), date:today, supplier: matched ? (matched.supplier||'') : '', item: matched ? matched.name : '', sku: sku, qty: 1, cost: matched ? matched.cost : ''};
+    logRows.push(row);
+    ensureInventoryItem(sku, matched ? matched.name : '', matched ? matched.cost : '');
+    showScanMsg(msgEl, matched ? `Logged 1 unit of ${matched.name}` : `Logged 1 unit of new SKU ${sku} — added to Inventory, fill in the item name`, matched ? 'ok' : 'warn');
+  }
+  renderLog();
+  renderInv();
+  renderSummary();
+  scheduleSave();
+}
+
+function handleSellScan(code){
+  const sku = code.trim();
+  if(!sku) return;
+  const msgEl = document.getElementById('scanSellMsg');
+  const item = findInvBySku(sku);
+  if(!item){
+    showScanMsg(msgEl, `No inventory item matches SKU "${sku}" — add it first`, 'warn');
+    return;
+  }
+  const today = todayStr();
+  let row = usageRows.find(r => (r.sku||'').trim().toUpperCase() === sku.toUpperCase() && r.date === today);
+  if(row){
+    row.qty = (Number(row.qty)||0) + 1;
+  }else{
+    row = {id:uid(), date:today, item:item.name||'', sku:sku, qty:1, notes:''};
+    usageRows.push(row);
+  }
+  const onHand = receivedFor(item.sku) - soldFor(item.sku);
+  showScanMsg(msgEl, `-1 ${item.name} — ${onHand} left on hand`, onHand <= (Number(item.reorder)||0) ? 'warn' : 'ok');
+  renderUsage();
+  renderInv();
+  renderSummary();
+  scheduleSave();
+}
+
+function setupScanInput(id, handler){
+  const input = document.getElementById(id);
+  input.addEventListener('keydown', e=>{
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      const val = input.value;
+      input.value = '';
+      handler(val);
+    }
+  });
+}
+setupScanInput('scanReceive', handleReceiveScan);
+setupScanInput('scanSell', handleSellScan);
+document.getElementById('scanSell').focus();
+
+loadData();
+</script>
+</body>
+</html>
