@@ -7,68 +7,113 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --page:#F5F0E8; --surface:#FFFFFF; --border:#E5DDD0; --border-strong:#D3C7B4;
-    --ink:#0A0A0A; --muted:#6B6B6B; --faint:#A89A87;
-    --accent:#8C7F6E; --accent-bg:#F0EAE1; --accent-text:#5C5142;
-    --gold:#B8963E; --gold-bg:#FAF3E3;
-    --green:#5C7A5A; --green-bg:#EBF0E8; --green-text:#3E5A3C;
-    --red:#A6483A; --red-bg:#F6E9E6; --red-text:#7E362B;
-    --amber-bg:#FAF3E3; --amber-border:#DFC48C;
-    --radius:8px;
+    --page:#0a0a0a;
+    --surface:#111111;
+    --surface2:#1a1a1a;
+    --border:rgba(140,127,110,0.2);
+    --border-strong:rgba(140,127,110,0.45);
+    --ink:#f5f0e8;
+    --muted:rgba(245,240,232,0.45);
+    --faint:rgba(245,240,232,0.25);
+    --accent:#a89a87;
+    --accent-bg:rgba(140,127,110,0.1);
+    --accent-text:#a89a87;
+    --gold:#a89a87;
+    --gold-bg:rgba(140,127,110,0.12);
+    --green:#6aaa68; --green-bg:rgba(106,170,104,0.12); --green-text:#6aaa68;
+    --red:#c0392b; --red-bg:rgba(192,57,43,0.12); --red-text:#e07060;
+    --amber-bg:rgba(140,127,110,0.1); --amber-border:rgba(140,127,110,0.3);
+    --radius:2px;
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--page);color:var(--ink);font-family:'Montserrat',-apple-system,BlinkMacSystemFont,sans-serif;font-feature-settings:'tnum' 1;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1140px;margin:0 auto;padding:32px 28px 64px;}
-  h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:30px;letter-spacing:0.03em;margin:0;}
-  .sub{color:var(--muted);font-size:12.5px;margin:4px 0 0;letter-spacing:0.02em;}
-  .topbar{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
-  .tabs{display:flex;gap:2px;margin-bottom:20px;border-bottom:1px solid var(--border);}
-  .tab{font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;padding:10px 6px;margin-right:26px;cursor:pointer;color:var(--faint);border-bottom:2px solid transparent;user-select:none;transition:color .12s;}
+
+  /* ── TOP NAV BAR ── */
+  .stockroom-nav {
+    background: var(--page);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .stockroom-nav svg { height: 34px; width: auto; }
+  .stockroom-nav-label {
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  .wrap{max-width:1200px;margin:0 auto;padding:2.5rem 2.5rem 5rem;}
+  h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;font-size:2rem;letter-spacing:0.05em;margin:0;color:var(--ink);}
+  .sub{color:var(--muted);font-size:0.68rem;margin:4px 0 0;letter-spacing:0.08em;text-transform:uppercase;}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:12px;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
+
+  .tabs{display:flex;gap:2px;margin-bottom:1.5rem;border-bottom:1px solid var(--border);}
+  .tab{font-weight:500;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;padding:0.75rem 0.5rem;margin-right:2rem;cursor:pointer;color:var(--muted);border-bottom:1px solid transparent;user-select:none;transition:color .2s;}
   .tab:hover{color:var(--ink);}
   .tab.active{color:var(--ink);border-bottom-color:var(--gold);}
   .panel{display:none;}
   .panel.active{display:block;}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px;}
-  table{width:100%;border-collapse:collapse;font-size:13px;}
-  th{text-align:left;font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:0.07em;color:var(--faint);padding:0 8px 10px;border-bottom:1px solid var(--border);cursor:help;}
-  td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle;}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;}
+  table{width:100%;border-collapse:collapse;font-size:0.78rem;}
+  th{text-align:left;font-weight:600;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--faint);padding:0 0.5rem 0.75rem;border-bottom:1px solid var(--border);cursor:help;}
+  td{padding:0.5rem 0.5rem;border-bottom:1px solid var(--border);vertical-align:middle;}
   tr:last-child td{border-bottom:none;}
-  input, select{width:100%;font-family:'Montserrat',sans-serif;font-size:13px;font-feature-settings:'tnum' 1;border:1px solid transparent;background:transparent;padding:6px 7px;border-radius:6px;color:var(--ink);}
+  tr:hover td{background:rgba(245,240,232,0.02);}
+
+  input, select{width:100%;font-family:'Montserrat',sans-serif;font-size:0.78rem;font-feature-settings:'tnum' 1;border:1px solid transparent;background:transparent;padding:0.4rem 0.5rem;border-radius:var(--radius);color:var(--ink);}
   input:hover, select:hover{border-color:var(--border-strong);}
   input:focus, select:focus{outline:none;border-color:var(--gold);background:var(--gold-bg);}
   select{cursor:pointer;}
+  select option{background:#1a1a1a;color:var(--ink);}
+
   .num{text-align:right;}
-  .readonly{color:var(--muted);background:none;border:none;padding:6px 2px;font-size:13px;font-style:italic;font-feature-settings:'tnum' 1;text-align:right;}
-  .btn{font-family:'Montserrat',sans-serif;font-weight:500;font-size:11.5px;text-transform:uppercase;letter-spacing:0.06em;border:1px solid var(--ink);background:var(--surface);color:var(--ink);padding:9px 16px;border-radius:2px;cursor:pointer;transition:all .12s;}
-  .btn:hover{background:var(--ink);color:var(--page);}
-  .del{background:none;border:none;color:var(--faint);cursor:pointer;font-size:16px;padding:2px 6px;line-height:1;border-radius:5px;}
+  .readonly{color:var(--muted);background:none;border:none;padding:0.4rem 0.25rem;font-size:0.78rem;font-style:italic;font-feature-settings:'tnum' 1;text-align:right;}
+  .btn{font-family:'Montserrat',sans-serif;font-weight:500;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;border:1px solid var(--border-strong);background:transparent;color:var(--ink);padding:0.65rem 1.25rem;border-radius:var(--radius);cursor:pointer;transition:all .2s;}
+  .btn:hover{background:var(--ink);color:var(--page);border-color:var(--ink);}
+  .btn.primary{background:var(--ink);color:var(--page);border-color:var(--ink);}
+  .btn.primary:hover{background:var(--gold);color:var(--page);border-color:var(--gold);}
+
+  .del{background:none;border:none;color:var(--faint);cursor:pointer;font-size:1rem;padding:0.15rem 0.4rem;line-height:1;border-radius:var(--radius);}
   .del:hover{color:var(--red);background:var(--red-bg);}
-  .stamp{display:inline-block;padding:3px 9px;border-radius:5px;font-weight:600;font-size:10.5px;letter-spacing:0.04em;text-transform:uppercase;}
-  .stamp.ok{color:var(--green-text);background:var(--green-bg);}
-  .stamp.reorder{color:var(--red-text);background:var(--red-bg);}
-  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px;}
-  .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
-  .stat .lbl{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--faint);margin-bottom:6px;}
-  .stat .val{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:24px;font-feature-settings:'tnum' 1;}
-  .stat .val.alert{color:var(--red);}
-  .foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
-  .status-msg{font-size:12px;color:var(--faint);}
-  .empty{padding:28px 8px;text-align:center;color:var(--faint);font-size:13px;}
-  .scanbar{background:#F4F4F2;border-color:var(--border-strong);padding:14px 18px;}
-  .scanrow{display:flex;align-items:center;gap:10px;}
+
+  .stamp{display:inline-block;padding:0.2rem 0.6rem;font-weight:600;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;}
+  .stamp.ok{color:var(--green-text);background:var(--green-bg);border:1px solid rgba(106,170,104,0.2);}
+  .stamp.reorder{color:var(--red-text);background:var(--red-bg);border:1px solid rgba(192,57,43,0.2);}
+
+  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.75rem;margin-bottom:1.5rem;}
+  .stat{background:var(--surface);border:1px solid var(--border);padding:1rem 1.25rem;}
+  .stat .lbl{font-size:0.55rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--faint);margin-bottom:0.5rem;}
+  .stat .val{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;font-size:1.7rem;font-feature-settings:'tnum' 1;color:var(--ink);}
+  .stat .val.alert{color:var(--red-text);}
+
+  .foot{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;}
+  .status-msg{font-size:0.65rem;color:var(--faint);letter-spacing:0.08em;}
+  .empty{padding:2rem 0.5rem;text-align:center;color:var(--faint);font-size:0.78rem;letter-spacing:0.05em;}
+
+  .scanbar{background:var(--surface2);border-color:var(--border-strong);padding:1rem 1.25rem;}
+  .scanrow{display:flex;align-items:center;gap:0.75rem;}
   .scandot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0;}
-  .scanbar input{font-size:13.5px;padding:9px 10px;border:1px solid var(--border-strong);background:#FFFFFF;border-radius:5px;}
-  .scanbar input:focus{border-color:var(--muted);background:#FFFFFF;}
-  .scanmsg{font-size:12px;color:var(--muted);margin-top:8px;margin-left:16px;min-height:16px;}
+  .scanbar input{font-size:0.82rem;padding:0.6rem 0.75rem;border:1px solid var(--border-strong);background:var(--surface);border-radius:var(--radius);color:var(--ink);}
+  .scanbar input:focus{border-color:var(--gold);background:var(--gold-bg);}
+  .scanmsg{font-size:0.65rem;color:var(--muted);margin-top:0.5rem;margin-left:1rem;min-height:1rem;letter-spacing:0.05em;}
   .scanmsg.ok{color:var(--green-text);}
   .scanmsg.warn{color:var(--red-text);}
-  .cur{display:flex;align-items:center;border:1px solid var(--border);background:var(--surface);border-radius:6px;padding:0 7px;}
+
+  .cur{display:flex;align-items:center;border:1px solid var(--border);background:transparent;border-radius:var(--radius);padding:0 0.5rem;}
   .cur:hover{border-color:var(--border-strong);}
   .cur:focus-within{border-color:var(--gold);background:var(--gold-bg);}
-  .cur span{color:var(--faint);font-size:13px;padding-right:1px;}
-  .cur input{border:none !important;background:transparent !important;padding:6px 0 6px 2px !important;}
+  .cur span{color:var(--faint);font-size:0.78rem;padding-right:2px;}
+  .cur input{border:none !important;background:transparent !important;padding:0.4rem 0 0.4rem 2px !important;}
   .cur input:focus{background:transparent !important;}
-  tr.grouphead td{padding:14px 8px 6px;border-bottom:none;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--faint);}
+
+  tr.grouphead td{padding:1rem 0.5rem 0.4rem;border-bottom:none;font-size:0.58rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--faint);}
   tr.grouphead:first-child td{padding-top:2px;}
 </style>
 </head>
@@ -204,11 +249,35 @@
   }
 </script>
 
+<nav class="stockroom-nav">
+  <a href="index.html" style="text-decoration:none;">
+    <svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(160,50)">
+        <line x1="0" y1="-18" x2="0" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="-22" y1="-10" x2="-22" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="22" y1="-10" x2="22" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M -22,6 Q -11,-2 0,6" fill="none" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M 0,6 Q 11,-2 22,6" fill="none" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="-30" y1="6" x2="30" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="-30" y1="6" x2="-22" y2="-10" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="22" y1="-10" x2="30" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="0" cy="-18" r="1.8" fill="#9c8f7c"/>
+        <circle cx="-22" cy="-10" r="1.4" fill="#9c8f7c"/>
+        <circle cx="22" cy="-10" r="1.4" fill="#9c8f7c"/>
+      </g>
+      <text x="160" y="84" text-anchor="middle" font-family="'Cormorant Garamond',Georgia,serif" font-size="38" font-weight="300" letter-spacing="14" fill="#9c8f7c">AGUILAR</text>
+      <text x="162" y="110" text-anchor="middle" font-family="'Montserrat','Helvetica Neue',Arial,sans-serif" font-size="7.5" font-weight="300" letter-spacing="7" fill="#9c8f7c" opacity="0.8">BOUTIQUE</text>
+    </svg>
+  </a>
+  <span class="stockroom-nav-label">Stockroom — Uso Interno</span>
+  <button id="langToggle" onclick="toggleLang()" style="background:none;border:1px solid rgba(140,127,110,0.35);color:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.58rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;padding:0.4rem 0.85rem;cursor:pointer;transition:all 0.2s;">EN / ES</button>
+</nav>
+
 <div class="wrap">
   <div class="topbar">
     <div>
-      <h1>AGUILAR <span style="color:var(--gold);">Stockroom</span></h1>
-      <p class="sub">Internal inventory, receiving, and expense records — not for public access.</p>
+      <h1>Stockroom <em style="font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',Georgia,serif;">Interno</em></h1>
+      <p class="sub">Inventario, recepciones y gastos — solo para uso privado</p>
     </div>
     <span class="status-msg" id="saveStatus"></span>
   </div>
@@ -971,6 +1040,191 @@ setupScanInput('scanSell', handleSellScan);
 document.getElementById('scanSell').focus();
 
 loadData();
+
+/* ── LANGUAGE TOGGLE ── */
+const T = {
+  en: {
+    navLabel: 'Stockroom — Internal Use',
+    title: 'Stockroom',
+    titleEm: 'Internal',
+    sub: 'Inventory, receiving & expenses — private use only',
+    tabInv: 'Inventory',
+    tabLog: 'Receiving log',
+    tabExp: 'Expenses',
+    scanReceivePh: 'Scan a barcode here to log 1 unit received',
+    scanSellPh: 'Scan a barcode here to record 1 sold/used',
+    addShipment: '+ Add shipment',
+    addExpense: '+ Add expense',
+    thSupplier: 'Supplier',
+    thItemName: 'Item name',
+    thSKU: 'SKU',
+    thQty: 'Qty',
+    thUnitCost: 'Unit cost',
+    thTotal: 'Total',
+    thDate: 'Date',
+    thCategory: 'Category',
+    thCostType: 'Cost type',
+    thVendor: 'Vendor',
+    thCost: 'Cost',
+    thBilling: 'Billing',
+    thMonthly: 'Monthly equiv.',
+    thStatus: 'Status',
+    thNotes: 'Notes',
+    thOnHand: 'On hand',
+    thReceived: 'Received',
+    thSold: 'Sold',
+    thReorder: 'Reorder at',
+    lockPw: 'Password',
+    lockBtn: 'Enter',
+    lockErr: 'Incorrect password',
+    lockLabel: 'Private access',
+    lockSub: 'Internal use only',
+    statStock: 'Total stock value',
+    statReorder: 'Items to reorder',
+    statReceived: 'Units received (all time)',
+    statTracked: 'Tracked items',
+    statProducts: 'Products for sale — value',
+    statSupplies: 'Recurring supplies — value',
+    statEquipment: 'Equipment — value',
+    statMonthly: 'Monthly recurring costs',
+    statOnetime: 'One-time costs logged',
+    statSpent: 'Total spent',
+    statBudget: 'Budget',
+    statRemaining: 'Budget remaining',
+    filterAll: 'All categories',
+    placeholderSupplier: 'Supplier name',
+    placeholderItem: 'Item name',
+    placeholderNotes: 'e.g. Damaged, gift, restock count',
+    placeholderDesc: 'e.g. Business license renewal',
+    placeholderVendor: 'Vendor/provider',
+    stampOk: 'OK',
+    stampReorder: 'Reorder',
+    saved: 'Saved',
+    langBtn: 'ES',
+  },
+  es: {
+    navLabel: 'Stockroom — Uso Interno',
+    title: 'Stockroom',
+    titleEm: 'Interno',
+    sub: 'Inventario, recepciones y gastos — solo para uso privado',
+    tabInv: 'Inventario',
+    tabLog: 'Recepciones',
+    tabExp: 'Gastos',
+    scanReceivePh: 'Escanea un código para registrar 1 unidad recibida',
+    scanSellPh: 'Escanea un código para registrar 1 vendido/usado',
+    addShipment: '+ Agregar envío',
+    addExpense: '+ Agregar gasto',
+    thSupplier: 'Proveedor',
+    thItemName: 'Producto',
+    thSKU: 'SKU',
+    thQty: 'Cant.',
+    thUnitCost: 'Costo unit.',
+    thTotal: 'Total',
+    thDate: 'Fecha',
+    thCategory: 'Categoría',
+    thCostType: 'Tipo de costo',
+    thVendor: 'Vendedor',
+    thCost: 'Costo',
+    thBilling: 'Facturación',
+    thMonthly: 'Equiv. mensual',
+    thStatus: 'Estado',
+    thNotes: 'Notas',
+    thOnHand: 'Disponible',
+    thReceived: 'Recibido',
+    thSold: 'Vendido',
+    thReorder: 'Reordenar en',
+    lockPw: 'Contraseña',
+    lockBtn: 'Entrar',
+    lockErr: 'Contraseña incorrecta',
+    lockLabel: 'Acceso privado',
+    lockSub: 'Solo para uso interno',
+    statStock: 'Valor en stock',
+    statReorder: 'Artículos a reordenar',
+    statReceived: 'Unidades recibidas (total)',
+    statTracked: 'Artículos rastreados',
+    statProducts: 'Productos en venta — valor',
+    statSupplies: 'Suministros recurrentes — valor',
+    statEquipment: 'Equipo — valor',
+    statMonthly: 'Costos mensuales recurrentes',
+    statOnetime: 'Costos únicos registrados',
+    statSpent: 'Total gastado',
+    statBudget: 'Presupuesto',
+    statRemaining: 'Presupuesto restante',
+    filterAll: 'Todas las categorías',
+    placeholderSupplier: 'Nombre del proveedor',
+    placeholderItem: 'Nombre del producto',
+    placeholderNotes: 'Ej. Dañado, regalo, reconteo',
+    placeholderDesc: 'Ej. Renovación de licencia',
+    placeholderVendor: 'Proveedor/servicio',
+    stampOk: 'OK',
+    stampReorder: 'Reordenar',
+    saved: 'Guardado',
+    langBtn: 'EN',
+  }
+};
+
+let currentLang = localStorage.getItem('aguilar_lang') || 'es';
+
+function applyLang(lang) {
+  const t = T[lang];
+  currentLang = lang;
+  localStorage.setItem('aguilar_lang', lang);
+
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  const setph = (id, val) => { const el = document.getElementById(id); if (el) el.placeholder = val; };
+  const sethtml = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
+
+  document.querySelector('.stockroom-nav-label').textContent = t.navLabel;
+  document.querySelector('h1').innerHTML = `${t.title} <em style="font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',Georgia,serif;">${t.titleEm}</em>`;
+  document.querySelector('.sub').textContent = t.sub;
+
+  document.querySelector('[data-tab="inv"]').textContent = t.tabInv;
+  document.querySelector('[data-tab="log"]').textContent = t.tabLog;
+  document.querySelector('[data-tab="exp"]').textContent = t.tabExp;
+
+  setph('scanReceive', t.scanReceivePh);
+  setph('scanSell', t.scanSellPh);
+
+  const addLog = document.getElementById('addLogRow');
+  if (addLog) addLog.textContent = t.addShipment;
+  const addExp = document.getElementById('addExpRow');
+  if (addExp) addExp.textContent = t.addExpense;
+
+  document.getElementById('langToggle').textContent = lang === 'es' ? 'EN' : 'ES';
+
+  document.getElementById('lockInput').placeholder = t.lockPw;
+  document.getElementById('lockBtn').textContent = t.lockBtn;
+  document.querySelector('#lockForm p').textContent = '';
+
+  document.querySelectorAll('input[placeholder]').forEach(el => {
+    const ph = el.placeholder;
+    if (ph.includes('Supplier') || ph.includes('Proveedor')) el.placeholder = t.placeholderSupplier;
+    if (ph.includes('Item name') || ph.includes('Producto')) el.placeholder = t.placeholderItem;
+    if (ph.includes('Damaged') || ph.includes('Dañado')) el.placeholder = t.placeholderNotes;
+    if (ph.includes('Business') || ph.includes('Renovación')) el.placeholder = t.placeholderDesc;
+    if (ph.includes('Vendor') || ph.includes('Vendedor')) el.placeholder = t.placeholderVendor;
+  });
+
+  // Re-render stats and table rows with new language strings
+  renderAll();
+}
+
+function toggleLang() {
+  applyLang(currentLang === 'es' ? 'en' : 'es');
+}
+
+// Override renderSummary to use current lang
+const _origRenderAll = renderAll;
+function renderAll() {
+  _origRenderAll();
+  // patch stamp text after render
+  document.querySelectorAll('.stamp.ok').forEach(el => el.textContent = T[currentLang].stampOk);
+  document.querySelectorAll('.stamp.reorder').forEach(el => el.textContent = T[currentLang].stampReorder);
+}
+
+// Apply saved language on load
+applyLang(currentLang);
+
 </script>
 </body>
 </html>
