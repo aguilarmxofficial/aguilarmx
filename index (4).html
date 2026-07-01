@@ -1,0 +1,2624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AGUILAR Boutique — Raíces en Calera. Inspirada en California.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --black:  #0a0a0a;
+      --ivory:  #f5f0e8;
+      --gold:   #8c7f6e;
+      --gold-light: #a89a87;
+      --white:  #ffffff;
+      --gray:   #6b6b6b;
+      --serif:  'Cormorant Garamond', Georgia, serif;
+      --sans:   'Montserrat', sans-serif;
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ivory);
+      color: var(--black);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    img { display: block; width: 100%; object-fit: cover; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ── */
+    /* ── ANNOUNCEMENT BAR ── */
+    .announce-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 36px;
+      background: var(--gold);
+      z-index: 101;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .announce-track {
+      display: flex;
+      white-space: nowrap;
+      animation: announceScroll 32s linear infinite;
+    }
+    .announce-track span {
+      font-family: var(--sans);
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--black);
+      padding: 0 2.5rem;
+    }
+    .announce-track span.sep { color: rgba(0,0,0,0.35); padding: 0; }
+    @keyframes announceScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── BRAND MARQUEE STRIP ── */
+    .brand-marquee {
+      background: var(--black);
+      padding: 1.1rem 0;
+      overflow: hidden;
+      border-top: 1px solid rgba(140,127,110,0.2);
+      border-bottom: 1px solid rgba(140,127,110,0.2);
+    }
+    .brand-track {
+      display: flex;
+      white-space: nowrap;
+      animation: brandScroll 24s linear infinite;
+    }
+    .brand-track span {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--ivory);
+      padding: 0 2rem;
+      opacity: 0.7;
+    }
+    .brand-track span.dot {
+      color: var(--gold);
+      opacity: 1;
+      padding: 0;
+      font-size: 0.5rem;
+      vertical-align: middle;
+    }
+    @keyframes brandScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-it-works {
+      background: var(--ivory);
+      padding: 5rem 2rem;
+      text-align: center;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 900px;
+      margin: 3rem auto 0;
+    }
+    .step {
+      padding: 2rem 1.5rem;
+      background: var(--white);
+      border: 1px solid rgba(140,127,110,0.18);
+      border-radius: 2px;
+      position: relative;
+    }
+    .step-number {
+      font-family: var(--serif);
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: var(--gold);
+      opacity: 0.25;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .step-icon {
+      width: 36px;
+      height: 36px;
+      margin: 0 auto 1rem;
+      color: var(--gold);
+    }
+    .step-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+    .step-title {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 0.75rem;
+    }
+    .step-text {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      color: var(--gray);
+      line-height: 1.8;
+      font-weight: 300;
+    }
+    .step-arrow {
+      display: none;
+    }
+    @media (min-width: 769px) {
+      .steps-grid { position: relative; }
+      .step-arrow {
+        display: block;
+        position: absolute;
+        top: 50%;
+        right: -1.25rem;
+        transform: translateY(-50%);
+        color: var(--gold);
+        font-size: 1.2rem;
+        opacity: 0.5;
+        z-index: 1;
+      }
+    }
+
+    nav {
+      position: fixed;
+      top: 36px; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(10, 10, 10, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(140,127,110,0.25);
+    }
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ivory);
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold-light); }
+
+    /* ── HAMBURGER (mobile) ── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 1px;
+      background: var(--ivory);
+      transition: all 0.3s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      background: var(--black);
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(160deg, rgba(140,127,110,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 30%, rgba(140,127,110,0.06) 0%, transparent 60%),
+        var(--black);
+    }
+    /* Decorative gold lines */
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, var(--gold));
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 120px;
+      background: linear-gradient(to top, transparent, var(--gold));
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 2rem;
+      max-width: 800px;
+    }
+    .hero-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(4rem, 12vw, 9rem);
+      font-weight: 300;
+      color: var(--ivory);
+      letter-spacing: 0.2em;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .hero-title span {
+      color: var(--gold);
+      font-style: italic;
+    }
+    .hero-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      margin: 2rem auto;
+    }
+    .hero-divider::before,
+    .hero-divider::after {
+      content: '';
+      flex: 1;
+      max-width: 80px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold));
+    }
+    .hero-divider::after {
+      background: linear-gradient(to left, transparent, var(--gold));
+    }
+    .hero-diamond {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      transform: rotate(45deg);
+    }
+    .hero-subtitle {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.6);
+      margin-bottom: 3rem;
+    }
+    .btn-primary {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      border: 1px solid var(--gold);
+      font-family: var(--sans);
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.35s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold);
+      transform: translateX(-100%);
+      transition: transform 0.35s ease;
+      z-index: -1;
+    }
+    .btn-primary:hover::before { transform: translateX(0); }
+    .btn-primary:hover { color: var(--black); }
+
+    /* ── SECTION BASE ── */
+    section { padding: 6rem 3rem; }
+    .section-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 300;
+      color: var(--black);
+      margin-bottom: 1rem;
+    }
+    .section-title em { color: var(--gold); font-style: italic; }
+    .section-rule {
+      width: 60px; height: 1px;
+      background: var(--gold);
+      margin-bottom: 2rem;
+    }
+    .section-intro {
+      max-width: 540px;
+      font-size: 0.85rem;
+      color: var(--gray);
+      line-height: 1.9;
+    }
+
+    /* ── ABOUT ── */
+    .about {
+      background: var(--black);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding: 0;
+      min-height: 500px;
+    }
+    .about-image {
+      position: relative;
+      min-height: 400px;
+      background:
+        linear-gradient(135deg, rgba(140,127,110,0.18) 0%, var(--black) 70%);
+    }
+    .about-image::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    }
+    .about-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 4rem;
+    }
+    .about-content .section-title { color: var(--ivory); }
+    .about-content .section-intro { color: rgba(245,240,232,0.65); }
+
+    /* ── COLLECTION ── */
+    .collection {
+      background: var(--ivory);
+      text-align: center;
+    }
+    .collection-header {
+      margin-bottom: 4rem;
+    }
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    /* ── PRODUCT DETAIL MODAL ── */
+    .product-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 400;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .product-modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .product-modal {
+      background: var(--ivory);
+      max-width: 880px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      transform: scale(0.96) translateY(10px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .product-modal-overlay.open .product-modal {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    .product-modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: rgba(10,10,10,0.55);
+      color: var(--ivory);
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .product-modal-visual {
+      background: var(--black);
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding: 1.25rem;
+      gap: 0.75rem;
+    }
+    .product-modal-main-img {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 220px;
+      overflow: hidden;
+    }
+    .product-modal-main-img::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(140,127,110,0.35);
+    }
+    .product-modal-main-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .product-modal-visual .img-monogram {
+      font-family: var(--serif);
+      font-size: 3.4rem;
+      letter-spacing: 0.2em;
+      color: var(--ivory);
+      opacity: 0.9;
+    }
+    .product-modal-thumbs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+    }
+    .product-modal-thumb {
+      aspect-ratio: 1/1;
+      background: rgba(245,240,232,0.04);
+      border: 1px solid rgba(140,127,110,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-color 0.25s, opacity 0.25s;
+      opacity: 0.85;
+      overflow: hidden;
+    }
+    .product-modal-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .product-modal-thumb .img-monogram {
+      font-size: 0.95rem;
+      letter-spacing: 0.1em;
+    }
+    .product-modal-thumb:hover { opacity: 0.85; }
+    .product-modal-thumb.active {
+      border-color: var(--gold-light);
+      opacity: 1;
+    }
+    .product-modal-info {
+      padding: 2.75rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-modal-badge {
+      align-self: flex-start;
+      background: var(--black);
+      color: var(--gold);
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .product-modal-brand {
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    .product-modal-name {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--black);
+      margin-bottom: 0.5rem;
+      line-height: 1.15;
+    }
+    .product-modal-price {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 1.25rem;
+    }
+    .product-modal-price::before { content: '$'; }
+    .product-modal-price::after { content: ' MXN'; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--gray); font-weight: 400; }
+    .product-modal-desc {
+      font-size: 0.85rem;
+      color: var(--gray);
+      line-height: 1.9;
+      margin-bottom: 1.5rem;
+    }
+    .product-modal-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-style: italic;
+      margin-bottom: 2rem;
+    }
+    .product-modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: auto;
+    }
+    .product-modal-actions button,
+    .product-modal-actions a {
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.9rem 1.25rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .product-modal-add {
+      background: var(--black);
+      color: var(--gold);
+      border: 1px solid var(--black);
+    }
+    .product-modal-add:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
+    .product-modal-add.in-cart { background: var(--gold); color: var(--black); border-color: var(--gold); }
+    @media (max-width: 680px) {
+      .product-modal-overlay { padding: 0.75rem; }
+      .product-modal { grid-template-columns: 1fr; max-height: 94vh; }
+      .product-modal-visual { min-height: 200px; padding: 0.85rem; }
+      .product-modal-info { padding: 2rem 1.5rem; }
+      .product-modal-thumbs { gap: 0.35rem; }
+      .product-modal-name { font-size: 1.6rem; }
+      .product-modal-actions a,
+      .product-modal-actions button { font-size: 0.62rem; padding: 0.8rem 1rem; }
+
+      .disclosure-modal-overlay { padding: 1rem; }
+      .disclosure-modal { padding: 1.75rem 1.5rem; max-height: 90vh; }
+      .disclosure-modal h4 { font-size: 1.2rem; }
+    }
+
+    @media (max-width: 380px) {
+      .product-modal-thumbs { grid-template-columns: repeat(4, 1fr); gap: 0.25rem; }
+      .img-monogram { font-size: 1.6rem !important; }
+    }
+
+    .product-card {
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      group: true;
+    }
+    .product-img-wrap {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      background: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .product-img-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(140,127,110,0.35);
+    }
+    .product-img-wrap .img-monogram {
+      font-family: var(--serif);
+      font-size: 2.3rem;
+      letter-spacing: 0.15em;
+      color: var(--ivory);
+      opacity: 0.9;
+      transition: opacity 0.4s ease, letter-spacing 0.4s ease;
+    }
+    .product-card:hover .product-img-wrap .img-monogram {
+      opacity: 1;
+      letter-spacing: 0.25em;
+    }
+    .product-info {
+      padding: 1.5rem 1.25rem;
+      border-top: 1px solid rgba(140,127,110,0.2);
+      text-align: left;
+    }
+    .product-brand {
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.35rem;
+    }
+    .product-name {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--black);
+      margin-bottom: 0.35rem;
+      cursor: pointer;
+      text-underline-offset: 3px;
+      transition: text-decoration 0.2s;
+    }
+    .product-name:hover { text-decoration: underline; }
+    .product-price {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+    .product-price::before { content: '$'; }
+    .product-price::after { content: ' MXN'; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--gray); font-weight: 400; }
+    .product-desc {
+      font-size: 0.72rem;
+      color: var(--gray);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .product-tag {
+      display: inline-block;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-style: italic;
+    }
+    /* Hold / sold-out states */
+    .product-img-wrap { position: relative; }
+    .product-card.on-hold .product-img-wrap::after {
+      content: 'RESERVADO';
+      position: absolute;
+      inset: 0;
+      background: rgba(10,10,10,0.62);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--sans);
+      font-size: 0.58rem;
+      letter-spacing: 0.35em;
+      color: var(--ivory);
+      pointer-events: none;
+    }
+    .add-to-cart-btn.on-hold {
+      opacity: 0.45;
+      cursor: not-allowed;
+      background: transparent !important;
+      border: 1px solid var(--gray);
+      color: var(--gray) !important;
+    }
+    .product-badge {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: var(--ivory);
+      color: var(--black);
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.6rem;
+      font-weight: 600;
+    }
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .product-select-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--black);
+      color: var(--gold-light);
+      border: 1px solid var(--black);
+      font-family: var(--sans);
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    .product-select-btn:hover {
+      background: var(--gold);
+      color: var(--black);
+      border-color: var(--gold);
+    }
+    .product-select-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+    .product-select-btn.in-cart {
+      background: var(--gold);
+      color: var(--black);
+      border-color: var(--gold);
+    }
+
+    /* ── FLOATING CART ── */
+    .cart-fab {
+      position: fixed;
+      bottom: 1.75rem;
+      right: 1.75rem;
+      z-index: 200;
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--black);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+      transition: transform 0.25s;
+    }
+    .cart-fab:hover { transform: scale(1.07); }
+    .cart-fab svg { width: 24px; height: 24px; }
+    .cart-fab-badge {
+      position: absolute;
+      top: -4px; right: -4px;
+      background: var(--black);
+      color: var(--gold);
+      font-size: 0.65rem;
+      font-weight: 600;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--ivory);
+    }
+
+    /* ── CART DRAWER ── */
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: auto; }
+    .cart-drawer {
+      position: fixed;
+      top: 0; right: 0;
+      bottom: 0;
+      width: min(400px, 92vw);
+      background: var(--ivory);
+      z-index: 301;
+      transform: translateX(100%);
+      transition: transform 0.35s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.25);
+    }
+    .cart-drawer.open { transform: translateX(0); }
+    .cart-header {
+      background: var(--black);
+      color: var(--ivory);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--gold);
+    }
+    .cart-header h3 {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      letter-spacing: 0.05em;
+      color: var(--gold);
+    }
+    .cart-close {
+      background: none;
+      border: none;
+      color: var(--ivory);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0.25rem;
+    }
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+    .cart-empty {
+      text-align: center;
+      color: var(--gray);
+      font-size: 0.85rem;
+      padding: 3rem 1rem;
+      line-height: 1.8;
+    }
+    .cart-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(140,127,110,0.25);
+    }
+    .cart-item-info .cart-item-brand {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.2rem;
+    }
+    .cart-item-info .cart-item-name {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      color: var(--black);
+    }
+    .cart-item-remove {
+      background: none;
+      border: none;
+      color: var(--gray);
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: underline;
+      flex-shrink: 0;
+      padding: 0.25rem;
+    }
+    .cart-item-remove:hover { color: var(--black); }
+    .cart-footer {
+      padding: 1.5rem;
+      border-top: 1px solid rgba(140,127,110,0.3);
+      background: var(--white);
+    }
+    .cart-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1rem;
+      padding: 0.85rem 1rem;
+      background: var(--ivory);
+      border-radius: 4px;
+    }
+    .cart-total-label {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+    .cart-total-amount {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .cart-total-amount::before { content: '$'; }
+    .cart-total-amount::after { content: ' MXN'; font-size: 0.6rem; letter-spacing: 0.1em; color: var(--gray); font-weight: 400; }
+    .cart-footer-note {
+      font-size: 0.7rem;
+      color: var(--gray);
+      text-align: center;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+    .btn-cart-send {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 1rem;
+      background: var(--gold);
+      color: var(--black);
+      border: none;
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn-cart-send:hover { background: var(--gold-light); }
+    .btn-cart-send:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .btn-cart-send svg { width: 16px; height: 16px; }
+
+    /* ── PICKUP SCHEDULER PANEL ── */
+    .cart-page {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+    .cart-page.hidden { display: none; }
+    #schedulerPanel {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+    .scheduler-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(140,127,110,0.2);
+    }
+    .scheduler-back {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray);
+      font-size: 1.2rem;
+      line-height: 1;
+      padding: 0.2rem 0.5rem 0.2rem 0;
+      transition: color 0.2s;
+    }
+    .scheduler-back:hover { color: var(--black); }
+    .scheduler-header h3 {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--black);
+      margin: 0;
+    }
+    .scheduler-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem 1.5rem;
+    }
+    .scheduler-slot-label {
+      font-family: var(--sans);
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 0.75rem;
+    }
+    .scheduler-time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--ivory);
+      border: 1px solid rgba(140,127,110,0.4);
+      color: var(--gold);
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 3px;
+      margin-bottom: 1.5rem;
+    }
+    .date-chips {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .date-chip {
+      background: var(--white);
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 0.65rem 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--sans);
+    }
+    .date-chip:hover { border-color: var(--gold); }
+    .date-chip.selected {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--white);
+    }
+    .date-chip .chip-day {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: inherit;
+      opacity: 0.75;
+      margin-bottom: 0.2rem;
+    }
+    .date-chip.selected .chip-day { opacity: 0.85; }
+    .date-chip .chip-date {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: inherit;
+    }
+    /* Time slot chips */
+    .time-slot-section { margin-bottom: 1.5rem; }
+    .time-slot-divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 1.25rem 0 0.85rem;
+    }
+    .time-slot-divider::before,
+    .time-slot-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(140,127,110,0.25);
+    }
+    .time-slot-divider span {
+      font-family: var(--sans);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gray);
+      white-space: nowrap;
+    }
+    .time-chips {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.45rem;
+    }
+    .time-chip {
+      background: var(--white);
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 0.7rem 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--black);
+    }
+    .time-chip:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+    .time-chip.selected {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--white);
+    }
+    .time-chip.taken {
+      background: #f5f5f5;
+      border-color: #e0e0e0;
+      color: #bbb;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+    .time-chip .taken-label {
+      display: block;
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.15rem;
+      text-decoration: none;
+    }
+    .slots-loading {
+      text-align: center;
+      color: var(--gray);
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      padding: 1rem 0;
+      letter-spacing: 0.05em;
+    }
+
+    .pickup-address-box {
+      background: var(--ivory);
+      border-left: 3px solid var(--gold);
+      padding: 0.85rem 1rem;
+      border-radius: 0 4px 4px 0;
+      margin-bottom: 0.5rem;
+    }
+    .pickup-address-label {
+      font-family: var(--sans);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 0.3rem;
+    }
+    .pickup-address-text {
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      color: var(--black);
+      line-height: 1.5;
+    }
+    .scheduler-footer {
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid rgba(140,127,110,0.3);
+      background: var(--white);
+    }
+    .scheduler-footer-note {
+      font-size: 0.65rem;
+      color: var(--gray);
+      text-align: center;
+      margin-bottom: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .cart-toast {
+      position: fixed;
+      bottom: 6.5rem;
+      right: 1.75rem;
+      z-index: 250;
+      background: var(--black);
+      color: var(--gold);
+      padding: 0.75rem 1.25rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      border: 1px solid var(--gold);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .cart-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (max-width: 768px) {
+      .cart-fab { bottom: 1.25rem; right: 1.25rem; }
+      .cart-toast { right: 1.25rem; bottom: 5.5rem; }
+    }
+
+    /* ── RESERVE CTA ── */
+    .reserve-cta {
+      background: var(--black);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .reserve-cta::before {
+      content: 'A';
+      position: absolute;
+      font-family: var(--serif);
+      font-size: 30rem;
+      color: rgba(140,127,110,0.04);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      line-height: 1;
+    }
+    .reserve-cta .section-title { color: var(--ivory); }
+    .reserve-cta .section-intro { color: rgba(245,240,232,0.55); margin: 0 auto 2.5rem; text-align: center; }
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.1rem 2.8rem;
+      background: var(--gold);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn-whatsapp:hover { background: var(--gold-light); }
+    .btn-whatsapp svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    /* ── VISITS ── */
+    .visits {
+      background: var(--ivory);
+    }
+    .visits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1100px;
+      margin: 3rem auto 0;
+    }
+    .visit-card {
+      border: 1px solid rgba(140,127,110,0.3);
+      padding: 2.5rem 2rem;
+      position: relative;
+      background: var(--white);
+      transition: border-color 0.3s;
+    }
+    .visit-card:hover { border-color: var(--gold); }
+    .visit-card::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 2rem;
+      width: 40px; height: 2px;
+      background: var(--gold);
+    }
+    .visit-date {
+      font-family: var(--serif);
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .visit-month {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 1.25rem;
+    }
+    .visit-location {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      color: var(--black);
+      margin-bottom: 0.5rem;
+    }
+    .visit-detail {
+      font-size: 0.72rem;
+      color: var(--gray);
+      line-height: 1.7;
+    }
+    .visit-status {
+      display: inline-block;
+      margin-top: 1.25rem;
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: 1px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a.visit-status:hover { opacity: 0.65; }
+
+    /* ── PILLARS ── */
+    .pillars {
+      background: var(--black);
+      text-align: center;
+    }
+    .pillars .section-title { color: var(--ivory); }
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+      max-width: 1000px;
+      margin: 3.5rem auto 0;
+    }
+    .pillar {
+      padding: 2.5rem 1.5rem;
+      border-top: 1px solid rgba(140,127,110,0.25);
+    }
+    .pillar-icon {
+      font-family: var(--serif);
+      font-size: 2.5rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+    .pillar-title {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--ivory);
+      margin-bottom: 0.75rem;
+    }
+    .pillar-text {
+      font-size: 0.75rem;
+      color: rgba(245,240,232,0.5);
+      line-height: 1.8;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid rgba(140,127,110,0.2);
+      padding: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .footer-logo {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+    }
+    .footer-text {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: rgba(245,240,232,0.35);
+      text-align: center;
+    }
+    .footer-social {
+      display: flex;
+      gap: 1.5rem;
+    }
+    .footer-social a {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.4);
+      transition: color 0.3s;
+    }
+    .footer-social a:hover { color: var(--gold); }
+    .footer-disclosure-link {
+      display: block;
+      margin: 1.75rem auto 0;
+      background: none;
+      border: none;
+      font-family: var(--sans);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.35);
+      cursor: pointer;
+      padding: 0.4rem;
+      transition: color 0.3s;
+    }
+    .footer-disclosure-link:hover { color: rgba(245,240,232,0.7); }
+
+    /* ── DISCLOSURE MODAL ── */
+    .disclosure-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 410;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .disclosure-modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .disclosure-modal {
+      background: var(--ivory);
+      max-width: 480px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 2.5rem;
+      position: relative;
+      transform: scale(0.96) translateY(10px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .disclosure-modal-overlay.open .disclosure-modal {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    .disclosure-modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: rgba(10,10,10,0.08);
+      color: var(--black);
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .disclosure-modal h4 {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 1.25rem;
+      padding-right: 1.5rem;
+    }
+    .disclosure-modal p {
+      font-size: 0.8rem;
+      color: var(--gray);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+    .disclosure-modal p:last-child { margin-bottom: 0; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; top: 36px; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 96px; left: 0; right: 0;
+        background: rgba(10,10,10,0.98);
+        padding: 2rem 1.5rem;
+        gap: 1.5rem;
+        border-top: 1px solid rgba(140,127,110,0.2);
+      }
+      .hamburger { display: flex; }
+
+      section { padding: 4rem 1.5rem; }
+
+      .about {
+        grid-template-columns: 1fr;
+      }
+      .about-image { min-height: 280px; }
+      .about-content { padding: 3rem 1.5rem; }
+
+      .collection-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+
+      .pillars-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+
+      .visits-grid { grid-template-columns: 1fr; }
+
+      .steps-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+      .step-arrow { display: none !important; }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1.5rem;
+      }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .collection-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps-grid { grid-template-columns: repeat(3,1fr); gap: 1rem; }
+    }
+
+    /* ── FEEDBACK SECTION ── */
+    .feedback-section {
+      background: var(--ivory);
+      text-align: center;
+      padding: 5rem 2rem;
+      border-top: 1px solid rgba(140,127,110,0.2);
+    }
+    .feedback-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .feedback-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1rem 2.5rem;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: all 0.3s;
+      background: transparent;
+    }
+    .feedback-btn:hover {
+      background: var(--gold);
+      color: var(--white);
+    }
+    .feedback-btn.email {
+      border-color: rgba(140,127,110,0.45);
+      color: var(--gray);
+    }
+    .feedback-btn.email:hover {
+      background: var(--black);
+      border-color: var(--black);
+      color: var(--white);
+    }
+    .feedback-divider {
+      font-family: var(--serif);
+      font-size: 0.85rem;
+      color: var(--gray);
+      opacity: 0.6;
+      align-self: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ANNOUNCEMENT BAR -->
+  <div class="announce-bar">
+    <div class="announce-track">
+      <span>🎀 Nueva colección disponible</span><span class="sep">·</span>
+      <span>Bolsos 100% auténticos de marca</span><span class="sep">·</span>
+      <span>Pickup en Calera, Víctor Rosales, Zac.</span><span class="sep">·</span>
+      <span>Pago en efectivo · Sin envíos</span><span class="sep">·</span>
+      <span>Coach · Kate Spade · Michael Kors · Ralph Lauren · Fossil · Dooney &amp; Bourke</span><span class="sep">·</span>
+      <span>Cantidades limitadas — ¡no los dejes pasar!</span><span class="sep">·</span>
+      <!-- duplicate for seamless loop -->
+      <span>🎀 Nueva colección disponible</span><span class="sep">·</span>
+      <span>Bolsos 100% auténticos de marca</span><span class="sep">·</span>
+      <span>Pickup en Calera, Víctor Rosales, Zac.</span><span class="sep">·</span>
+      <span>Pago en efectivo · Sin envíos</span><span class="sep">·</span>
+      <span>Coach · Kate Spade · Michael Kors · Ralph Lauren · Fossil · Dooney &amp; Bourke</span><span class="sep">·</span>
+      <span>Cantidades limitadas — ¡no los dejes pasar!</span><span class="sep">·</span>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 140" height="46" style="width:auto;display:block;" aria-label="AGUILAR Boutique">
+        <g transform="translate(160,20)">
+          <line x1="0" y1="-18" x2="0" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="-22" y1="-10" x2="-22" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="22" y1="-10" x2="22" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M -22,6 Q -11,-2 0,6" fill="none" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M 0,6 Q 11,-2 22,6" fill="none" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="-30" y1="6" x2="30" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="-30" y1="6" x2="-22" y2="-10" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="22" y1="-10" x2="30" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="0" cy="-18" r="1.8" fill="#9c8f7c"/>
+          <circle cx="-22" cy="-10" r="1.4" fill="#9c8f7c"/>
+          <circle cx="22" cy="-10" r="1.4" fill="#9c8f7c"/>
+        </g>
+        <text x="160" y="84" text-anchor="middle" font-family="'Cormorant Garamond',Garamond,Georgia,serif" font-size="38" font-weight="300" letter-spacing="14" fill="#9c8f7c">AGUILAR</text>
+        <text x="162" y="110" text-anchor="middle" font-family="'Montserrat','Helvetica Neue',Arial,sans-serif" font-size="7.5" font-weight="300" letter-spacing="7" fill="#9c8f7c" opacity="0.8">BOUTIQUE</text>
+        <line x1="60" y1="110" x2="108" y2="110" stroke="#9c8f7c" stroke-width="0.5" opacity="0.5"/>
+        <line x1="212" y1="110" x2="260" y2="110" stroke="#9c8f7c" stroke-width="0.5" opacity="0.5"/>
+      </svg>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#coleccion">Los Bolsos</a></li>
+      <li><a href="#como-funciona">¿Cómo Funciona?</a></li>
+      <li><a href="#nosotros">Nuestra Historia</a></li>
+      <li><a href="#visitas">¿Cuándo Venimos?</a></li>
+      <li><a href="belleza.html">Belleza</a></li>
+      <li><a href="#reservar">Escríbenos</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menú" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Raíces en Calera &nbsp;·&nbsp; Inspirada en California</p>
+      <h1 class="hero-title" style="font-size: clamp(3rem, 10vw, 7.5rem); letter-spacing: 0.25em;">AGUILAR</h1>
+      <p style="font-family: var(--serif); font-size: clamp(1rem, 2.5vw, 1.5rem); color: var(--gold); letter-spacing: 0.4em; font-weight: 300; margin-top: -0.5rem;">BOUTIQUE</p>
+      <div class="hero-divider"><div class="hero-diamond"></div></div>
+      <p class="hero-subtitle">Bolsos de marca auténticos &nbsp;·&nbsp; Para la mujer de Calera que lo merece todo</p>
+      <a href="#coleccion" class="btn-primary">Ver la Colección</a>
+    </div>
+  </section>
+
+  <!-- BRAND MARQUEE STRIP -->
+  <div class="brand-marquee">
+    <div class="brand-track">
+      <span>Coach</span><span class="dot">✦</span>
+      <span>Kate Spade</span><span class="dot">✦</span>
+      <span>Michael Kors</span><span class="dot">✦</span>
+      <span>Ralph Lauren</span><span class="dot">✦</span>
+      <span>Fossil</span><span class="dot">✦</span>
+      <span>Dooney &amp; Bourke</span><span class="dot">✦</span>
+      <span>Coach</span><span class="dot">✦</span>
+      <span>Kate Spade</span><span class="dot">✦</span>
+      <span>Michael Kors</span><span class="dot">✦</span>
+      <span>Ralph Lauren</span><span class="dot">✦</span>
+      <span>Fossil</span><span class="dot">✦</span>
+      <span>Dooney &amp; Bourke</span><span class="dot">✦</span>
+    </div>
+  </div>
+
+  <!-- COLLECTION -->
+  <section class="collection" id="coleccion">
+    <div class="collection-header">
+      <p class="section-label">Lo que hay ahorita</p>
+      <h2 class="section-title">Bolsos que te van a <em>encantar</em></h2>
+      <div class="section-rule" style="margin: 0 auto 1rem;"></div>
+      <p class="section-intro" style="margin: 0 auto;">
+        Marcas reconocidas como Coach, Kate Spade, Michael Kors y más —
+        encontradas y escogidas a mano en mis viajes por todo Estados Unidos.
+        Como cada colección viene de un viaje diferente, las cantidades son limitadas —
+        cuando se va una pieza, puede que no regrese. Todas 100% auténticas, nunca imitaciones.
+      </p>
+    </div>
+    <div class="collection-grid">
+
+      <!-- CARD 1 -->
+      <div class="product-card" data-brand="Coach" data-name="Tabby Shoulder Bag" data-price="1450">
+        <div class="product-badge">Disponible</div>
+        <div class="product-img-wrap">
+          <span class="img-monogram">AB</span>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">Coach</p>
+          <h3 class="product-name">Tabby Shoulder Bag</h3>
+          <p class="product-price">1,450</p>
+          <p class="product-desc">Este bolso lo vas a querer usar todos los días. Piel de verdad, negro clásico, herrajes dorados — y se siente en la mano como lo que es: de marca.</p>
+          <div class="product-footer">
+            <span class="product-tag">100% Auténtico</span>
+            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="product-card" data-brand="Kate Spade" data-name="Madison Small Satchel" data-price="1200">
+        <div class="product-badge">Nuevo</div>
+        <div class="product-img-wrap">
+          <span class="img-monogram">AB</span>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">Kate Spade</p>
+          <h3 class="product-name">Madison Small Satchel</h3>
+          <p class="product-price">1,200</p>
+          <p class="product-desc">Delicado, femenino y muy elegante. Color marfil con detalles trenzados — el tipo de bolso que la gente nota y te pregunta dónde lo compraste.</p>
+          <div class="product-footer">
+            <span class="product-tag">100% Auténtico</span>
+            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="product-card" data-brand="Michael Kors" data-name="Jet Set Travel Tote" data-price="1350">
+        <div class="product-img-wrap">
+          <span class="img-monogram">AB</span>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">Michael Kors</p>
+          <h3 class="product-name">Jet Set Travel Tote</h3>
+          <p class="product-price">1,350</p>
+          <p class="product-desc">Para la mujer ocupada que también quiere verse bien. Cabe todo, se ve increíble, y el logo de MK lo dice todo sin que tú tengas que decir nada.</p>
+          <div class="product-footer">
+            <span class="product-tag">100% Auténtico</span>
+            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 4 -->
+      <div class="product-card" data-brand="Fossil" data-name="Sydney Satchel" data-price="980">
+        <div class="product-badge">Exclusivo</div>
+        <div class="product-img-wrap">
+          <span class="img-monogram">AB</span>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">Fossil</p>
+          <h3 class="product-name">Sydney Satchel</h3>
+          <p class="product-price">980</p>
+          <p class="product-desc">Cuero café con ese toque vintage que nunca pasa de moda. La hebilla dorada le da ese detalle que lo hace especial. Un clásico que dura años.</p>
+          <div class="product-footer">
+            <span class="product-tag">100% Auténtico</span>
+            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 5 -->
+      <div class="product-card" data-brand="Ralph Lauren" data-name="Ricky Bag Medium" data-price="1600">
+        <div class="product-img-wrap">
+          <span class="img-monogram">AB</span>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">Ralph Lauren</p>
+          <h3 class="product-name">Ricky Bag Medium</h3>
+          <p class="product-price">1,600</p>
+          <p class="product-desc">Pura elegancia americana. Este es el bolso que te pones y ya no necesitas nada más — cambia tu outfit completo con solo cargarlo.</p>
+          <div class="product-footer">
+            <span class="product-tag">100% Auténtico</span>
+            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 6 -->
+      <div class="product-card" data-brand="Dooney & Bourke" data-name="Florentine Tote" data-price="1100">
+        <div class="product-badge">Disponible</div>
+        <div class="product-img-wrap">
+          <span class="img-monogram">AB</span>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">Dooney & Bourke</p>
+          <h3 class="product-name">Florentine Tote</h3>
+          <p class="product-price">1,100</p>
+          <p class="product-desc">Piel italiana de verdad, interior en lino — se siente caro porque lo es. Una de esas marcas que pocas conocen pero todas van a querer cuando lo vean.</p>
+          <div class="product-footer">
+            <span class="product-tag">100% Auténtico</span>
+            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div style="margin-top: 3.5rem;">
+      <a href="#reservar" class="btn-primary">¿No encontraste el tuyo? Escríbenos</a>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works" id="como-funciona">
+    <p class="section-label">Así de fácil</p>
+    <h2 class="section-title">¿Cómo aparto mi bolso?</h2>
+    <div class="section-rule" style="margin: 0 auto 0.5rem;"></div>
+    <p class="section-intro" style="max-width:520px; margin: 0 auto;">
+      No necesitas cuenta, no hay envíos, no hay pagos en línea. Solo elige, aparta tu horario, y pasa a recogerlo.
+    </p>
+    <div class="steps-grid">
+
+      <div class="step">
+        <div class="step-number">01</div>
+        <div class="step-icon">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+</div>
+        <h3 class="step-title">Elige tu bolso</h3>
+        <p class="step-text">Explora la colección, ve precios, marcas y fotos. Agrega al carrito los que más te gusten — puedes agregar varios a la vez.</p>
+        <span class="step-arrow">→</span>
+      </div>
+
+      <div class="step">
+        <div class="step-number">02</div>
+        <div class="step-icon">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+</div>
+        <h3 class="step-title">Aparta tu horario</h3>
+        <p class="step-text">Escoge el día y la hora que más te acomoda. Los horarios disponibles se actualizan solos — cuando uno se va, ya no aparece.</p>
+        <span class="step-arrow">→</span>
+      </div>
+
+      <div class="step">
+        <div class="step-number">03</div>
+        <div class="step-icon">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+</div>
+        <h3 class="step-title">Recógelo en Calera</h3>
+        <p class="step-text">Se te manda un WhatsApp con todos los detalles. Llegas a la dirección, ves tu bolso en persona, pagas en efectivo, y te lo llevas empacado como regalo.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="nosotros">
+    <!-- PHOTO: Replace the background-image in CSS (.about-image) with a real photo of you and your dad, OR keep the current purse photo. A real family photo will be more emotional and authentic for your story. -->
+    <div class="about-image"></div>
+    <div class="about-content">
+      <p class="section-label">Con cariño, desde Calera</p>
+      <h2 class="section-title">Un padre y su hija, <em>unidos</em><br>por el orgullo de Calera</h2>
+      <div class="section-rule"></div>
+      <p class="section-intro">
+        Mi papá es de Calera. Nació aquí, creció aquí, y aunque la vida lo llevó a Estados Unidos, esta siempre fue su tierra. Yo me fui de niña, a los 3 años, pero crecí escuchando sus historias — y las mujeres de mi pueblo, sin saberlo, siempre estuvieron en mi mente y en mi corazón.
+      </p>
+      <br>
+      <p class="section-intro">
+        Viviendo en California me di cuenta de algo: aquí, traer un bolso de marca grande — de esos que te cambian hasta cómo caminas — es facilísimo, está a la vuelta de la esquina. Y pensé en las mujeres de Calera: ellas también merecen sentir ese lujo.
+      </p>
+      <br>
+      <p class="section-intro">
+        Así nació AGUILAR. Empecé a viajar por distintas partes de Estados Unidos buscando piezas auténticas — nada de imitaciones — y a escogerlas una por una, con el mismo cuidado que tendría si fueran para mi propia mamá o mi hermana. Cada bolso lo empaco con mis propias manos, como si fuera un regalo especial, porque así es como quiero que se sienta cuando lo abran.
+      </p>
+      <br>
+      <p class="section-intro">
+        Y quien las lleva hasta Calera, quien las pone directamente en sus manos, es mi papá. Él es la cara de AGUILAR aquí — si lo ven por el pueblo, ese es él.
+      </p>
+      <br>
+      <p class="section-intro">
+        Somos un padre y su hija, trabajando juntos, con el mismo orgullo por nuestra tierra. Y el sueño es claro: regresar pronto y abrir, por fin, la boutique que Calera siempre mereció.
+      </p>
+    </div>
+  </section>
+
+  <!-- PILLARS -->
+  <section class="pillars">
+    <p class="section-label">¿Por qué AGUILAR?</p>
+    <h2 class="section-title" style="color: var(--ivory);">Porque tú te mereces <em>lo mejor</em></h2>
+    <div class="pillars-grid">
+      <div class="pillar">
+        <div class="pillar-icon">✦</div>
+        <p class="pillar-title">Son de verdad, te lo juro</p>
+        <p class="pillar-text">Nada de imitaciones, nada de "inspired by". Los compramos directo en tiendas oficiales por todo Estados Unidos. Lo que ves es lo que recibes — auténtico, siempre.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">✦</div>
+        <p class="pillar-title">Los recibes como regalo</p>
+        <p class="pillar-text">Cada bolso viene empacado con papel de seda, moño y todo el detalle de una boutique fina. Porque comprarte algo bonito debe sentirse especial desde el primer momento que lo abres.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">✦</div>
+        <p class="pillar-title">Cantidad limitada, siempre</p>
+        <p class="pillar-text">Cada colección viene de un viaje distinto por Estados Unidos, así que nunca hay cientos de piezas iguales. Si te gustó algo, no lo dejes pasar — puede que no vuelva.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESERVE CTA -->
+  <section class="reserve-cta" id="reservar">
+    <p class="section-label">¿Buscas algo en especial?</p>
+    <h2 class="section-title">Cuéntanos qué <em>tienes en mente</em></h2>
+    <div class="section-rule" style="margin: 0 auto 1.5rem;"></div>
+    <p class="section-intro">
+      ¿No encontraste exactamente lo que buscabas? Mándanos una foto o dinos la marca, el color y el estilo que tienes en mente — y te avisamos cuando tengamos algo así. Nuestro catálogo crece con cada viaje.
+    </p>
+    <a
+      href="https://wa.me/12096895213?text=Hola%20AGUILAR%20Boutique%2C%0A%0AEstoy%20buscando%20un%20bolso%3A%0A%0AMarca%3A%20%0AColor%3A%20%0AEstilo%20%28tote%2C%20satchel%2C%20crossbody...%29%3A%20%0APresupuesto%20m%C3%A1ximo%3A%20%24%20MXN%0A%0A%28Puedo%20adjuntar%20una%20foto%20de%20referencia%20si%20tengo%20una%29"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn-whatsapp"
+    >
+      <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.570-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Mándanos foto o descripción por WhatsApp
+    </a>
+  </section>
+
+  <!-- UPCOMING VISITS -->
+  <section class="visits" id="visitas">
+    <p class="section-label">¿Cuándo venimos?</p>
+    <h2 class="section-title">Próximas <em>Visitas a Calera</em></h2>
+    <div class="section-rule"></div>
+    <p class="section-intro">
+      Mi papá lleva los bolsos directo a Calera. Las fechas se anuncian aquí en la página, y por Facebook, WhatsApp e Instagram — ¡síguenos para que no te quedes sin el tuyo!
+    </p>
+    <div class="visits-grid">
+      <div class="visit-card">
+        <div class="visit-date">Próx.</div>
+        <div class="visit-month">Colección Navideña — ¡Sneak peaks muy pronto!</div>
+        <div class="visit-location">Calera, Zacatecas</div>
+        <div class="visit-detail">Nuestra colección más especial del año está en camino. Piezas perfectas para regalar — y para regalarte. Sé la primera en verla antes de que salgan.</div>
+        <a href="navidad.html" class="visit-status">Ver sneak peaks</a>
+      </div>
+      <div class="visit-card">
+        <div class="visit-date">Muy Pronto</div>
+        <div class="visit-month">Colección especial de temporada</div>
+        <div class="visit-location">Por confirmar</div>
+        <div class="visit-detail">Piezas limitadas de temporada. Recuerda: la primera en escribir es la primera en elegir — ¡no dejes pasar el tuyo!</div>
+        <span class="visit-status">¡Pendiente!</span>
+      </div>
+      <div class="visit-card">
+        <div class="visit-date">¿Tú?</div>
+        <div class="visit-month">¿Quieres que vayamos a tu colonia?</div>
+        <div class="visit-location">Donde tú estés</div>
+        <div class="visit-detail">Mándanos WhatsApp y dinos dónde estás. Hacemos lo posible por llevarte la experiencia AGUILAR a donde tú estés.</div>
+        <span class="visit-status">Escríbenos</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEEDBACK -->
+  <section class="feedback-section" id="sugerencias">
+    <p class="section-label">Tu opinión importa</p>
+    <h2 class="section-title">¿Tienes una <em>sugerencia?</em></h2>
+    <div class="section-rule" style="margin: 0 auto 1rem;"></div>
+    <p class="section-intro" style="max-width: 480px; margin: 0 auto 2.5rem;">
+      ¿Hay alguna marca que te gustaría ver? ¿Algo que podemos hacer mejor? Cuéntanos — cada mensaje nos ayuda a servirte mejor.
+    </p>
+    <div class="feedback-btns">
+      <a
+        href="https://wa.me/12096895213?text=Hola%20AGUILAR%20Boutique%2C%0A%0AMi%20sugerencia%20o%20comentario%3A%0A%0A%0AMarca%20que%20me%20gustar%C3%ADa%20ver%3A%0A"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="feedback-btn"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.570-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <span class="feedback-divider">o</span>
+      <a
+        href="mailto:aguilarmxofficial@gmail.com?subject=Sugerencia%20para%20AGUILAR%20Boutique&body=Hola%20AGUILAR%20Boutique%2C%0A%0AMi%20sugerencia%20es%3A%0A%5Bescribe%20aqu%C3%AD%5D%0A%0AMarca%20que%20me%20gustar%C3%ADa%20ver%3A%0A%5Bescribe%20aqu%C3%AD%5D%0A%0A%C2%A1Gracias%21"
+        class="feedback-btn email"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        aguilarmxofficial@gmail.com
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 140" height="56" style="width:auto;display:block;margin:0 auto;" aria-label="AGUILAR Boutique">
+        <g transform="translate(160,20)">
+          <line x1="0" y1="-18" x2="0" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="-22" y1="-10" x2="-22" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="22" y1="-10" x2="22" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M -22,6 Q -11,-2 0,6" fill="none" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M 0,6 Q 11,-2 22,6" fill="none" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="-30" y1="6" x2="30" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="-30" y1="6" x2="-22" y2="-10" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="22" y1="-10" x2="30" y2="6" stroke="#9c8f7c" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="0" cy="-18" r="1.8" fill="#9c8f7c"/>
+          <circle cx="-22" cy="-10" r="1.4" fill="#9c8f7c"/>
+          <circle cx="22" cy="-10" r="1.4" fill="#9c8f7c"/>
+        </g>
+        <text x="160" y="84" text-anchor="middle" font-family="'Cormorant Garamond',Garamond,Georgia,serif" font-size="38" font-weight="300" letter-spacing="14" fill="#9c8f7c">AGUILAR</text>
+        <text x="162" y="110" text-anchor="middle" font-family="'Montserrat','Helvetica Neue',Arial,sans-serif" font-size="7.5" font-weight="300" letter-spacing="7" fill="#9c8f7c" opacity="0.8">BOUTIQUE</text>
+        <line x1="60" y1="110" x2="108" y2="110" stroke="#9c8f7c" stroke-width="0.5" opacity="0.5"/>
+        <line x1="212" y1="110" x2="260" y2="110" stroke="#9c8f7c" stroke-width="0.5" opacity="0.5"/>
+      </svg>
+    </div>
+    <p class="footer-text">
+      © 2025 AGUILAR Boutique &nbsp;·&nbsp; aguilarmx.com &nbsp;·&nbsp; Raíces en Calera. Inspirada en California.
+    </p>
+    <div class="footer-social">
+      <a href="#" data-placeholder="facebook">Facebook</a>
+      <a href="#" data-placeholder="instagram">Instagram</a>
+      <a href="https://wa.me/12096895213" target="_blank">WhatsApp</a>
+      <a href="mailto:aguilarmxofficial@gmail.com">aguilarmxofficial@gmail.com</a>
+    </div>
+    <button class="footer-disclosure-link" onclick="openDisclosureModal()" type="button">Sobre nuestras piezas</button>
+    <a href="stockroom-v16.html?aguilar=admin" style="text-decoration:none;display:block;margin-top:0.5rem;font-family:var(--sans);font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(245,240,232,0.25);transition:color 0.3s;" onmouseover="this.style.color='rgba(245,240,232,0.6)'" onmouseout="this.style.color='rgba(245,240,232,0.25)'">Panel Interno</a>
+  </footer>
+
+  <!-- CART FLOATING BUTTON -->
+  <button class="cart-fab" id="cartFab" aria-label="Ver mi selección" onclick="openCart()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="9" cy="21" r="1"></circle>
+      <circle cx="20" cy="21" r="1"></circle>
+      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+    </svg>
+    <span class="cart-fab-badge" id="cartBadge" style="display:none;">0</span>
+  </button>
+
+  <!-- CART OVERLAY + DRAWER -->
+  <!-- DISCLOSURE MODAL -->
+  <div class="disclosure-modal-overlay" id="disclosureModalOverlay" onclick="if(event.target===this) closeDisclosureModal()">
+    <div class="disclosure-modal">
+      <button class="disclosure-modal-close" onclick="closeDisclosureModal()" aria-label="Cerrar">&times;</button>
+      <h4>Sobre nuestras piezas</h4>
+      <p style="color:var(--black); font-weight:500;">Comprar con nosotros significa: piezas 100% auténticas, ya elegidas y compradas por ti, envueltas y empacadas bonito — listas para regalar. Disponible aquí mismo en Calera, sin viajar a Estados Unidos y sin esperar envíos.</p>
+      <p>AGUILAR Boutique no es una marca propia — somos curadores. Cada pieza es una marca reconocida (Coach, Kate Spade, Michael Kors, y más) que conseguimos en tiendas outlet y de descuento en Estados Unidos, y la traemos directo a Calera para ti.</p>
+      <p>Algunas piezas son únicas — solo tenemos una — y otras llegan en cantidades limitadas. Cuando se va, puede que no regrese en ese mismo modelo o color.</p>
+      <p>El precio refleja no solo el bolso, sino el viaje: tiempo, gasolina, y el cuidado de elegir cada pieza a mano para que llegue en las mejores condiciones posibles.</p>
+      <p>Lo que pagas es 100% marca auténtica, ya elegida, ya empacada como regalo y lista para entregar — sin que tú tengas que viajar a Estados Unidos, sin esperar envíos, y sin sorpresas. Solo llegas a Calera y te lo llevas.</p>
+      <p>Por tratarse de piezas de tienda outlet, la gran mayoría llegan en excelente estado — pero algunas pueden tener una imperfección mínima, como un raspón o marca leve. Si una pieza tiene algo que debas saber, te lo decimos con honestidad antes de que te la lleves.</p>
+    </div>
+  </div>
+
+  <!-- PRODUCT DETAIL MODAL -->
+  <div class="product-modal-overlay" id="productModalOverlay" onclick="if(event.target===this) closeProductModal()">
+    <div class="product-modal" id="productModal">
+      <button class="product-modal-close" onclick="closeProductModal()" aria-label="Cerrar">&times;</button>
+      <div class="product-modal-visual">
+        <div class="product-modal-main-img" id="modalMainImg">
+          <span class="img-monogram">AB</span>
+        </div>
+        <div class="product-modal-thumbs" id="modalThumbs"></div>
+      </div>
+      <div class="product-modal-info">
+        <div class="product-modal-badge" id="modalBadge">Disponible</div>
+        <p class="product-modal-brand" id="modalBrand">Marca</p>
+        <h3 class="product-modal-name" id="modalName">Nombre del bolso</h3>
+        <p class="product-modal-price" id="modalPrice">0</p>
+        <p class="product-modal-desc" id="modalDesc">Descripción.</p>
+        <span class="product-modal-tag">100% Auténtico</span>
+        <div class="product-modal-actions">
+          <button class="product-modal-add" id="modalAddBtn" onclick="modalAddToCart()">+ Agregar a mi selección</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+
+    <!-- PAGE 1: Cart items -->
+    <div class="cart-page" id="cartPage1">
+      <div class="cart-header">
+        <h3>Mi Selección</h3>
+        <button class="cart-close" aria-label="Cerrar" onclick="closeCart()">&times;</button>
+      </div>
+      <div class="cart-items" id="cartItemsContainer">
+        <div class="cart-empty">Todavía no has agregado ningún bolso.<br>Explora la colección y da clic en <strong>"+ Agregar"</strong> en los que te gusten.</div>
+      </div>
+      <div class="cart-footer">
+        <div class="cart-total-row" id="cartTotalRow" style="display:none;">
+          <span class="cart-total-label">Total estimado</span>
+          <span class="cart-total-amount" id="cartTotalAmount">0</span>
+        </div>
+        <p class="cart-footer-note">Esto no es una compra ni un pago — solo nos dices cuáles te gustan y escoges tu horario para pasar a recogerlos a nuestra dirección. ¡Te confirmamos todo por WhatsApp!</p>
+        <button class="btn-cart-send" id="sendCartBtn" disabled onclick="showScheduler()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Elegir fecha de recolección
+        </button>
+      </div>
+    </div>
+
+    <!-- PAGE 2: Pickup scheduler -->
+    <div id="schedulerPanel" class="hidden">
+      <div class="scheduler-header">
+        <button class="scheduler-back" onclick="hideScheduler()" aria-label="Regresar">&#8592;</button>
+        <h3>¿Cuándo la pasas a recoger?</h3>
+      </div>
+      <div class="scheduler-body">
+        <p class="scheduler-slot-label">Horario disponible</p>
+        <div class="scheduler-time-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          7:00 – 9:00 am
+        </div>
+        <p class="scheduler-slot-label">Elige tu fecha</p>
+        <div class="date-chips" id="dateChipsContainer">
+          <!-- populated by JS -->
+        </div>
+
+        <!-- Time slots — appear after a date is picked -->
+        <div id="timeSlotSection" style="display:none;" class="time-slot-section">
+          <div class="time-slot-divider"><span>Elige tu hora</span></div>
+          <div id="timeChipsContainer" class="time-chips">
+            <p class="slots-loading">Cargando horarios…</p>
+          </div>
+        </div>
+
+        <div class="pickup-address-box">
+          <p class="pickup-address-label">Dirección de recolección</p>
+          <p class="pickup-address-text" id="pickupAddressText">123 Calle del Abuelo<br>Calera, Víctor Rosales, Zac.<br>México</p>
+        </div>
+      </div>
+      <div class="scheduler-footer">
+        <p class="scheduler-footer-note">Confirma tu fecha y te escribimos por WhatsApp para coordinar los detalles.</p>
+        <button class="btn-cart-send" id="confirmPickupBtn" disabled onclick="confirmPickupWhatsApp()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.570-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Confirmar y enviar por WhatsApp
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cart-toast" id="cartToast">Agregado a tu selección</div>
+
+  <!--
+    ══ FIREBASE SETUP ══════════════════════════════════════════════════════
+    To enable real-time slot booking (so taken slots disappear for everyone):
+    1. Go to https://console.firebase.google.com
+    2. Create a free project → Add a web app → copy your config below
+    3. In Firebase console: Build → Realtime Database → Create database (start in test mode)
+    Until Firebase is configured, all time slots will show as available.
+    ════════════════════════════════════════════════════════════════════════
+  -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script>
+    // ── Replace with your own Firebase config ──
+    const FIREBASE_CONFIG = {
+      apiKey: "YOUR_API_KEY",
+      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID"
+    };
+    let db = null;
+    try {
+      if (FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY") {
+        firebase.initializeApp(FIREBASE_CONFIG);
+        db = firebase.database();
+      }
+    } catch(e) {
+      console.warn('Firebase not initialized:', e.message);
+    }
+    // Listen for real-time hold updates
+    const HOLD_DURATION_MS = 12 * 60 * 60 * 1000; // 12 hours — auto-release if not marked sold
+
+    function setHold(brand, name) {
+      if (!db) return;
+      db.ref('holds/' + holdKey(brand, name)).set({ at: Date.now(), sold: false });
+    }
+    function releaseHold(brand, name) {
+      if (!db) return;
+      // Only release if it hasn't been marked sold (sold items stay held permanently)
+      const ref = db.ref('holds/' + holdKey(brand, name));
+      ref.get().then(snap => {
+        const val = snap.val();
+        if (val && !val.sold) ref.remove();
+      }).catch(() => {});
+    }
+
+    if (db) {
+      db.ref('holds').on('value', snap => {
+        const raw = snap.val() || {};
+        const now = Date.now();
+        const active = {};
+        Object.keys(raw).forEach(key => {
+          const entry = raw[key];
+          if (entry && (entry.sold || (now - entry.at) < HOLD_DURATION_MS)) {
+            active[key] = entry;
+          } else if (entry) {
+            // Expired and never marked sold — release it back to available for everyone
+            db.ref('holds/' + key).remove().catch(() => {});
+          }
+        });
+        updateCardStates(active);
+      });
+    }
+  </script>
+
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById('navLinks');
+      nav.classList.toggle('open');
+    }
+    // Close menu on link click
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('navLinks').classList.remove('open');
+      });
+    });
+    // Subtle parallax on hero
+    window.addEventListener('scroll', () => {
+      const hero = document.querySelector('.hero-bg');
+      if (hero) {
+        const scrolled = window.pageYOffset;
+        hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+      }
+    });
+
+    /* ── CART LOGIC ── */
+    function holdKey(brand, name) {
+      return (brand + '__' + name).replace(/[^a-zA-Z0-9]/g, '_');
+    }
+    function updateCardStates(holds) {
+      document.querySelectorAll('.product-card').forEach(card => {
+        const key = holdKey(card.dataset.brand, card.dataset.name);
+        const btn = card.querySelector('.add-to-cart-btn');
+        if (holds && holds[key]) {
+          card.classList.add('on-hold');
+          if (btn) { btn.textContent = 'Reservado'; btn.classList.add('on-hold'); btn.disabled = true; }
+          cart = cart.filter(i => !(i.brand === card.dataset.brand && i.name === card.dataset.name));
+        } else {
+          card.classList.remove('on-hold');
+          if (btn) {
+            btn.disabled = false;
+            btn.classList.remove('on-hold');
+            const inCart = cart.some(i => i.brand === card.dataset.brand && i.name === card.dataset.name);
+            btn.textContent = inCart ? '✓ Agregado' : '+ Agregar';
+          }
+        }
+      });
+      renderCart();
+    }
+    const WHATSAPP_NUMBER = '12096895213';
+    let cart = [];
+
+    function formatPrice(num) {
+      return num.toLocaleString('es-MX');
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItemsContainer');
+      const badge = document.getElementById('cartBadge');
+      const sendBtn = document.getElementById('sendCartBtn');
+      const totalRow = document.getElementById('cartTotalRow');
+      const totalAmount = document.getElementById('cartTotalAmount');
+
+      if (cart.length === 0) {
+        container.innerHTML = '<div class="cart-empty">Todavía no has agregado ningún bolso.<br>Explora la colección y da clic en <strong>"+ Agregar"</strong> en los que te gusten.</div>';
+        badge.style.display = 'none';
+        sendBtn.disabled = true;
+        totalRow.style.display = 'none';
+      } else {
+        container.innerHTML = cart.map((item, i) => `
+          <div class="cart-item">
+            <div class="cart-item-info">
+              <p class="cart-item-brand">${item.brand}</p>
+              <p class="cart-item-name">${item.name}</p>
+              ${item.price ? `<p style="font-family:var(--serif);font-size:0.9rem;color:var(--gold);margin-top:0.2rem;">$${formatPrice(item.price)} MXN</p>` : ''}
+            </div>
+            <button class="cart-item-remove" onclick="removeFromCart(${i})">Quitar</button>
+          </div>
+        `).join('');
+        badge.style.display = 'flex';
+        badge.textContent = cart.length;
+        sendBtn.disabled = false;
+
+        // Compute and show total
+        const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+        totalAmount.textContent = formatPrice(total);
+        totalRow.style.display = 'flex';
+      }
+
+      // Sync "+ Agregar" button states on product cards
+      document.querySelectorAll('.product-card').forEach(card => {
+        const brand = card.dataset.brand;
+        const name = card.dataset.name;
+        const btn = card.querySelector('.add-to-cart-btn');
+        if (!btn) return;
+        const inCart = cart.some(item => item.brand === brand && item.name === name);
+        btn.textContent = inCart ? '✓ Agregado' : '+ Agregar';
+        btn.classList.toggle('in-cart', inCart);
+      });
+    }
+
+    function showToast(text) {
+      const toast = document.getElementById('cartToast');
+      toast.textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    function addToCart(brand, name, price) {
+      const exists = cart.some(item => item.brand === brand && item.name === name);
+      if (exists) {
+        cart = cart.filter(item => !(item.brand === brand && item.name === name));
+        releaseHold(brand, name);
+        showToast('Quitado de tu selección');
+      } else {
+        cart.push({ brand, name, price: price ? parseInt(price, 10) : 0 });
+        setHold(brand, name);
+        showToast('¡Agregado a tu selección!');
+      }
+      renderCart();
+    }
+
+    function removeFromCart(index) {
+      const item = cart[index];
+      if (item) releaseHold(item.brand, item.name);
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    function openCart() {
+      document.getElementById('cartDrawer').classList.add('open');
+      document.getElementById('cartOverlay').classList.add('open');
+    }
+
+    function closeCart() {
+      document.getElementById('cartDrawer').classList.remove('open');
+      document.getElementById('cartOverlay').classList.remove('open');
+    }
+
+    /* ── PICKUP SCHEDULER ── */
+    const PICKUP_ADDRESS = '123 Calle del Abuelo, Calera, Víctor Rosales, Zac., México';
+    const TIME_SLOTS = ['7:00 am','7:15 am','7:30 am','7:45 am','8:00 am','8:15 am','8:30 am','8:45 am'];
+    const DAYS_ES   = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+    const MONTHS_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+    let selectedSlot     = null;
+    let selectedTimeSlot = null;
+    let fbRef            = null;
+    let fbCallback       = null;
+
+    function timeToKey(t) {
+      // "7:00 am" → "0700", "8:45 am" → "0845"
+      const parts = t.replace(' am','').split(':');
+      return parts[0].padStart(2,'0') + parts[1];
+    }
+
+    const ADVANCE_HOURS = 24; // minimum hours notice required before first 7am pickup slot
+
+    function buildDateChips() {
+      const container = document.getElementById('dateChipsContainer');
+      const now = new Date();
+      const chips = [];
+
+      // Scan up to 30 days out to always fill 14 valid chips
+      for (let i = 1; i <= 30 && chips.length < 14; i++) {
+        const d = new Date(now);
+        d.setDate(now.getDate() + i);
+
+        // Earliest pickup on this day is 7am — check if that's far enough ahead
+        const pickup7am = new Date(d);
+        pickup7am.setHours(7, 0, 0, 0);
+        const hoursUntil = (pickup7am - now) / (1000 * 60 * 60);
+        if (hoursUntil < ADVANCE_HOURS) continue; // not enough notice — skip
+
+        const iso   = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+        const label = DAYS_ES[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS_ES[d.getMonth()];
+        chips.push(`
+          <button class="date-chip" data-date="${iso}" data-label="${label}" onclick="selectDateChip(this)">
+            <div class="chip-day">${DAYS_ES[d.getDay()]}</div>
+            <div class="chip-date">${d.getDate()} ${MONTHS_ES[d.getMonth()]}</div>
+          </button>
+        `);
+      }
+
+      if (chips.length === 0) {
+        container.innerHTML = `<p style="font-size:0.8rem;color:var(--gray);line-height:1.7;grid-column:1/-1;">
+          Por el momento no hay fechas disponibles.
+          <a href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola! Quiero apartar un bolso de AGUILAR Boutique, ¿cuándo tienen disponibilidad?')}"
+             target="_blank" style="color:var(--gold);text-decoration:underline;">
+            Escríbenos directamente por WhatsApp
+          </a> y con gusto te ayudamos.
+        </p>`;
+      } else {
+        container.innerHTML = chips.join('');
+      }
+    }
+
+    function selectDateChip(chip) {
+      document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      selectedSlot     = { date: chip.dataset.date, label: chip.dataset.label };
+      selectedTimeSlot = null;
+      document.getElementById('confirmPickupBtn').disabled = true;
+      document.getElementById('timeSlotSection').style.display = 'block';
+      loadTimeSlots(chip.dataset.date);
+    }
+
+    // Deterministic "looks busy" pre-blocking — consistent per date across all devices
+    function dateHash(s) {
+      let h = 5381;
+      for (let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
+      return h;
+    }
+    function getPreBlockedSlots(dateStr) {
+      let seed = dateHash(dateStr);
+      const count = 2 + (seed % 3); // 2–4 slots per day look taken
+      const blocked = new Set();
+      while (blocked.size < count) {
+        seed = (seed * 1664525 + 1013904223) >>> 0;
+        blocked.add(seed % TIME_SLOTS.length);
+      }
+      return blocked;
+    }
+
+    function loadTimeSlots(date) {
+      const container = document.getElementById('timeChipsContainer');
+      if (fbRef && fbCallback) { fbRef.off('value', fbCallback); }
+      const preBlocked = getPreBlockedSlots(date);
+
+      if (!db) {
+        renderTimeSlots({}, preBlocked);
+        return;
+      }
+      container.innerHTML = '<p class="slots-loading">Cargando horarios…</p>';
+      fbRef      = db.ref('bookings/' + date);
+      fbCallback = function(snap) { renderTimeSlots(snap.val() || {}, preBlocked); };
+      fbRef.on('value', fbCallback);
+    }
+
+    function renderTimeSlots(booked, preBlocked) {
+      const container = document.getElementById('timeChipsContainer');
+
+      const available = TIME_SLOTS.filter((slot, i) =>
+        !preBlocked.has(i) && booked[timeToKey(slot)] !== true
+      );
+
+      if (available.length === 0) {
+        container.innerHTML = '<p class="slots-loading" style="color:var(--gold);font-style:italic;">Todos los horarios de este día ya fueron apartados. Elige otra fecha</p>';
+        return;
+      }
+
+      container.innerHTML = available.map(slot => {
+        const sel = selectedTimeSlot === slot;
+        return `
+          <button class="time-chip ${sel ? 'selected' : ''}" data-time="${slot}" onclick="selectTimeSlot(this)">
+            ${slot}
+          </button>
+        `;
+      }).join('');
+
+      // If selected slot just got taken by someone else, nudge them
+      if (selectedTimeSlot && !available.includes(selectedTimeSlot)) {
+        selectedTimeSlot = null;
+        document.getElementById('confirmPickupBtn').disabled = true;
+        showToast('Ese horario ya fue apartado. Elige otro');
+      }
+    }
+
+    function selectTimeSlot(chip) {
+      document.querySelectorAll('.time-chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      selectedTimeSlot = chip.dataset.time;
+      document.getElementById('confirmPickupBtn').disabled = false;
+    }
+
+    function showScheduler() {
+      if (cart.length === 0) return;
+      selectedSlot     = null;
+      selectedTimeSlot = null;
+      document.getElementById('confirmPickupBtn').disabled = true;
+      document.getElementById('timeSlotSection').style.display = 'none';
+      buildDateChips();
+      document.getElementById('cartPage1').classList.add('hidden');
+      document.getElementById('schedulerPanel').classList.remove('hidden');
+    }
+
+    function hideScheduler() {
+      if (fbRef && fbCallback) { fbRef.off('value', fbCallback); }
+      document.getElementById('schedulerPanel').classList.add('hidden');
+      document.getElementById('cartPage1').classList.remove('hidden');
+    }
+
+    function confirmPickupWhatsApp() {
+      if (cart.length === 0 || !selectedSlot || !selectedTimeSlot) return;
+
+      // Mark slot as booked in Firebase so it disappears for others
+      if (db) {
+        db.ref('bookings/' + selectedSlot.date + '/' + timeToKey(selectedTimeSlot)).set(true);
+      }
+
+      // Refresh the hold timer now that they've committed to a pickup time
+      if (db) {
+        cart.forEach(item => {
+          db.ref('holds/' + holdKey(item.brand, item.name)).set({ at: Date.now(), sold: false });
+        });
+      }
+
+      let message = 'Hola! Me interesan estos bolsos de AGUILAR Boutique:\n\n';
+      cart.forEach((item, i) => {
+        const priceStr = item.price ? ` — $${formatPrice(item.price)} MXN` : '';
+        message += `${i + 1}. ${item.brand} — ${item.name}${priceStr}\n`;
+      });
+      const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+      if (total > 0) { message += `\nTotal estimado: $${formatPrice(total)} MXN`; }
+      message += `\n\nFecha: ${selectedSlot.label}`;
+      message += `\nHora: ${selectedTimeSlot}`;
+      message += `\nDirección: ${PICKUP_ADDRESS}`;
+      message += '\n\n¿Todo en orden?';
+
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+
+      // Reset everything so the next visitor starts fresh: empty cart, back to the homepage
+      setTimeout(() => {
+        cart = [];
+        selectedSlot = null;
+        selectedTimeSlot = null;
+        closeCart();
+        window.location.href = window.location.origin + window.location.pathname;
+      }, 400);
+    }
+
+    // Wire up all "+ Agregar" buttons
+    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.product-card');
+        addToCart(card.dataset.brand, card.dataset.name, card.dataset.price);
+      });
+    });
+
+    /* ── PRODUCT DETAIL MODAL ── */
+    let activeModalCard = null;
+
+    function getProductImages(card) {
+      // Reads real photo URLs from data-images (JSON array string) if you've added them.
+      // Until then, falls back to 4 placeholder slots showing the monogram.
+      let urls = [];
+      try { urls = JSON.parse(card.dataset.images || '[]'); } catch (e) { urls = []; }
+      while (urls.length < 4) urls.push('');
+      return urls.slice(0, 4);
+    }
+
+    function renderModalGallery(images) {
+      const mainEl   = document.getElementById('modalMainImg');
+      const thumbsEl = document.getElementById('modalThumbs');
+
+      function setMain(index) {
+        const url = images[index];
+        mainEl.innerHTML = url
+          ? `<img src="${url}" alt="Foto del bolso" />`
+          : `<span class="img-monogram">AB</span>`;
+        thumbsEl.querySelectorAll('.product-modal-thumb').forEach((t, i) => {
+          t.classList.toggle('active', i === index);
+        });
+      }
+
+      thumbsEl.innerHTML = images.map((url, i) => `
+        <div class="product-modal-thumb${i === 0 ? ' active' : ''}" data-index="${i}">
+          ${url ? `<img src="${url}" alt="Miniatura ${i + 1}" />` : `<span class="img-monogram">AB</span>`}
+        </div>
+      `).join('');
+
+      thumbsEl.querySelectorAll('.product-modal-thumb').forEach(thumb => {
+        thumb.addEventListener('click', () => setMain(parseInt(thumb.dataset.index, 10)));
+      });
+
+      setMain(0);
+    }
+
+    function openProductModal(card) {
+      activeModalCard = card;
+      const brand   = card.dataset.brand;
+      const name    = card.dataset.name;
+      const price   = card.dataset.price;
+      const desc    = card.querySelector('.product-desc')?.textContent.trim() || '';
+      const badge   = card.querySelector('.product-badge')?.textContent.trim() || 'Disponible';
+      const onHold  = card.classList.contains('on-hold');
+      const inCart  = cart.some(item => item.brand === brand && item.name === name);
+
+      document.getElementById('modalBrand').textContent = brand;
+      document.getElementById('modalName').textContent = name;
+      document.getElementById('modalPrice').textContent = formatPrice(parseInt(price, 10) || 0);
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalBadge').textContent = badge;
+
+      renderModalGallery(getProductImages(card));
+
+      const addBtn = document.getElementById('modalAddBtn');
+      if (onHold) {
+        addBtn.textContent = 'Ya reservado';
+        addBtn.disabled = true;
+        addBtn.classList.add('on-hold');
+      } else {
+        addBtn.disabled = false;
+        addBtn.classList.remove('on-hold');
+        addBtn.textContent = inCart ? 'Agregado a mi selección' : '+ Agregar a mi selección';
+        addBtn.classList.toggle('in-cart', inCart);
+      }
+
+      document.getElementById('productModalOverlay').classList.add('open');
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModalOverlay').classList.remove('open');
+      activeModalCard = null;
+    }
+
+    /* ── DISCLOSURE MODAL ── */
+    function openDisclosureModal() {
+      document.getElementById('disclosureModalOverlay').classList.add('open');
+    }
+    function closeDisclosureModal() {
+      document.getElementById('disclosureModalOverlay').classList.remove('open');
+    }
+
+    function modalAddToCart() {
+      if (!activeModalCard || activeModalCard.classList.contains('on-hold')) return;
+      const brand = activeModalCard.dataset.brand;
+      const name  = activeModalCard.dataset.name;
+      const price = activeModalCard.dataset.price;
+      addToCart(brand, name, price);
+      const inCart = cart.some(item => item.brand === brand && item.name === name);
+      if (inCart) {
+        const addBtn = document.getElementById('modalAddBtn');
+        addBtn.textContent = 'Agregado a mi selección';
+        addBtn.classList.add('in-cart');
+        // Close and return them to browsing the collection instead of staying on this bag
+        setTimeout(closeProductModal, 450);
+      } else {
+        // They removed it — keep the modal open so they can easily re-add
+        const addBtn = document.getElementById('modalAddBtn');
+        addBtn.textContent = '+ Agregar a mi selección';
+        addBtn.classList.remove('in-cart');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { closeProductModal(); closeDisclosureModal(); }
+    });
+
+    // Clicking the image area (or product name) opens the detail modal
+    document.querySelectorAll('.product-card').forEach(card => {
+      const openTargets = card.querySelectorAll('.product-img-wrap, .product-name');
+      openTargets.forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openProductModal(card);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
