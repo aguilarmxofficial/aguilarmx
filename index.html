@@ -653,6 +653,15 @@
       position: absolute;
       inset: 14px;
       border: 1px solid rgba(140,127,110,0.35);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .product-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: relative;
+      z-index: 0;
     }
     .product-img-wrap .img-monogram {
       font-family: var(--serif);
@@ -1563,14 +1572,14 @@
       <span>Bolsos 100% auténticos de marca</span><span class="sep">·</span>
       <span>Pickup en Calera, Víctor Rosales, Zac.</span><span class="sep">·</span>
       <span>Pago en efectivo · Sin envíos</span><span class="sep">·</span>
-      <span>Coach · Kate Spade · Michael Kors · Ralph Lauren · Fossil · Dooney &amp; Bourke</span><span class="sep">·</span>
+      <span>Michael Kors · Steve Madden · Guess · ALDO</span><span class="sep">·</span>
       <span>Cantidades limitadas — ¡no los dejes pasar!</span><span class="sep">·</span>
       <!-- duplicate for seamless loop -->
       <span>🎀 Nueva colección disponible</span><span class="sep">·</span>
       <span>Bolsos 100% auténticos de marca</span><span class="sep">·</span>
       <span>Pickup en Calera, Víctor Rosales, Zac.</span><span class="sep">·</span>
       <span>Pago en efectivo · Sin envíos</span><span class="sep">·</span>
-      <span>Coach · Kate Spade · Michael Kors · Ralph Lauren · Fossil · Dooney &amp; Bourke</span><span class="sep">·</span>
+      <span>Michael Kors · Steve Madden · Guess · ALDO</span><span class="sep">·</span>
       <span>Cantidades limitadas — ¡no los dejes pasar!</span><span class="sep">·</span>
     </div>
   </div>
@@ -1627,18 +1636,14 @@
   <!-- BRAND MARQUEE STRIP -->
   <div class="brand-marquee">
     <div class="brand-track">
-      <span>Coach</span><span class="dot">✦</span>
-      <span>Kate Spade</span><span class="dot">✦</span>
       <span>Michael Kors</span><span class="dot">✦</span>
-      <span>Ralph Lauren</span><span class="dot">✦</span>
-      <span>Fossil</span><span class="dot">✦</span>
-      <span>Dooney &amp; Bourke</span><span class="dot">✦</span>
-      <span>Coach</span><span class="dot">✦</span>
-      <span>Kate Spade</span><span class="dot">✦</span>
+      <span>Steve Madden</span><span class="dot">✦</span>
+      <span>Guess</span><span class="dot">✦</span>
+      <span>ALDO</span><span class="dot">✦</span>
       <span>Michael Kors</span><span class="dot">✦</span>
-      <span>Ralph Lauren</span><span class="dot">✦</span>
-      <span>Fossil</span><span class="dot">✦</span>
-      <span>Dooney &amp; Bourke</span><span class="dot">✦</span>
+      <span>Steve Madden</span><span class="dot">✦</span>
+      <span>Guess</span><span class="dot">✦</span>
+      <span>ALDO</span><span class="dot">✦</span>
     </div>
   </div>
 
@@ -1649,7 +1654,7 @@
       <h2 class="section-title">Bolsos que te van a <em>encantar</em></h2>
       <div class="section-rule" style="margin: 0 auto 1rem;"></div>
       <p class="section-intro" style="margin: 0 auto;">
-        Marcas reconocidas como Coach, Kate Spade, Michael Kors y más —
+        Marcas reconocidas como Michael Kors, Steve Madden, Guess y más —
         encontradas y escogidas a mano en mis viajes por todo Estados Unidos.
         Como cada colección viene de un viaje diferente, las cantidades son limitadas —
         cuando se va una pieza, puede que no regrese. Todas 100% auténticas, nunca imitaciones.
@@ -1657,17 +1662,18 @@
     </div>
     <div class="collection-grid">
 
-      <!-- CARD 1 -->
-      <div class="product-card" data-brand="Coach" data-name="Tabby Shoulder Bag" data-price="1450">
+      <!-- CARD 1: Michael Kors Crossbody Cream -->
+      <div class="product-card" data-brand="Michael Kors" data-name="Crossbody Cream" data-price="2500"
+           data-images='["images/michael-kors-main.jpg","images/michael-kors-1.jpg","images/michael-kors-2.jpg","images/michael-kors-3.jpg","images/michael-kors-4.jpg"]'>
         <div class="product-badge">Disponible</div>
         <div class="product-img-wrap">
-          <span class="img-monogram">AB</span>
+          <img src="images/michael-kors-main.jpg" alt="Michael Kors Crossbody Cream" />
         </div>
         <div class="product-info">
-          <p class="product-brand">Coach</p>
-          <h3 class="product-name">Tabby Shoulder Bag</h3>
-          <p class="product-price">1,450</p>
-          <p class="product-desc">Este bolso lo vas a querer usar todos los días. Piel de verdad, negro clásico, herrajes dorados — y se siente en la mano como lo que es: de marca.</p>
+          <p class="product-brand">Michael Kors</p>
+          <h3 class="product-name">Crossbody Cream</h3>
+          <p class="product-price">2,500</p>
+          <p class="product-desc">Piel saffiano color crema con herrajes dorados y correa ajustable con el logo MK. Perfecto para el día a día — elegante, versátil, y cabe lo esencial.</p>
           <div class="product-footer">
             <span class="product-tag">100% Auténtico</span>
             <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
@@ -1675,87 +1681,72 @@
         </div>
       </div>
 
-      <!-- CARD 2 -->
-      <div class="product-card" data-brand="Kate Spade" data-name="Madison Small Satchel" data-price="1200">
+      <!-- CARD 2: Steve Madden Satchel Latte + Wallet -->
+      <div class="product-card" data-brand="Steve Madden" data-name="Satchel Latte + Cartera" data-price="1500"
+           data-images='["images/steve-madden-main.jpg","images/steve-madden-1.jpg","images/steve-madden-2.jpg","images/steve-madden-3.jpg","images/steve-madden-4.jpg"]'>
+        <div class="product-badge">Nuevo</div>
+        <div class="product-img-wrap">
+          <img src="images/steve-madden-main.jpg" alt="Steve Madden Satchel Latte" />
+        </div>
+        <div class="product-info">
+          <p class="product-brand">Steve Madden</p>
+          <h3 class="product-name">Satchel Latte + Cartera</h3>
+          <p class="product-price">1,500</p>
+          <p class="product-desc">Set de bolso estructurado color latte con pañoleta animal print y cartera a juego incluida. Detalles dorados y correa ajustable — un look completo.</p>
+          <div class="product-footer">
+            <span class="product-tag">100% Auténtico</span>
+            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: Guess Hobo Black -->
+      <div class="product-card" data-brand="Guess" data-name="Hobo Sorcha Mini Negro" data-price="1800">
+        <div class="product-badge">Disponible</div>
+        <div class="product-img-wrap">
+          <span class="img-monogram">AB</span>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">Guess</p>
+          <h3 class="product-name">Hobo Sorcha Mini Negro</h3>
+          <p class="product-price">1,800</p>
+          <p class="product-desc">Piel negra brillante con cadena dorada de acento. Compacto, elegante, y con el logo Guess Los Angeles al frente. Fotos próximamente.</p>
+          <div class="product-footer">
+            <span class="product-tag">100% Auténtico</span>
+            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 4: Guess Hobo Burgundy -->
+      <div class="product-card" data-brand="Guess" data-name="Hobo Sorcha Mini Vino" data-price="1800">
+        <div class="product-badge">Disponible</div>
+        <div class="product-img-wrap">
+          <span class="img-monogram">AB</span>
+        </div>
+        <div class="product-info">
+          <p class="product-brand">Guess</p>
+          <h3 class="product-name">Hobo Sorcha Mini Vino</h3>
+          <p class="product-price">1,800</p>
+          <p class="product-desc">El mismo estilo Hobo en un color vino que combina con todo. Cadena dorada de acento y acabado brillante. Fotos próximamente.</p>
+          <div class="product-footer">
+            <span class="product-tag">100% Auténtico</span>
+            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 5: ALDO Blue with Bow -->
+      <div class="product-card" data-brand="ALDO" data-name="Bolso Azul con Moño" data-price="900">
         <div class="product-badge">Nuevo</div>
         <div class="product-img-wrap">
           <span class="img-monogram">AB</span>
         </div>
         <div class="product-info">
-          <p class="product-brand">Kate Spade</p>
-          <h3 class="product-name">Madison Small Satchel</h3>
-          <p class="product-price">1,200</p>
-          <p class="product-desc">Delicado, femenino y muy elegante. Color marfil con detalles trenzados — el tipo de bolso que la gente nota y te pregunta dónde lo compraste.</p>
-          <div class="product-footer">
-            <span class="product-tag">100% Auténtico</span>
-            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- CARD 3 -->
-      <div class="product-card" data-brand="Michael Kors" data-name="Jet Set Travel Tote" data-price="1350">
-        <div class="product-img-wrap">
-          <span class="img-monogram">AB</span>
-        </div>
-        <div class="product-info">
-          <p class="product-brand">Michael Kors</p>
-          <h3 class="product-name">Jet Set Travel Tote</h3>
-          <p class="product-price">1,350</p>
-          <p class="product-desc">Para la mujer ocupada que también quiere verse bien. Cabe todo, se ve increíble, y el logo de MK lo dice todo sin que tú tengas que decir nada.</p>
-          <div class="product-footer">
-            <span class="product-tag">100% Auténtico</span>
-            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- CARD 4 -->
-      <div class="product-card" data-brand="Fossil" data-name="Sydney Satchel" data-price="980">
-        <div class="product-badge">Exclusivo</div>
-        <div class="product-img-wrap">
-          <span class="img-monogram">AB</span>
-        </div>
-        <div class="product-info">
-          <p class="product-brand">Fossil</p>
-          <h3 class="product-name">Sydney Satchel</h3>
-          <p class="product-price">980</p>
-          <p class="product-desc">Cuero café con ese toque vintage que nunca pasa de moda. La hebilla dorada le da ese detalle que lo hace especial. Un clásico que dura años.</p>
-          <div class="product-footer">
-            <span class="product-tag">100% Auténtico</span>
-            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- CARD 5 -->
-      <div class="product-card" data-brand="Ralph Lauren" data-name="Ricky Bag Medium" data-price="1600">
-        <div class="product-img-wrap">
-          <span class="img-monogram">AB</span>
-        </div>
-        <div class="product-info">
-          <p class="product-brand">Ralph Lauren</p>
-          <h3 class="product-name">Ricky Bag Medium</h3>
-          <p class="product-price">1,600</p>
-          <p class="product-desc">Pura elegancia americana. Este es el bolso que te pones y ya no necesitas nada más — cambia tu outfit completo con solo cargarlo.</p>
-          <div class="product-footer">
-            <span class="product-tag">100% Auténtico</span>
-            <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- CARD 6 -->
-      <div class="product-card" data-brand="Dooney & Bourke" data-name="Florentine Tote" data-price="1100">
-        <div class="product-badge">Disponible</div>
-        <div class="product-img-wrap">
-          <span class="img-monogram">AB</span>
-        </div>
-        <div class="product-info">
-          <p class="product-brand">Dooney & Bourke</p>
-          <h3 class="product-name">Florentine Tote</h3>
-          <p class="product-price">1,100</p>
-          <p class="product-desc">Piel italiana de verdad, interior en lino — se siente caro porque lo es. Una de esas marcas que pocas conocen pero todas van a querer cuando lo vean.</p>
+          <p class="product-brand">ALDO</p>
+          <h3 class="product-name">Bolso Azul con Moño</h3>
+          <p class="product-price">900</p>
+          <p class="product-desc">Azul cielo con panel color hueso y cadena dorada, más un moño de tela a cuadros incluido. Correa ajustable. Fotos próximamente.</p>
           <div class="product-footer">
             <span class="product-tag">100% Auténtico</span>
             <button class="product-select-btn add-to-cart-btn" type="button">+ Agregar</button>
@@ -2000,7 +1991,7 @@
       <button class="disclosure-modal-close" onclick="closeDisclosureModal()" aria-label="Cerrar">&times;</button>
       <h4>Sobre nuestras piezas</h4>
       <p style="color:var(--black); font-weight:500;">Comprar con nosotros significa: piezas 100% auténticas, ya elegidas y compradas por ti, envueltas y empacadas bonito — listas para regalar. Disponible aquí mismo en Calera, sin viajar a Estados Unidos y sin esperar envíos.</p>
-      <p>AGUILAR Boutique no es una marca propia — somos curadores. Cada pieza es una marca reconocida (Coach, Kate Spade, Michael Kors, y más) que conseguimos en tiendas outlet y de descuento en Estados Unidos, y la traemos directo a Calera para ti.</p>
+      <p>AGUILAR Boutique no es una marca propia — somos curadores. Cada pieza es una marca reconocida (Michael Kors, Steve Madden, Guess, ALDO, y más) que conseguimos en tiendas outlet y de descuento en Estados Unidos, y la traemos directo a Calera para ti.</p>
       <p>Algunas piezas son únicas — solo tenemos una — y otras llegan en cantidades limitadas. Cuando se va, puede que no regrese en ese mismo modelo o color.</p>
       <p>El precio refleja no solo el bolso, sino el viaje: tiempo, gasolina, y el cuidado de elegir cada pieza a mano para que llegue en las mejores condiciones posibles.</p>
       <p>Lo que pagas es 100% marca auténtica, ya elegida, ya empacada como regalo y lista para entregar — sin que tú tengas que viajar a Estados Unidos, sin esperar envíos, y sin sorpresas. Solo llegas a Calera y te lo llevas.</p>
