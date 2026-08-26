@@ -1562,7 +1562,63 @@
       opacity: 0.6;
       align-self: center;
     }
-  </style>
+  
+    /* ── MOBILE READABILITY & RESPONSIVE POLISH ── */
+    @media (max-width: 768px) {
+      body { font-size: 16px; }
+      nav { padding: 1rem 1.15rem; }
+      .nav-logo { font-size: 1.45rem; }
+      .announce-track span { font-size: 0.68rem; }
+
+      .hero-eyebrow { font-size: 0.72rem; line-height: 1.6; }
+      .hero-title { font-size: clamp(3.4rem, 18vw, 5.4rem); }
+      .hero-subtitle { font-size: 0.78rem; line-height: 1.8; }
+      .btn-primary { font-size: 0.72rem; padding: 1rem 1.5rem; }
+
+      .section-label { font-size: 0.7rem; }
+      .section-title { font-size: clamp(2.25rem, 10vw, 3.1rem); line-height: 1.08; }
+      .section-intro { font-size: 0.95rem; line-height: 1.85; }
+
+      .collection-header { margin-bottom: 2.5rem; }
+      .product-info { padding: 1.35rem 1.15rem 1.5rem; }
+      .product-brand { font-size: 0.68rem; }
+      .product-name { font-size: 1.4rem; line-height: 1.2; }
+      .product-price { font-size: 1.25rem; }
+      .product-desc { font-size: 0.86rem; line-height: 1.7; }
+      .product-tag { font-size: 0.68rem; }
+      .product-select-btn { font-size: 0.72rem; padding: 0.8rem 1rem; }
+
+      /* Lifestyle photos fill the product card more naturally on phones */
+      .product-img-wrap { aspect-ratio: 4 / 5; }
+      .product-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .product-img-wrap::before { inset: 10px; }
+
+      .step-title { font-size: 1.5rem; }
+      .step-text { font-size: 0.88rem; }
+      .pillar-title { font-size: 0.72rem; }
+      .pillar-text { font-size: 0.86rem; }
+      .visit-detail { font-size: 0.84rem; }
+      .footer-text, .footer-social a, .footer-disclosure-link { font-size: 0.7rem; }
+
+      .product-modal-brand { font-size: 0.7rem; }
+      .product-modal-name { font-size: 1.8rem; }
+      .product-modal-price { font-size: 1.4rem; }
+      .product-modal-desc { font-size: 0.92rem; }
+      .product-modal-tag { font-size: 0.7rem; }
+    }
+
+    @media (max-width: 380px) {
+      section { padding-left: 1.1rem; padding-right: 1.1rem; }
+      .hero-title { font-size: 3.2rem; }
+      .nav-logo { font-size: 1.25rem; }
+      .product-name { font-size: 1.3rem; }
+    }
+
+</style>
 </head>
 <body>
 
@@ -1668,7 +1724,7 @@
            data-images='["michael-kors-2.jpg","michael-kors-3.jpg","michael-kors-4.jpg"]'>
         <div class="product-badge">Disponible</div>
         <div class="product-img-wrap">
-          <img src="michael-kors-2.jpg" alt="Michael Kors Crossbody Cream" />
+          <img src="mk-fashion.png" alt="Michael Kors Crossbody Cream" />
         </div>
         <div class="product-info">
           <p class="product-brand">Michael Kors</p>
@@ -1687,7 +1743,7 @@
            data-images='["steve-madden-2.jpg","steve-madden-4.jpg","steve-madden-3.jpg"]'>
         <div class="product-badge">Nuevo</div>
         <div class="product-img-wrap">
-          <img src="steve-madden-2.jpg" alt="Steve Madden Satchel Latte" />
+          <img src="stevemadden-fashion.png" alt="Steve Madden Satchel Latte" />
         </div>
         <div class="product-info">
           <p class="product-brand">Steve Madden</p>
@@ -1706,7 +1762,7 @@
            data-images='["guess-black-1.jpg","guess-black-2.jpg","guess-black-3.jpg","guess-black-4.jpg","guess-black-5.jpg"]'>
         <div class="product-badge">Disponible</div>
         <div class="product-img-wrap">
-          <img src="guess-black-1.jpg" alt="Guess Hobo Sorcha Mini Negro" />
+          <img src="guess-black-fashion.png" alt="Guess Hobo Sorcha Mini Negro" />
         </div>
         <div class="product-info">
           <p class="product-brand">Guess</p>
@@ -1725,7 +1781,7 @@
            data-images='["guess-burgundy-1.jpg","guess-burgundy-2.jpg","guess-burgundy-4.jpg","guess-burgundy-3.jpg"]'>
         <div class="product-badge">Disponible</div>
         <div class="product-img-wrap">
-          <img src="guess-burgundy-1.jpg" alt="Guess Hobo Sorcha Mini Vino" />
+          <img src="guess-red-fashion.png" alt="Guess Hobo Sorcha Mini Vino" />
         </div>
         <div class="product-info">
           <p class="product-brand">Guess</p>
@@ -1744,7 +1800,7 @@
            data-images='["aldo-blue-2.jpg","aldo-blue-1.jpg"]'>
         <div class="product-badge">Nuevo</div>
         <div class="product-img-wrap">
-          <img src="aldo-blue-2.jpg" alt="ALDO Bolso Azul con Moño" />
+          <img src="aldo-blue-fashion.png" alt="ALDO Bolso Azul con Moño" />
         </div>
         <div class="product-info">
           <p class="product-brand">ALDO</p>
