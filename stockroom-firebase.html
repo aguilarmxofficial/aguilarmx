@@ -611,6 +611,49 @@ async function loadData(){
     try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e4){}
   }
 
+
+  let bagsSeeded = true;
+  try{ bagsSeeded = !!(await window.storage.get('seeded-bags-v1', false)); }catch(e){ bagsSeeded = false; }
+  if(!bagsSeeded){
+    const bags = [
+      ['AGUILAR-001','Michael Kors Crossbody, Cream','73.69'],
+      ['AGUILAR-002','Steve Madden Bevlynn Satchel, Latte, with Cartera','30.34'],
+      ['AGUILAR-003','Guess Sorcha Mini Hobo, Negro','43.34'],
+      ['AGUILAR-004','Guess Sorcha Mini Hobo, Vino','43.34'],
+      ['AGUILAR-005','ALDO Bolso Azul con Moño','30.34']
+    ];
+    bags.forEach(function(b){
+      if(!logRows.some(r=>r.sku===b[0])){
+        logRows.push({id:uid(), date:'2026-10-01', supplier:'TJ Maxx / Marshalls / Ross', item:b[1], sku:b[0], qty:1, cost:b[2]});
+      }
+      if(!findInvBySku(b[0])){
+        invItems.push({id:uid(), sku:b[0], name:b[1], type:'product', reorder:0, cost:b[2]});
+      }
+    });
+    try{ await window.storage.set('seeded-bags-v1', 'true', false); }catch(e2){}
+    try{ await window.storage.set('receiving-log', JSON.stringify(logRows), false); }catch(e3){}
+    try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e4){}
+  }
+
+
+  let bbwSeeded = true;
+  try{ bbwSeeded = !!(await window.storage.get('seeded-bbw-v1', false)); }catch(e){ bbwSeeded = false; }
+  if(!bbwSeeded){
+    const bbw = [["BBW-028005924", "A Thousand Wishes Travel Size Shampoo (3 oz)", "supply", 6, 1, "2.23"], ["BBW-028006502", "Champagne Toast Moisturizing Shampoo (16 oz)", "product", 2, 1, "4.23"], ["BBW-026766987", "Japanese Cherry Blossom Moisturizing Conditioner (16 oz)", "product", 2, 1, "4.23"], ["BBW-028007406", "Coco Shea Rich Moisture Shampoo (16 oz)", "product", 1, 1, "4.23"], ["BBW-028007408", "Coco Shea Rich Moisture Conditioner (16 oz)", "product", 1, 1, "4.23"], ["BBW-028029621", "Secret Wonderland Fine Fragrance Mist (8 oz)", "product", 2, 1, "4.48"], ["BBW-028029616", "Country Chic Fine Fragrance Mist (8 oz)", "product", 2, 1, "4.48"], ["BBW-028029641", "Secret Wonderland Ultimate Hydration Body Cream (8 oz)", "product", 2, 1, "4.48"], ["BBW-028029636", "Country Chic Ultimate Hydration Body Cream (8 oz)", "product", 2, 1, "4.48"], ["BBW-028028505", "Morning Matcha Gentle & Clean Foaming Hand Soap", "product", 1, 1, "3.97"], ["BBW-028030640", "Toasted Marshmallow Pop Foaming Hand Soap", "product", 1, 1, "3.97"], ["BBW-028018963", "Champagne Toast Dry Shampoo (3.3 oz)", "product", 3, 1, "3.73"], ["BBW-028003433", "A Thousand Wishes Dry Shampoo (3.3 oz)", "product", 4, 1, "3.73"], ["BBW-028030123", "Secret Wonderland Body Wash (10 oz)", "product", 2, 1, "3.98"], ["BBW-028030118", "Country Chic Body Wash (10 oz)", "product", 2, 1, "3.98"], ["BBW-028030143", "Secret Wonderland Body Lotion (8 oz)", "product", 2, 1, "3.98"], ["BBW-028030138", "Country Chic Body Lotion (8 oz)", "product", 2, 1, "3.98"], ["BBW-028005134", "A Thousand Wishes Shampoo (16 oz)", "product", 3, 1, "4.23"], ["BBW-028005136", "A Thousand Wishes Conditioner (16 oz)", "product", 3, 1, "4.23"], ["SCANNER-EYOYO", "Eyoyo Mini 1D Bluetooth Barcode Scanner", "equipment", 1, 0, "36.84"]];
+    bbw.forEach(function(b){
+      const supplier = b[0]==='SCANNER-EYOYO' ? 'Amazon' : 'Bath & Body Works (order #00474304234694)';
+      if(!logRows.some(r=>r.sku===b[0])){
+        logRows.push({id:uid(), date:'2026-10-01', supplier:supplier, item:b[1], sku:b[0], qty:b[3], cost:b[5]});
+      }
+      if(!findInvBySku(b[0])){
+        invItems.push({id:uid(), sku:b[0], name:b[1], type:b[2], reorder:b[4], cost:b[5]});
+      }
+    });
+    try{ await window.storage.set('seeded-bbw-v1', 'true', false); }catch(e2){}
+    try{ await window.storage.set('receiving-log', JSON.stringify(logRows), false); }catch(e3){}
+    try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e4){}
+  }
+
   let reorderFixed = true;
   try{
     const rFlag = await window.storage.get('reorder-thresholds-v1', false);
@@ -897,11 +940,18 @@ logBody.addEventListener('input', e=>{
   const row = logRows.find(r=>r.id===id);
   row[field] = e.target.value;
   tr.querySelector('[data-total]').textContent = money(round2((Number(row.qty)||0)*(Number(row.cost)||0)));
-  if(field === 'sku' && row.sku && row.sku.trim()){
-    ensureInventoryItem(row.sku, row.item, row.cost);
-  }
   renderSummary();
   scheduleSave();
+});
+// Create the inventory item only once the SKU is finished (box loses focus / Enter),
+// not on every keystroke — typing 39847 used to create 3, 39, 398, 3984, 39847.
+logBody.addEventListener('change', e=>{
+  if(e.target.dataset.field !== 'sku') return;
+  const row = logRows.find(r=>r.id===e.target.closest('tr').dataset.id);
+  if(row && row.sku && row.sku.trim()){
+    ensureInventoryItem(row.sku, row.item, row.cost);
+    renderInv(); renderSummary(); scheduleSave();
+  }
 });
 logBody.addEventListener('click', e=>{
   const id = e.target.dataset.del;
