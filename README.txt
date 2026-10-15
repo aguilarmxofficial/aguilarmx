@@ -1,0 +1,1 @@
+AGUILAR update preparation: Removed Real Techniques from homepage index.html because it belongs under Belleza. Upload the existing belleza.html and stockroom-firebase.html to integrate the product and its $14 USD cost directly into those pages. stockroom_import.csv is a draft record, not a live inventory update. Selling price and quantity remain unknown.
