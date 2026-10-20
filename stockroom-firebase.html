@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stockroom — AGUILAR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF6EE; --surface:#FFFDF8; --surface2:#F4EDDF; --ink:#231F1A; --muted:#6B6256;
+    --gold:#8A6624; --gold-soft:#E9DDC2; --line:#E6DCC8; --good:#2F6B43; --good-bg:#E4EFE5;
+    --warn:#9A5B12; --warn-bg:#F6E7CF; --bad:#A3362B; --bad-bg:#F5DEDA;
+    --display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+    --body:'DM Sans',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0F0E0C; --surface:#181612; --surface2:#1F1C17; --ink:#F1EADB; --muted:#A39A89;
+      --gold:#D4AF63; --gold-soft:#3A3120; --line:#2E2A22; --good:#7FB892; --good-bg:#1C2A20;
+      --warn:#E0A75A; --warn-bg:#2E2414; --bad:#E58A7E; --bad-bg:#33201D;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F0E0C; --surface:#181612; --surface2:#1F1C17; --ink:#F1EADB; --muted:#A39A89;
+    --gold:#D4AF63; --gold-soft:#3A3120; --line:#2E2A22; --good:#7FB892; --good-bg:#1C2A20;
+    --warn:#E0A75A; --warn-bg:#2E2414; --bad:#E58A7E; --bad-bg:#33201D;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  button,input,select,textarea{font:inherit;color:inherit}
+  .num,td.n,th.n{font-variant-numeric:tabular-nums}
+
+  /* Lock */
+  #lockScreen{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px;text-align:center}
+  #lockScreen .mark{font-size:44px}
+  #lockInput{width:min(280px,100%);padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--surface);text-align:center;letter-spacing:.2em}
+  #lockError{min-height:20px;color:var(--bad);font-size:13px;margin:0}
+
+  /* Header */
+  header.top{border-bottom:1px solid var(--line);background:var(--bg)}
+  .top-inner{max-width:1180px;margin:0 auto;padding:22px 16px 16px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px}
+  .brand{display:flex;flex-direction:column;gap:2px}
+  .tagline{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .mark{font-family:var(--display);font-weight:500;font-size:clamp(30px,6vw,40px);letter-spacing:.28em;line-height:1.05;margin:0}
+  .sub{font-family:var(--display);font-size:18px;color:var(--muted);margin:0}
+  .top-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .status{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+  .status .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+  .status.ok .dot{background:var(--good)} .status.off .dot{background:var(--bad)}
+  .tripPick{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .tripPick select{padding:6px 10px;border:1px solid var(--gold-soft);border-radius:999px;background:var(--surface);font-size:13px;color:var(--ink)}
+
+  /* Nav */
+  nav.tabs{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+  .tabs-inner{max-width:1180px;margin:0 auto;padding:0 8px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+  .tabs-inner::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;border:0;background:none;padding:13px 12px 11px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer}
+  .tab:hover{color:var(--ink)}
+  .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--gold);font-weight:700}
+
+  main{max-width:1180px;margin:0 auto;padding:28px 16px 64px}
+  .view{display:none;flex-direction:column;gap:28px}
+  .view.active{display:flex}
+  .vhead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+  h2{font-family:var(--display);font-weight:600;font-size:30px;margin:0;line-height:1.1}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;margin:0}
+  .lede{color:var(--muted);margin:4px 0 0;max-width:68ch;font-size:14px}
+  section.block{display:flex;flex-direction:column;gap:14px;min-width:0}
+
+  /* KPI tiles */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+  .kpi small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .kpi b{font-family:var(--display);font-size:30px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+  .kpi span{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .kpi.feature{border-color:var(--gold)}
+  .kpi.good b{color:var(--good)} .kpi.bad b{color:var(--bad)}
+
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+  .panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .empty{color:var(--muted);font-size:14px;padding:6px 0}
+
+  /* Lists */
+  .rows{display:flex;flex-direction:column}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .row:last-child{border-bottom:0}
+  .row .l{min-width:0;display:flex;flex-direction:column}
+  .row .l b{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .l small{color:var(--muted);font-size:12px}
+  .row .r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  /* Tables */
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  tbody tr:last-child td{border-bottom:0}
+  th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;white-space:nowrap;background:var(--surface)}
+  td.n,th.n{text-align:right;white-space:nowrap}
+  td small{display:block;color:var(--muted);font-size:12px}
+  tr.click{cursor:pointer} tr.click:hover td{background:var(--surface2)}
+  tr.grouphead td{background:var(--surface2);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:700;padding:8px 12px}
+  .code{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);font-variant-numeric:tabular-nums}
+  .big{font-family:var(--display);font-size:22px;font-weight:600;line-height:1}
+
+  /* Chips & badges */
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--gold-soft);background:var(--surface);border-radius:999px;padding:5px 13px;font-size:13px;cursor:pointer}
+  .chip[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+  .badge{display:inline-block;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:500;white-space:nowrap}
+  .b-ok{background:var(--good-bg);color:var(--good)}
+  .b-low{background:var(--warn-bg);color:var(--warn)}
+  .b-out{background:var(--bad-bg);color:var(--bad)}
+  .b-muted{background:var(--surface2);color:var(--muted)}
+
+  /* Controls */
+  .btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:9px 14px;font-size:14px;cursor:pointer;white-space:nowrap}
+  .btn:hover{border-color:var(--gold)}
+  .btn.primary{background:var(--gold);border-color:var(--gold);color:var(--bg);font-weight:700}
+  .btn.danger{color:var(--bad)}
+  .btn.small{padding:5px 10px;font-size:13px}
+  .iconbtn{border:0;background:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:4px 6px;border-radius:4px}
+  .iconbtn:hover{color:var(--bad);background:var(--bad-bg)}
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .search{flex:1 1 220px;padding:9px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+  .scan{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--gold);border-radius:6px;padding:16px}
+  .scan label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:700}
+  .scan input{padding:14px;font-size:17px;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+  .scan .msg{font-size:13.5px;min-height:20px;color:var(--muted)}
+  .msg.ok{color:var(--good)} .msg.err{color:var(--bad)}
+  .suggest{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .suggest[hidden]{display:none}
+  .suggest button{display:flex;justify-content:space-between;gap:10px;text-align:left;border:0;border-bottom:1px solid var(--line);background:var(--surface);padding:9px 12px;cursor:pointer;font-size:14px}
+  .suggest button:last-child{border-bottom:0}
+  .suggest button:hover{background:var(--surface2)}
+
+  /* Cart */
+  .cart td input{width:90px;padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);text-align:right}
+  .cart td input.qty{width:60px}
+  .carttotal{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--gold);border-radius:6px;background:var(--surface)}
+  .carttotal .sum{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:14px}
+  .carttotal b{font-variant-numeric:tabular-nums}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .seg button{border:0;background:var(--surface);padding:8px 12px;font-size:13px;cursor:pointer;border-right:1px solid var(--line)}
+  .seg button:last-child{border-right:0}
+  .seg button[aria-pressed="true"]{background:var(--gold);color:var(--bg);font-weight:700}
+
+  /* Meter */
+  .meter{height:8px;border-radius:999px;background:var(--surface2);overflow:hidden}
+  .meter i{display:block;height:100%;background:var(--gold);border-radius:999px}
+  .meter.over i{background:var(--bad)}
+
+  /* Trip cards */
+  .trips{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+  .trip{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:10px}
+  .trip.active{border-color:var(--gold)}
+  .figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px 16px}
+  .fig{display:flex;flex-direction:column;min-width:0}
+  .fig small{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .fig b{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.25}
+  .fig.good b{color:var(--good)}
+
+  /* Dialog */
+  dialog{border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:0;width:min(560px,calc(100vw - 24px));max-height:calc(100vh - 40px)}
+  dialog::backdrop{background:rgba(20,16,10,.45)}
+  .dlg{display:flex;flex-direction:column;max-height:calc(100vh - 40px)}
+  .dlg-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+  .dlg-body{padding:16px 18px;overflow:auto;display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+  .dlg-foot{display:flex;justify-content:space-between;gap:10px;padding:14px 18px;border-top:1px solid var(--line)}
+  .field{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .field.full{grid-column:1/-1}
+  .field label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .field input,.field select,.field textarea{padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);width:100%}
+  .field .hint{font-size:12px;color:var(--muted)}
+  .comps{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}
+  .comprow{display:flex;gap:8px;align-items:center}
+  .comprow select{flex:1;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+  .comprow input{width:64px;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+
+  .note{font-size:13px;color:var(--muted);border-left:2px solid var(--gold-soft);padding:2px 0 2px 12px;margin:0}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:200}
+  .toast.show{opacity:1}
+  .hide-sm{}
+  @media (max-width:640px){
+    .hide-sm{display:none}
+    .dlg-body{grid-template-columns:1fr}
+    h2{font-size:26px}
+    .kpi b{font-size:26px}
+  }
+</style>
+</head>
+<body>
+<div id="lockScreen">
+  <div class="tagline">Raíces en Calera · Inspirada en California</div>
+  <p class="mark">AGUILAR</p>
+  <p class="sub" id="lockSub">Stockroom</p>
+  <input type="password" id="lockInput" placeholder="Contraseña" autocomplete="current-password">
+  <button class="btn primary" id="lockBtn" type="button">Entrar</button>
+  <p id="lockError"></p>
+</div>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="tagline">Raíces en Calera · Inspirada en California</div>
+      <p class="mark">AGUILAR</p>
+      <p class="sub" data-t="subtitle">Stockroom · uso interno</p>
+    </div>
+    <div class="top-tools">
+      <label class="tripPick"><span data-t="activeTrip">Viaje activo</span>
+        <select id="tripSelect"></select></label>
+      <span class="status" id="cloudStatus"><span class="dot"></span><span id="cloudText">Conectando…</span></span>
+      <span class="status" id="saveStatus" style="display:none"><span id="saveText"></span></span>
+      <button class="btn small" id="langBtn" type="button">EN</button>
+      <button class="btn small" id="themeBtn" type="button" aria-label="Tema">☾</button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Secciones">
+  <div class="tabs-inner" role="tablist">
+    <button class="tab" role="tab" data-view="resumen" data-t="tabResumen">Resumen</button>
+    <button class="tab" role="tab" data-view="vender" data-t="tabVender">Vender</button>
+    <button class="tab" role="tab" data-view="inventario" data-t="tabInventario">Inventario</button>
+    <button class="tab" role="tab" data-view="sets" data-t="tabSets">Sets de regalo</button>
+    <button class="tab" role="tab" data-view="recepciones" data-t="tabRecepciones">Recepciones</button>
+    <button class="tab" role="tab" data-view="ventas" data-t="tabVentas">Historial</button>
+    <button class="tab" role="tab" data-view="gastos" data-t="tabGastos">Gastos</button>
+    <button class="tab" role="tab" data-view="viajes" data-t="tabViajes">Viajes</button>
+    <button class="tab" role="tab" data-view="ajustes" data-t="tabAjustes">Ajustes</button>
+  </div>
+</nav>
+
+<main>
+  <!-- RESUMEN -->
+  <div class="view" id="view-resumen">
+    <div class="vhead"><div><h2 data-t="hResumen">Resumen del negocio</h2><p class="lede" data-t="ldResumen">Todo de un vistazo: lo que tienes, lo que vendiste en este viaje y lo que te queda.</p></div></div>
+    <div class="kpis" id="kpiTop"></div>
+    <div class="grid2">
+      <div class="panel"><div class="panel-head"><h3 id="tripPanelTitle">Este viaje</h3><span class="code" id="tripPanelDates"></span></div><div class="figs" id="tripFigs"></div><p class="note" id="tripTierNote"></p></div>
+      <div class="panel"><div class="panel-head"><h3 data-t="hLow">Para revisar</h3><span class="code" id="lowCount"></span></div><div class="rows" id="lowList"></div></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><div class="panel-head"><h3 data-t="hByCat">Por categoría</h3></div><div class="tablewrap" style="border:0"><table><thead><tr><th data-t="thCat">Categoría</th><th class="n" data-t="thUnits">Unidades</th><th class="n" data-t="thCostVal">Costo (USD)</th><th class="n" data-t="thRetail">Venta (MXN)</th></tr></thead><tbody id="catTable"></tbody></table></div></div>
+      <div class="panel"><div class="panel-head"><h3 data-t="hRecent">Últimos movimientos</h3></div><div class="rows" id="recentList"></div></div>
+    </div>
+  </div>
+
+  <!-- VENDER -->
+  <div class="view" id="view-vender">
+    <div class="vhead"><div><h2 data-t="hVender">Vender</h2><p class="lede" data-t="ldVender">Escanea o busca cada artículo para agregarlo. Revisa el precio y toca "Finalizar venta".</p></div>
+      <div class="seg" id="kindSeg">
+        <button type="button" data-kind="sale" aria-pressed="true" data-t="kSale">Venta</button>
+        <button type="button" data-kind="gift" aria-pressed="false" data-t="kGift">Regalo</button>
+        <button type="button" data-kind="use" aria-pressed="false" data-t="kUse">Uso / muestra</button>
+        <button type="button" data-kind="damaged" aria-pressed="false" data-t="kDamaged">Dañado</button>
+      </div>
+    </div>
+    <div class="scan">
+      <label for="sellScan" data-t="scanSell">Escanear o buscar producto</label>
+      <input id="sellScan" autocomplete="off" placeholder="Código de barras o nombre…">
+      <div class="suggest" id="sellSuggest" hidden></div>
+      <div class="msg" id="sellMsg"></div>
+    </div>
+    <div class="tablewrap cart"><table><thead><tr><th data-t="thProduct">Producto</th><th class="n" data-t="thAvail">Disponible</th><th class="n" data-t="thQty">Cant.</th><th class="n" data-t="thPriceMxn">Precio c/u (MXN)</th><th class="n" data-t="thLineTotal">Total</th><th></th></tr></thead><tbody id="cartBody"></tbody></table></div>
+    <div class="carttotal">
+      <div class="sum" id="cartSum"></div>
+      <div class="toolbar">
+        <label class="field" style="flex-direction:row;align-items:center;gap:8px"><span class="code" data-t="payment">Pago</span>
+          <select id="payMethod" style="padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg)">
+            <option value="efectivo">Efectivo</option><option value="spei">SPEI / transferencia</option><option value="oxxo">OXXO</option><option value="otro">Otro</option>
+          </select></label>
+        <input id="cartNote" placeholder="Nota (cliente, etc.)" style="padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);min-width:160px">
+        <button class="btn" id="cartClear" type="button" data-t="clear">Vaciar</button>
+        <button class="btn primary" id="cartDone" type="button" data-t="finish">Finalizar venta</button>
+      </div>
+    </div>
+    <p class="note" data-t="noteSets">Para vender un set de regalo, escanea el código del set (SET-001…). Se descuentan las botellas que lleva. No escanees también las botellas sueltas.</p>
+  </div>
+
+  <!-- INVENTARIO -->
+  <div class="view" id="view-inventario">
+    <div class="vhead"><div><h2 data-t="hInv">Inventario</h2><p class="lede" data-t="ldInv">Toca cualquier producto para editar precio, costo, código o categoría.</p></div>
+      <button class="btn primary" id="addItemBtn" type="button" data-t="addItem">+ Agregar producto</button></div>
+    <div class="kpis" id="kpiInv"></div>
+    <div class="toolbar"><div class="chips" id="catChips"></div><input class="search" id="invSearch" placeholder="Buscar…"></div>
+    <div class="tablewrap"><table><thead><tr><th data-t="thProduct">Producto</th><th class="hide-sm" data-t="thCat">Categoría</th><th class="n" data-t="thOnHand">En mano</th><th class="n hide-sm" data-t="thInOut">Entró / salió</th><th class="n" data-t="thCost">Costo</th><th class="n" data-t="thPrice">Precio</th><th class="n hide-sm" data-t="thProfitU">Ganancia c/u</th><th data-t="thStatus">Estado</th></tr></thead><tbody id="invBody"></tbody></table></div>
+  </div>
+
+  <!-- SETS -->
+  <div class="view" id="view-sets">
+    <div class="vhead"><div><h2 data-t="hSets">Sets de regalo</h2><p class="lede" data-t="ldSets">Un set no tiene stock propio: se arma con botellas del inventario. Aquí ves cuántos puedes armar con lo que tienes.</p></div>
+      <button class="btn primary" id="addSetBtn" type="button" data-t="addSet">+ Nuevo set</button></div>
+    <div class="trips" id="setCards"></div>
+  </div>
+
+  <!-- RECEPCIONES -->
+  <div class="view" id="view-recepciones">
+    <div class="vhead"><div><h2 data-t="hRec">Recepciones</h2><p class="lede" data-t="ldRec">Todo lo que compras y entra a tu inventario. Escanea para sumar 1, o agrega una compra completa.</p></div>
+      <button class="btn primary" id="addRecBtn" type="button" data-t="addRec">+ Agregar compra</button></div>
+    <div class="scan">
+      <label for="recScan" data-t="scanRec">Escanear para recibir 1 unidad</label>
+      <input id="recScan" autocomplete="off" placeholder="Código de barras…">
+      <div class="msg" id="recMsg"></div>
+    </div>
+    <div class="kpis" id="kpiRec"></div>
+    <div class="tablewrap"><table><thead><tr><th data-t="thDate">Fecha</th><th data-t="thProduct">Producto</th><th class="hide-sm" data-t="thSupplier">Tienda</th><th class="n" data-t="thQty">Cant.</th><th class="n" data-t="thUnitCost">Costo c/u</th><th class="n" data-t="thTotal">Total</th><th></th></tr></thead><tbody id="recBody"></tbody></table></div>
+  </div>
+
+  <!-- VENTAS / HISTORIAL -->
+  <div class="view" id="view-ventas">
+    <div class="vhead"><div><h2 data-t="hHist">Historial de salidas</h2><p class="lede" data-t="ldHist">Cada venta, regalo, muestra o producto dañado. Borra una línea si te equivocaste y el stock regresa.</p></div>
+      <div class="toolbar"><select id="histTrip" class="search" style="flex:0 0 auto"></select><select id="histKind" class="search" style="flex:0 0 auto"></select></div></div>
+    <div class="kpis" id="kpiHist"></div>
+    <div class="tablewrap"><table><thead><tr><th data-t="thDate">Fecha</th><th data-t="thProduct">Producto</th><th data-t="thType">Tipo</th><th class="n" data-t="thQty">Cant.</th><th class="n" data-t="thPriceMxn">Precio (MXN)</th><th class="n hide-sm" data-t="thProfit">Ganancia (USD)</th><th class="hide-sm" data-t="payment">Pago</th><th></th></tr></thead><tbody id="histBody"></tbody></table></div>
+  </div>
+
+  <!-- GASTOS -->
+  <div class="view" id="view-gastos">
+    <div class="vhead"><div><h2 data-t="hExp">Gastos del negocio</h2><p class="lede" data-t="ldExp">Licencias, suscripciones, empaque, envíos, viajes y todo lo que cuesta operar.</p></div>
+      <button class="btn primary" id="addExpBtn" type="button" data-t="addExp">+ Agregar gasto</button></div>
+    <div class="kpis" id="kpiExp"></div>
+    <div class="panel"><div class="panel-head"><h3 data-t="hBudget">Presupuesto</h3><span class="code" id="budgetText"></span></div><div class="meter" id="budgetMeter"><i></i></div>
+      <div class="toolbar"><label class="field" style="flex-direction:row;align-items:center;gap:8px"><span class="code" data-t="budget">Presupuesto (USD)</span><input type="number" id="budgetInput" min="0" step="1" style="width:120px;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg)"></label></div></div>
+    <div class="toolbar"><div class="chips" id="expChips"></div></div>
+    <div class="tablewrap"><table><thead><tr><th data-t="thDate">Fecha</th><th data-t="thDesc">Descripción</th><th class="hide-sm" data-t="thCat">Categoría</th><th class="hide-sm" data-t="thVendor">Proveedor</th><th class="n" data-t="thCost">Costo</th><th data-t="thBilling">Cobro</th><th class="n hide-sm" data-t="thMonthly">Al mes</th><th></th></tr></thead><tbody id="expBody"></tbody></table></div>
+  </div>
+
+  <!-- VIAJES -->
+  <div class="view" id="view-viajes">
+    <div class="vhead"><div><h2 data-t="hTrips">Viajes a Calera</h2><p class="lede" data-t="ldTrips">Cada viaje lleva su cuenta: ventas, ganancia, comisión de tu papá y costo del viaje.</p></div>
+      <button class="btn primary" id="addTripBtn" type="button" data-t="addTrip">+ Nuevo viaje</button></div>
+    <div class="trips" id="tripCards"></div>
+  </div>
+
+  <!-- AJUSTES -->
+  <div class="view" id="view-ajustes">
+    <div class="vhead"><div><h2 data-t="hSettings">Ajustes</h2><p class="lede" data-t="ldSettings">Tipo de cambio, comisión y respaldos.</p></div></div>
+    <div class="grid2">
+      <div class="panel"><h3 data-t="hRate">Tipo de cambio</h3>
+        <div class="field"><label data-t="rateLbl">Pesos por 1 dólar</label><input type="number" id="setRate" step="0.01" min="1"></div>
+        <p class="note" data-t="rateNote">Se usa para convertir tus precios en pesos a dólares al calcular ganancia.</p></div>
+      <div class="panel"><h3 data-t="hComm">Comisión de papá</h3>
+        <p class="note" data-t="commNote">Porcentaje de la GANANCIA (no de la venta). El nivel depende de cuántas bolsas se venden en el viaje y se reinicia cada viaje.</p>
+        <div class="dlg-body" style="padding:0">
+          <div class="field"><label data-t="tier1">Nivel 1 (%)</label><input type="number" id="setT1" min="0" max="100"></div>
+          <div class="field"><label data-t="tier2from">Nivel 2 desde (bolsas)</label><input type="number" id="setT2at" min="1"></div>
+          <div class="field"><label data-t="tier2">Nivel 2 (%)</label><input type="number" id="setT2" min="0" max="100"></div>
+          <div class="field"><label data-t="tier3from">Nivel 3 desde (bolsas)</label><input type="number" id="setT3at" min="1"></div>
+          <div class="field"><label data-t="tier3">Nivel 3 (%)</label><input type="number" id="setT3" min="0" max="100"></div>
+        </div></div>
+      <div class="panel"><h3 data-t="hBackup">Respaldo</h3>
+        <p class="note" data-t="backupNote">Tus datos se guardan en la nube. Descarga un respaldo de vez en cuando por si acaso.</p>
+        <div class="toolbar"><button class="btn" id="exportBtn" type="button" data-t="export">Descargar respaldo</button><button class="btn" id="exportCsvBtn" type="button" data-t="exportCsv">Inventario en CSV</button><button class="btn" id="refreshBtn" type="button" data-t="refresh">Recargar de la nube</button></div></div>
+    </div>
+  </div>
+</main>
+
+<dialog id="dlg"><form method="dialog" class="dlg" id="dlgForm">
+  <div class="dlg-head"><h3 id="dlgTitle"></h3><button class="iconbtn" value="cancel" formnovalidate aria-label="Cerrar">×</button></div>
+  <div class="dlg-body" id="dlgBody"></div>
+  <div class="dlg-foot"><div id="dlgLeft"></div><div class="toolbar"><button class="btn" value="cancel" formnovalidate data-t="cancel">Cancelar</button><button class="btn primary" value="ok" id="dlgOk" data-t="save">Guardar</button></div></div>
+</form></dialog>
+<div class="toast" id="toast"></div>
+
+<!-- ── FIREBASE CLOUD STORAGE (shared between devices) ── -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+(function(){
+  const firebaseConfig = {
+    apiKey: "AIzaSyCQcIDq1bk2TmtBpIHMECf1CaYkNg7-8uQ",
+    authDomain: "aguilarmx-5c1e5.firebaseapp.com",
+    projectId: "aguilarmx-5c1e5",
+    storageBucket: "aguilarmx-5c1e5.firebasestorage.app",
+    messagingSenderId: "372262228349",
+    appId: "1:372262228349:web:7a72af56b879b205c7fc14"
+  };
+  const COLLECTION = 'stockroom';
+  const LOCAL_PREFIX = 'aguilar_stockroom_';
+  let db = null;
+
+  // Sign in anonymously once, then every get/set waits for it.
+  const ready = new Promise(function(resolve){
+    try{
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      firebase.auth().signInAnonymously()
+        .then(function(){ resolve(true); })
+        .catch(function(err){ console.error('Firebase sign-in failed', err); resolve(false); });
+    }catch(err){
+      console.error('Firebase failed to load', err);
+      resolve(false);
+    }
+  });
+
+  function setStatus(text){
+    const el = document.getElementById('cloudText');
+    if(el) el.textContent = text;
+  }
+  ready.then(function(ok){
+    setStatus(ok ? 'Nube conectada' : 'Sin nube · solo este equipo');
+    const box = document.getElementById('cloudStatus'); if (box) box.classList.add(ok ? 'ok' : 'off');
+  });
+
+  // Same get/set shape the stockroom already uses: get → {value} or null.
+  window.storage = {
+    get: async function(key){
+      const ok = await ready;
+      if(ok){
+        const snap = await db.collection(COLLECTION).doc(key).get();
+        if(snap.exists){
+          const v = snap.data().value;
+          try{ localStorage.setItem(LOCAL_PREFIX + key, v); }catch(e){}
+          return { value: v };
+        }
+        return null;
+      }
+      let v = null;
+      try{ v = localStorage.getItem(LOCAL_PREFIX + key); }catch(e){}
+      return v === null ? null : { value: v };
+    },
+    set: async function(key, value){
+      try{ localStorage.setItem(LOCAL_PREFIX + key, value); }catch(e){}
+      const ok = await ready;
+      if(!ok) throw new Error('offline');
+      await db.collection(COLLECTION).doc(key).set({
+        value: value,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      return { key: key, value: value };
+    }
+  };
+})();
+</script>
+
+<script>
+// ───────────────────────── LOCK ─────────────────────────
+(function(){
+  const params = new URLSearchParams(location.search);
+  const lock = document.getElementById('lockScreen');
+  if (params.get('aguilar') !== 'admin') {
+    lock.innerHTML = '<p class="sub">Página no encontrada</p>';
+    return;
+  }
+  let authed = false;
+  try { authed = sessionStorage.getItem('aguilar_auth') === 'yes'; } catch(e) {}
+  if (authed) lock.style.display = 'none';
+  function check(){
+    const v = document.getElementById('lockInput').value.trim().toUpperCase();
+    if (v === 'LOL1') {
+      try { sessionStorage.setItem('aguilar_auth','yes'); } catch(e) {}
+      lock.style.display = 'none';
+      document.getElementById('sellScan').focus();
+    } else {
+      document.getElementById('lockError').textContent = 'Contraseña incorrecta';
+      document.getElementById('lockInput').value = '';
+    }
+  }
+  document.getElementById('lockBtn').addEventListener('click', check);
+  document.getElementById('lockInput').addEventListener('keydown', e => { if (e.key === 'Enter') check(); });
+})();
+
+// ───────────────────────── STATE ─────────────────────────
+let logRows = [];      // receiving-log   {id,date,supplier,item,sku,qty,cost}
+let invItems = [];     // inventory-items {id,sku,alt,name,type,category,brand,reorder,cost,price,components:[{sku,qty}]}
+let expRows = [];      // business-expenses
+let usageRows = [];    // usage-log       {id,date,item,sku,qty,notes,kind,price,payment,trip,saleId}
+let budget = 1500;     // expense-budget
+let trips = [];        // trips          {id,name,start,end,travel,notes}
+let settings = { rate:17.5, t1:20, t2at:11, t2:25, t3at:21, t3:30, activeTrip:'' };
+let saveTimer = null;
+let lang = 'es';
+try { lang = localStorage.getItem('aguilar_lang') || 'es'; } catch(e) {}
+
+function uid(){ return Math.random().toString(36).slice(2,10); }
+function round2(n){ return Math.round((n + Number.EPSILON) * 100) / 100; }
+function todayStr(){ const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function num(v){ const n = Number(v); return isFinite(n) ? n : 0; }
+function usd(n){ return (n<0?'−':'') + '$' + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function mxn(n){ return (n<0?'−':'') + '$' + Math.abs(Math.round(n)).toLocaleString('en-US') + ' MXN'; }
+function fmtDate(d){ if(!d) return ''; const p=d.split('-'); if(p.length!==3) return d; const m=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][+p[1]-1]||p[1]; return (+p[2])+' '+m+' '+p[0]; }
+function norm(s){ return String(s||'').trim().toUpperCase(); }
+
+// ───────────────────────── I18N ─────────────────────────
+const EN = {
+  subtitle:'Stockroom · internal use', activeTrip:'Active trip',
+  tabResumen:'Overview', tabVender:'Sell', tabInventario:'Inventory', tabSets:'Gift sets', tabRecepciones:'Receiving', tabVentas:'History', tabGastos:'Expenses', tabViajes:'Trips', tabAjustes:'Settings',
+  hResumen:'Business overview', ldResumen:'Everything at a glance: what you have, what sold this trip, and what you keep.',
+  hLow:'Needs attention', hByCat:'By category', hRecent:'Latest activity', thCat:'Category', thUnits:'Units', thCostVal:'Cost (USD)', thRetail:'Retail (MXN)',
+  hVender:'Sell', ldVender:'Scan or search each item to add it. Check the price, then tap "Finish sale".', kSale:'Sale', kGift:'Gift', kUse:'Use / sample', kDamaged:'Damaged',
+  scanSell:'Scan or search a product', thProduct:'Product', thAvail:'Available', thQty:'Qty', thPriceMxn:'Price each (MXN)', thLineTotal:'Total', payment:'Payment', clear:'Clear', finish:'Finish sale',
+  noteSets:'To sell a gift set, scan the set code (SET-001…). The bottles inside come off your stock. Don\'t also scan the loose bottles.',
+  hInv:'Inventory', ldInv:'Tap any product to edit its price, cost, code or category.', addItem:'+ Add product', thOnHand:'On hand', thInOut:'In / out', thCost:'Cost', thPrice:'Price', thProfitU:'Profit each', thStatus:'Status',
+  hSets:'Gift sets', ldSets:'A set has no stock of its own: it is built from bottles in your inventory. Here you see how many you can make.', addSet:'+ New set',
+  hRec:'Receiving', ldRec:'Everything you buy that comes into inventory. Scan to add 1, or log a full purchase.', addRec:'+ Add purchase', scanRec:'Scan to receive 1 unit', thDate:'Date', thSupplier:'Store', thUnitCost:'Cost each', thTotal:'Total',
+  hHist:'Outgoing history', ldHist:'Every sale, gift, sample or damaged item. Delete a line if it was a mistake and the stock comes back.', thType:'Type', thProfit:'Profit (USD)',
+  hExp:'Business expenses', ldExp:'Licenses, subscriptions, packaging, shipping, trips and everything it costs to run.', addExp:'+ Add expense', hBudget:'Budget', budget:'Budget (USD)', thDesc:'Description', thVendor:'Vendor', thBilling:'Billing', thMonthly:'Per month',
+  hTrips:'Trips to Calera', ldTrips:'Each trip keeps its own tally: sales, profit, Dad\'s commission and trip cost.', addTrip:'+ New trip',
+  hSettings:'Settings', ldSettings:'Exchange rate, commission and backups.', hRate:'Exchange rate', rateLbl:'Pesos per 1 dollar', rateNote:'Used to convert your peso prices to dollars when figuring profit.',
+  hComm:'Dad\'s commission', commNote:'A percentage of PROFIT (not of the sale). The tier depends on how many bags sell during the trip and resets every trip.',
+  tier1:'Tier 1 (%)', tier2from:'Tier 2 from (bags)', tier2:'Tier 2 (%)', tier3from:'Tier 3 from (bags)', tier3:'Tier 3 (%)',
+  hBackup:'Backup', backupNote:'Your data is saved in the cloud. Download a backup now and then, just in case.', export:'Download backup', exportCsv:'Inventory as CSV', refresh:'Reload from cloud',
+  cancel:'Cancel', save:'Save'
+};
+const ES_CACHE = {};
+function t(key, fallback){ return lang==='en' && EN[key] ? EN[key] : (ES_CACHE[key] || fallback || key); }
+function L(es, en){ return lang==='en' ? en : es; }
+function applyLang(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const k = el.dataset.t;
+    if (!(k in ES_CACHE)) ES_CACHE[k] = el.textContent;
+    el.textContent = t(k);
+  });
+  document.getElementById('langBtn').textContent = lang==='en' ? 'ES' : 'EN';
+  document.getElementById('sellScan').placeholder = L('Código de barras o nombre…','Barcode or name…');
+  document.getElementById('recScan').placeholder = L('Código de barras…','Barcode…');
+  document.getElementById('invSearch').placeholder = L('Buscar producto o código…','Search product or code…');
+  document.getElementById('cartNote').placeholder = L('Nota (cliente, etc.)','Note (customer, etc.)');
+}
+
+// ───────────────────────── CATALOG HELPERS ─────────────────────────
+const CATS = [
+  {key:'bolsas', es:'Bolsas', en:'Handbags'},
+  {key:'bbw', es:'Bath & Body Works', en:'Bath & Body Works'},
+  {key:'sets', es:'Sets de regalo', en:'Gift sets'},
+  {key:'belleza', es:'Belleza y cuidado', en:'Beauty & care'},
+  {key:'otros', es:'Otros productos', en:'Other products'},
+  {key:'suministros', es:'Empaque y suministros', en:'Packaging & supplies'},
+  {key:'equipo', es:'Equipo', en:'Equipment'}
+];
+function catLabel(k){ const c = CATS.find(c=>c.key===k) || CATS[4]; return L(c.es, c.en); }
+function catOf(it){
+  if (it.category) return it.category;
+  if (it.type==='supply') return 'suministros';
+  if (it.type==='equipment') return 'equipo';
+  if (it.components && it.components.length) return 'sets';
+  const s = norm(it.sku);
+  if (s.startsWith('AGUILAR-')) return 'bolsas';
+  if (s.startsWith('BBW-')) return 'bbw';
+  if (s.startsWith('SET-')) return 'sets';
+  return 'otros';
+}
+function isForSale(it){ const c = catOf(it); return c!=='suministros' && c!=='equipo'; }
+function isSet(it){ return !!(it.components && it.components.length); }
+function findItem(code){
+  const s = norm(code); if (!s) return null;
+  return invItems.find(it => norm(it.sku)===s) || invItems.find(it => it.alt && norm(it.alt)===s) || null;
+}
+function findInvBySku(sku){ return findItem(sku); }
+function codesOf(it){ const c=[norm(it.sku)]; if(it.alt) c.push(norm(it.alt)); return c.filter(Boolean); }
+function receivedFor(it){ const c = codesOf(it); return logRows.reduce((s,r)=> c.includes(norm(r.sku)) ? s+num(r.qty) : s, 0); }
+function outDirect(it){ const c = codesOf(it); return usageRows.reduce((s,r)=> c.includes(norm(r.sku)) ? s+num(r.qty) : s, 0); }
+function outViaSets(it){
+  const c = codesOf(it); let total = 0;
+  invItems.forEach(set => {
+    if (!isSet(set)) return;
+    const per = set.components.filter(x => c.includes(norm(x.sku))).reduce((s,x)=>s+num(x.qty||1),0);
+    if (per) total += per * outDirect(set);
+  });
+  return total;
+}
+function onHand(it){
+  if (isSet(it)) {
+    let m = Infinity;
+    it.components.forEach(x => { const ci = findItem(x.sku); const q = num(x.qty||1)||1; m = Math.min(m, ci ? Math.floor(Math.max(0,onHand(ci))/q) : 0); });
+    return m===Infinity ? 0 : m;
+  }
+  return receivedFor(it) - outDirect(it) - outViaSets(it);
+}
+function costOf(it){
+  if (isSet(it)) return it.components.reduce((s,x)=>{ const ci=findItem(x.sku); return s + (ci ? num(ci.cost)*num(x.qty||1) : 0); },0);
+  return num(it.cost);
+}
+function profitEach(it){ return num(it.price)/settings.rate - costOf(it); }
+function status(it){
+  const oh = onHand(it);
+  if (oh <= 0) return {cls:'b-out', txt:L(isForSale(it)?'Agotado':'Sin stock', isForSale(it)?'Sold out':'Out')};
+  if (!isSet(it) && oh <= num(it.reorder) && num(it.reorder)>0) return {cls:'b-low', txt:L('Quedan pocos','Running low')};
+  return {cls:'b-ok', txt:L('Disponible','In stock')};
+}
+
+// ───────────────────────── TRIPS & MONEY ─────────────────────────
+function tripById(id){ return trips.find(x=>x.id===id); }
+function rowsForTrip(id){ return usageRows.filter(r => (r.trip||'') === (id||'')); }
+function saleRows(rows){ return rows.filter(r => r.kind==='sale'); }
+function rowItem(r){ return findItem(r.sku); }
+function rowRevenueMXN(r){ return num(r.price) * num(r.qty); }
+function rowCostUSD(r){ const it=rowItem(r); return it ? costOf(it)*num(r.qty) : 0; }
+function rowProfitUSD(r){ return r.kind==='sale' ? rowRevenueMXN(r)/settings.rate - rowCostUSD(r) : -rowCostUSD(r); }
+function bagsSold(rows){ return saleRows(rows).reduce((s,r)=>{ const it=rowItem(r); return it && catOf(it)==='bolsas' ? s+num(r.qty) : s; },0); }
+function tierPct(bags){ if (bags >= settings.t3at) return settings.t3; if (bags >= settings.t2at) return settings.t2; return settings.t1; }
+function tripStats(id){
+  const rows = rowsForTrip(id), sales = saleRows(rows);
+  const units = sales.reduce((s,r)=>s+num(r.qty),0);
+  const revMXN = sales.reduce((s,r)=>s+rowRevenueMXN(r),0);
+  const costUSD = sales.reduce((s,r)=>s+rowCostUSD(r),0);
+  const profitUSD = revMXN/settings.rate - costUSD;
+  const bags = bagsSold(rows), pct = tierPct(bags);
+  const comm = Math.max(0, profitUSD) * pct/100;
+  const lossUSD = rows.filter(r=>r.kind!=='sale').reduce((s,r)=>s+rowCostUSD(r),0);
+  const trip = tripById(id); const travel = trip ? num(trip.travel) : 0;
+  return {units, revMXN, revUSD:revMXN/settings.rate, costUSD, profitUSD, bags, pct, comm, lossUSD, travel, net: profitUSD - comm - travel - lossUSD, count: new Set(sales.map(r=>r.saleId||r.id)).size};
+}
+function monthlyEquiv(r){ const c=num(r.cost); return r.billing==='monthly' ? c : r.billing==='yearly' ? c/12 : 0; }
+
+// ───────────────────────── STORAGE ─────────────────────────
+async function getJSON(key, fallback){
+  try { const v = await window.storage.get(key, false); return v ? JSON.parse(v.value) : fallback; } catch(e) { return fallback; }
+}
+function scheduleSave(){
+  const box = document.getElementById('saveStatus'), txt = document.getElementById('saveText');
+  box.style.display = ''; txt.textContent = L('Guardando…','Saving…');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    const pairs = [['receiving-log',JSON.stringify(logRows)],['inventory-items',JSON.stringify(invItems)],['business-expenses',JSON.stringify(expRows)],
+      ['usage-log',JSON.stringify(usageRows)],['expense-budget',String(budget)],['trips',JSON.stringify(trips)],['settings',JSON.stringify(settings)]];
+    let cloudOk = true;
+    for (const [k,val] of pairs) { try { await window.storage.set(k, val, false); } catch(e) { cloudOk = false; } }
+    txt.textContent = cloudOk ? L('Guardado ✓','Saved ✓') : L('Guardado solo en este equipo','Saved on this device only');
+    if (cloudOk) setTimeout(()=>{ if (txt.textContent.indexOf('✓')>-1) box.style.display='none'; }, 1800);
+  }, 400);
+}
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),2200); }
+
+async function loadData(){
+  try{
+    const l = await window.storage.get('receiving-log', false);
+    logRows = l ? JSON.parse(l.value) : [];
+  }catch(e){ logRows = []; }
+  try{
+    const i = await window.storage.get('inventory-items', false);
+    invItems = i ? JSON.parse(i.value) : [];
+  }catch(e){ invItems = []; }
+  try{
+    const x = await window.storage.get('business-expenses', false);
+    expRows = x ? JSON.parse(x.value) : [];
+  }catch(e){ expRows = []; }
+  try{
+    const u = await window.storage.get('usage-log', false);
+    usageRows = u ? JSON.parse(u.value) : [];
+  }catch(e){ usageRows = []; }
+  try{
+    const b = await window.storage.get('expense-budget', false);
+    budget = b ? Number(b.value) : 1500;
+  }catch(e){ budget = 1500; }
+
+  let alreadySeeded = true;
+  try{
+    const seedFlag = await window.storage.get('seeded-expenses-v1', false);
+    alreadySeeded = !!seedFlag;
+  }catch(e){
+    alreadySeeded = false;
+  }
+  if(!alreadySeeded){
+    const seedExpenses = [
+      {id:uid(), date:'2026-01-01', desc:'Domain / hosting renewal', category:'licenses', costtype:'overhead', vendor:'GoDaddy', cost:'46.59', billing:'onetime'},
+      {id:uid(), date:'2026-01-01', desc:'Tissue paper (packaging)', category:'supplies', costtype:'cogs', vendor:'Amazon', cost:'15.04', billing:'onetime'},
+      {id:uid(), date:'2026-01-01', desc:'Gift bags (packaging)', category:'supplies', costtype:'cogs', vendor:'Amazon', cost:'52.00', billing:'onetime'},
+      {id:uid(), date:'2026-01-01', desc:'Sole Proprietor Registration + fee', category:'licenses', costtype:'overhead', vendor:'NV Secretary of State', cost:'205.00', billing:'onetime'},
+      {id:uid(), date:'2026-01-01', desc:'Claude subscription', category:'licenses', costtype:'overhead', vendor:'Anthropic', cost:'20.00', billing:'monthly'},
+      {id:uid(), date:'2026-01-01', desc:'Netlify hosting', category:'licenses', costtype:'overhead', vendor:'Netlify', cost:'9.00', billing:'monthly'}
+    ];
+    expRows = expRows.concat(seedExpenses);
+    try{ await window.storage.set('seeded-expenses-v1', 'true', false); }catch(e2){}
+    try{ await window.storage.set('business-expenses', JSON.stringify(expRows), false); }catch(e3){}
+  }
+
+  let suppliesSeeded = true;
+  try{
+    const supFlag = await window.storage.get('seeded-supplies-v1', false);
+    suppliesSeeded = !!supFlag;
+  }catch(e){
+    suppliesSeeded = false;
+  }
+  if(!suppliesSeeded){
+    logRows.push({id:uid(), date:'2026-01-01', supplier:'Amazon', item:'Tissue paper (packaging)', sku:'TISSUE-PKG', qty:1, cost:'15.04'});
+    logRows.push({id:uid(), date:'2026-01-01', supplier:'Amazon', item:'Gift bags (packaging)', sku:'GIFTBAG-PKG', qty:1, cost:'52.00'});
+    if(!findInvBySku('TISSUE-PKG')){
+      invItems.push({id:uid(), sku:'TISSUE-PKG', name:'Tissue paper (packaging)', type:'supply', reorder:2, cost:'15.04'});
+    }
+    if(!findInvBySku('GIFTBAG-PKG')){
+      invItems.push({id:uid(), sku:'GIFTBAG-PKG', name:'Gift bags (packaging)', type:'supply', reorder:2, cost:'52.00'});
+    }
+    try{ await window.storage.set('seeded-supplies-v1', 'true', false); }catch(e2){}
+    try{ await window.storage.set('receiving-log', JSON.stringify(logRows), false); }catch(e3){}
+    try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e4){}
+  }
+
+  let supplies2Seeded = true;
+  try{
+    const supFlag2 = await window.storage.get('seeded-supplies-v2', false);
+    supplies2Seeded = !!supFlag2;
+  }catch(e){
+    supplies2Seeded = false;
+  }
+  if(!supplies2Seeded){
+    logRows = logRows.filter(r => r.sku !== 'GIFTBAG-PKG');
+    invItems = invItems.filter(it => it.sku !== 'GIFTBAG-PKG');
+    if(!logRows.some(r=>r.sku==='GIFTBAG-ML24')){
+      logRows.push({id:uid(), date:'2026-06-29', supplier:'Amazon (ZenGlow)', item:'Gift bags - Black Medium/Large 12.6x4x8.7in (24pcs)', sku:'GIFTBAG-ML24', qty:24, cost:'1.00'});
+    }
+    if(!logRows.some(r=>r.sku==='GIFTBAG-XL12')){
+      logRows.push({id:uid(), date:'2026-06-29', supplier:'Amazon (MALICPLUS)', item:'Gift bags - Black Extra Large 16x6x12in (12pcs)', sku:'GIFTBAG-XL12', qty:12, cost:'2.00'});
+    }
+    if(!findInvBySku('GIFTBAG-ML24')){
+      invItems.push({id:uid(), sku:'GIFTBAG-ML24', name:'Gift bags - Black Medium/Large 12.6x4x8.7in', type:'supply', reorder:6, cost:'1.00'});
+    }
+    if(!findInvBySku('GIFTBAG-XL12')){
+      invItems.push({id:uid(), sku:'GIFTBAG-XL12', name:'Gift bags - Black Extra Large 16x6x12in', type:'supply', reorder:3, cost:'2.00'});
+    }
+    try{ await window.storage.set('seeded-supplies-v2', 'true', false); }catch(e2){}
+    try{ await window.storage.set('receiving-log', JSON.stringify(logRows), false); }catch(e3){}
+    try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e4){}
+  }
+
+  let supplies3Seeded = true;
+  try{
+    const supFlag3 = await window.storage.get('seeded-supplies-v3', false);
+    supplies3Seeded = !!supFlag3;
+  }catch(e){
+    supplies3Seeded = false;
+  }
+  if(!supplies3Seeded){
+    logRows = logRows.filter(r => r.sku !== 'TISSUE-PKG');
+    invItems = invItems.filter(it => it.sku !== 'TISSUE-PKG');
+    if(!logRows.some(r=>r.sku==='TISSUE-48SHT')){
+      logRows.push({id:uid(), date:'2026-07-09', supplier:'Amazon', item:'Tissue paper - Soft Ivory Birch 20x30in (48 sheet pack)', sku:'TISSUE-48SHT', qty:48, cost:'0.31'});
+    }
+    if(!findInvBySku('TISSUE-48SHT')){
+      invItems.push({id:uid(), sku:'TISSUE-48SHT', name:'Tissue paper - Soft Ivory Birch 20x30in', type:'supply', reorder:12, cost:'0.31'});
+    }
+    try{ await window.storage.set('seeded-supplies-v3', 'true', false); }catch(e2){}
+    try{ await window.storage.set('receiving-log', JSON.stringify(logRows), false); }catch(e3){}
+    try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e4){}
+  }
+
+
+  let bagsSeeded = true;
+  try{ bagsSeeded = !!(await window.storage.get('seeded-bags-v1', false)); }catch(e){ bagsSeeded = false; }
+  if(!bagsSeeded){
+    const bags = [
+      ['AGUILAR-001','Michael Kors Crossbody, Cream','73.69'],
+      ['AGUILAR-002','Steve Madden Bevlynn Satchel, Latte, with Cartera','30.34'],
+      ['AGUILAR-003','Guess Sorcha Mini Hobo, Negro','43.34'],
+      ['AGUILAR-004','Guess Sorcha Mini Hobo, Vino','43.34'],
+      ['AGUILAR-005','ALDO Bolso Azul con Moño','30.34']
+    ];
+    bags.forEach(function(b){
+      if(!logRows.some(r=>r.sku===b[0])){
+        logRows.push({id:uid(), date:'2026-10-01', supplier:'TJ Maxx / Marshalls / Ross', item:b[1], sku:b[0], qty:1, cost:b[2]});
+      }
+      if(!findInvBySku(b[0])){
+        invItems.push({id:uid(), sku:b[0], name:b[1], type:'product', reorder:0, cost:b[2]});
+      }
+    });
+    try{ await window.storage.set('seeded-bags-v1', 'true', false); }catch(e2){}
+    try{ await window.storage.set('receiving-log', JSON.stringify(logRows), false); }catch(e3){}
+    try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e4){}
+  }
+
+
+  let bbwSeeded = true;
+  try{ bbwSeeded = !!(await window.storage.get('seeded-bbw-v1', false)); }catch(e){ bbwSeeded = false; }
+  if(!bbwSeeded){
+    const bbw = [["BBW-028005924", "A Thousand Wishes Travel Size Shampoo (3 oz)", "supply", 6, 1, "2.23"], ["BBW-028006502", "Champagne Toast Moisturizing Shampoo (16 oz)", "product", 2, 1, "4.23"], ["BBW-026766987", "Japanese Cherry Blossom Moisturizing Conditioner (16 oz)", "product", 2, 1, "4.23"], ["BBW-028007406", "Coco Shea Rich Moisture Shampoo (16 oz)", "product", 1, 1, "4.23"], ["BBW-028007408", "Coco Shea Rich Moisture Conditioner (16 oz)", "product", 1, 1, "4.23"], ["BBW-028029621", "Secret Wonderland Fine Fragrance Mist (8 oz)", "product", 2, 1, "4.48"], ["BBW-028029616", "Country Chic Fine Fragrance Mist (8 oz)", "product", 2, 1, "4.48"], ["BBW-028029641", "Secret Wonderland Ultimate Hydration Body Cream (8 oz)", "product", 2, 1, "4.48"], ["BBW-028029636", "Country Chic Ultimate Hydration Body Cream (8 oz)", "product", 2, 1, "4.48"], ["BBW-028028505", "Morning Matcha Gentle & Clean Foaming Hand Soap", "product", 1, 1, "3.97"], ["BBW-028030640", "Toasted Marshmallow Pop Foaming Hand Soap", "product", 1, 1, "3.97"], ["BBW-028018963", "Champagne Toast Dry Shampoo (3.3 oz)", "product", 3, 1, "3.73"], ["BBW-028003433", "A Thousand Wishes Dry Shampoo (3.3 oz)", "product", 4, 1, "3.73"], ["BBW-028030123", "Secret Wonderland Body Wash (10 oz)", "product", 2, 1, "3.98"], ["BBW-028030118", "Country Chic Body Wash (10 oz)", "product", 2, 1, "3.98"], ["BBW-028030143", "Secret Wonderland Body Lotion (8 oz)", "product", 2, 1, "3.98"], ["BBW-028030138", "Country Chic Body Lotion (8 oz)", "product", 2, 1, "3.98"], ["BBW-028005134", "A Thousand Wishes Shampoo (16 oz)", "product", 3, 1, "4.23"], ["BBW-028005136", "A Thousand Wishes Conditioner (16 oz)", "product", 3, 1, "4.23"], ["SCANNER-EYOYO", "Eyoyo Mini 1D Bluetooth Barcode Scanner", "equipment", 1, 0, "36.84"]];
+    bbw.forEach(function(b){
+      const supplier = b[0]==='SCANNER-EYOYO' ? 'Amazon' : 'Bath & Body Works (order #00474304234694)';
+      if(!logRows.some(r=>r.sku===b[0])){
+        logRows.push({id:uid(), date:'2026-10-01', supplier:supplier, item:b[1], sku:b[0], qty:b[3], cost:b[5]});
+      }
+      if(!findInvBySku(b[0])){
+        invItems.push({id:uid(), sku:b[0], name:b[1], type:b[2], reorder:b[4], cost:b[5]});
+      }
+    });
+    try{ await window.storage.set('seeded-bbw-v1', 'true', false); }catch(e2){}
+    try{ await window.storage.set('receiving-log', JSON.stringify(logRows), false); }catch(e3){}
+    try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e4){}
+  }
+
+  let reorderFixed = true;
+  try{
+    const rFlag = await window.storage.get('reorder-thresholds-v1', false);
+    reorderFixed = !!rFlag;
+  }catch(e){
+    reorderFixed = false;
+  }
+  if(!reorderFixed){
+    const ml24 = findInvBySku('GIFTBAG-ML24');
+    if(ml24) ml24.reorder = 4;
+    const xl12 = findInvBySku('GIFTBAG-XL12');
+    if(xl12) xl12.reorder = 4;
+    const tissue = findInvBySku('TISSUE-48SHT');
+    if(tissue) tissue.reorder = 12;
+    try{ await window.storage.set('reorder-thresholds-v1', 'true', false); }catch(e2){}
+    try{ await window.storage.set('inventory-items', JSON.stringify(invItems), false); }catch(e3){}
+  }
+}
+
+
+async function catalogV2(){
+  let done = true;
+  try { done = !!(await window.storage.get('catalog-v2', false)); } catch(e) { done = false; }
+  if (done) return;
+  // Remove the test rows that were created by the old one-row-per-keystroke bug.
+  const junk = it => { const n=(it.name||it.item||'').trim().toLowerCase(); return n==='sample' || (!String(it.sku||'').trim() && !n); };
+  invItems = invItems.filter(it => !junk(it));
+  logRows = logRows.filter(r => !junk(r));
+  const prices = {
+    'AGUILAR-001':2500,'AGUILAR-002':1500,'AGUILAR-003':1800,'AGUILAR-004':1800,'AGUILAR-005':900,
+    'BBW-028029621':260,'BBW-028029616':260,'BBW-028029641':280,'BBW-028029636':280,
+    'BBW-028030123':250,'BBW-028030118':250,'BBW-028030143':280,'BBW-028030138':280,
+    'BBW-028028505':180,'BBW-028030640':180,'BBW-028018963':130,'BBW-028003433':130,
+    'BBW-028006502':190,'BBW-026766987':190,'BBW-028007406':190,'BBW-028007408':190,'BBW-028005134':190,'BBW-028005136':190
+  };
+  const brands = {'AGUILAR-001':'Michael Kors','AGUILAR-002':'Steve Madden','AGUILAR-003':'Guess','AGUILAR-004':'Guess','AGUILAR-005':'ALDO'};
+  invItems.forEach(it => {
+    const s = norm(it.sku);
+    if (prices[s] && (it.price===undefined || it.price==='')) it.price = prices[s];
+    if (!it.category) {
+      if (s.startsWith('AGUILAR-')) it.category = 'bolsas';
+      else if (s === 'BBW-028005924') { it.category = 'suministros'; it.type = 'supply'; }
+      else if (s.startsWith('BBW-')) it.category = 'bbw';
+      else if (it.type==='equipment') it.category = 'equipo';
+      else if (it.type==='supply' || /TISSUE|GIFTBAG/.test(s)) { it.category = 'suministros'; it.type = 'supply'; }
+    }
+    if (!it.brand) it.brand = brands[s] || (s.startsWith('BBW-') ? 'Bath & Body Works' : '');
+    if (it.category==='bolsas' && (it.reorder===undefined || num(it.reorder)>1)) it.reorder = 0;
+  });
+  const sets = [
+    ['SET-001','Country Chic Body Care Set',800,['BBW-028029616','BBW-028029636','BBW-028030118','BBW-028030138']],
+    ['SET-002','Secret Wonderland Body Care Set',800,['BBW-028029621','BBW-028029641','BBW-028030123','BBW-028030143']],
+    ['SET-003','A Thousand Wishes Shampoo + Conditioner Duo',380,['BBW-028005134','BBW-028005136']],
+    ['SET-004','Coco Shea Rich Moisture Duo',380,['BBW-028007406','BBW-028007408']]
+  ];
+  sets.forEach(s => {
+    if (!findItem(s[0])) invItems.push({id:uid(), sku:s[0], name:s[1], type:'product', category:'sets', brand:'Bath & Body Works', price:s[2], reorder:0, cost:'', components:s[3].map(x=>({sku:x, qty:1}))});
+  });
+  try { await window.storage.set('catalog-v2','true',false); } catch(e) {}
+}
+
+async function loadAll(){
+  logRows = []; invItems = []; expRows = []; usageRows = [];
+  await loadData();               // original seeds (unchanged keys & flags)
+  trips = await getJSON('trips', []);
+  const s = await getJSON('settings', null);
+  if (s) settings = Object.assign(settings, s);
+  await catalogV2();
+  // AGUILAR product catalog seed. No receiving entry is created until quantity/purchase is confirmed.
+  if (!invItems.some(x => x.sku === 'RT-MINI-TRAVEL-DUO')) {
+    invItems.push({
+      id:uid(), sku:'RT-MINI-TRAVEL-DUO', name:'Mini Travel Duo',
+      type:'product', category:'belleza', brand:'Real Techniques',
+      reorder:0, cost:'', price:'260'
+    });
+  }
+  if (!trips.length) {
+    const t0 = {id:uid(), name:L('Próximo viaje','Next trip'), start:todayStr(), end:'', travel:0, notes:''};
+    trips.push(t0); settings.activeTrip = t0.id;
+  }
+  if (!tripById(settings.activeTrip)) settings.activeTrip = trips[trips.length-1].id;
+  scheduleSave();
+  renderAll();
+}
+
+// ───────────────────────── RENDER ─────────────────────────
+let currentView = 'resumen';
+let invCat = 'all', expCat = 'all';
+let cart = [];
+let saleKind = 'sale';
+
+function kpi(label, value, sub, cls){ return `<div class="kpi ${cls||''}"><small>${esc(label)}</small><b>${value}</b>${sub?`<span>${sub}</span>`:''}</div>`; }
+function kindLabel(k){ return ({sale:L('Venta','Sale'), gift:L('Regalo','Gift'), use:L('Uso / muestra','Use / sample'), damaged:L('Dañado','Damaged')})[k] || L('Salida','Out'); }
+function payLabel(p){ return ({efectivo:L('Efectivo','Cash'), spei:'SPEI', oxxo:'OXXO', otro:L('Otro','Other')})[p] || ''; }
+
+function renderTripSelect(){
+  const opts = trips.map(x=>`<option value="${x.id}" ${x.id===settings.activeTrip?'selected':''}>${esc(x.name)}</option>`).join('');
+  document.getElementById('tripSelect').innerHTML = opts;
+  const h = document.getElementById('histTrip'); const prev = h.value;
+  h.innerHTML = `<option value="__all">${L('Todos los viajes','All trips')}</option>` + trips.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('') + `<option value="">${L('Sin viaje','No trip')}</option>`;
+  h.value = prev && [...h.options].some(o=>o.value===prev) ? prev : settings.activeTrip;
+  const k = document.getElementById('histKind'); const pk = k.value || '__all';
+  k.innerHTML = `<option value="__all">${L('Todo tipo','All types')}</option>` + ['sale','gift','use','damaged'].map(x=>`<option value="${x}">${kindLabel(x)}</option>`).join('');
+  k.value = pk;
+}
+
+function renderResumen(){
+  const sale = invItems.filter(it => isForSale(it) && !isSet(it));
+  const units = sale.reduce((s,it)=>s+Math.max(0,onHand(it)),0);
+  const costVal = sale.reduce((s,it)=>s+Math.max(0,onHand(it))*num(it.cost),0);
+  const retail = sale.reduce((s,it)=>s+Math.max(0,onHand(it))*num(it.price),0);
+  const st = tripStats(settings.activeTrip);
+  const spent = expRows.reduce((s,r)=>s+num(r.cost),0);
+  const allSales = saleRows(usageRows);
+  const allProfit = allSales.reduce((s,r)=>s+rowProfitUSD(r),0);
+  document.getElementById('kpiTop').innerHTML =
+    kpi(L('Unidades para vender','Units to sell'), units, L(`${sale.filter(it=>onHand(it)>0).length} productos con stock`,`${sale.filter(it=>onHand(it)>0).length} products in stock`)) +
+    kpi(L('Valor si vendes todo','Value if all sells'), mxn(retail), usd(retail/settings.rate)+' USD', 'feature') +
+    kpi(L('Lo que te costó','What it cost you'), usd(costVal), L('inventario a costo','inventory at cost')) +
+    kpi(L('Ganancia posible','Potential profit'), usd(retail/settings.rate - costVal), L('antes de comisión','before commission'), 'good') +
+    kpi(L('Vendido este viaje','Sold this trip'), mxn(st.revMXN), L(`${st.units} piezas · ${st.count} ventas`,`${st.units} pieces · ${st.count} sales`)) +
+    kpi(L('Gastos registrados','Expenses logged'), usd(spent), L(`ganancia total de ventas: ${usd(allProfit)}`,`profit from all sales: ${usd(allProfit)}`));
+
+  const trip = tripById(settings.activeTrip);
+  document.getElementById('tripPanelTitle').textContent = trip ? trip.name : L('Este viaje','This trip');
+  document.getElementById('tripPanelDates').textContent = trip ? [fmtDate(trip.start), fmtDate(trip.end)].filter(Boolean).join(' → ') : '';
+  document.getElementById('tripFigs').innerHTML = tripFigsHTML(st);
+  document.getElementById('tripTierNote').textContent = L(
+    `Comisión de papá: ${st.pct}% de la ganancia (${st.bags} bolsa${st.bags===1?'':'s'} vendida${st.bags===1?'':'s'} este viaje). Lo tuyo ya descuenta comisión, costo del viaje y regalos/muestras.`,
+    `Dad's commission: ${st.pct}% of profit (${st.bags} bag${st.bags===1?'':'s'} sold this trip). Your take already subtracts commission, trip cost and gifts/samples.`);
+
+  const low = invItems.filter(it => !isSet(it) && (onHand(it)<=0 || (num(it.reorder)>0 && onHand(it)<=num(it.reorder))))
+    .sort((a,b)=>onHand(a)-onHand(b));
+  const noPrice = invItems.filter(it => isForSale(it) && !num(it.price));
+  document.getElementById('lowCount').textContent = (low.length+noPrice.length) ? (low.length+noPrice.length)+'' : '';
+  document.getElementById('lowList').innerHTML = (low.map(it=>{ const s=status(it); return `<div class="row"><div class="l"><b>${esc(it.name)}</b><small>${esc(catLabel(catOf(it)))} · ${esc(it.sku)}</small></div><div class="r"><span class="badge ${s.cls}">${s.txt}</span> <span class="big" style="font-size:18px">${onHand(it)}</span></div></div>`; }).join('') +
+    noPrice.map(it=>`<div class="row"><div class="l"><b>${esc(it.name)}</b><small>${esc(it.sku)}</small></div><div class="r"><span class="badge b-low">${L('Falta precio','Needs price')}</span></div></div>`).join(''))
+    || `<div class="empty">${L('Todo en orden. Nada se está acabando.','All good. Nothing is running out.')}</div>`;
+
+  document.getElementById('catTable').innerHTML = CATS.map(c => {
+    const items = invItems.filter(it=>catOf(it)===c.key && !isSet(it));
+    if (c.key==='sets') { const sets = invItems.filter(isSet); if(!sets.length) return ''; const can = sets.reduce((s,it)=>s+onHand(it),0); return `<tr><td>${esc(catLabel(c.key))}<small>${L(`puedes armar ${can}`,`you can make ${can}`)}</small></td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>`; }
+    if (!items.length) return '';
+    const u = items.reduce((s,it)=>s+Math.max(0,onHand(it)),0);
+    const cv = items.reduce((s,it)=>s+Math.max(0,onHand(it))*num(it.cost),0);
+    const rv = items.reduce((s,it)=>s+Math.max(0,onHand(it))*num(it.price),0);
+    return `<tr><td>${esc(catLabel(c.key))}<small>${items.length} ${L('productos','products')}</small></td><td class="n">${u}</td><td class="n">${usd(cv)}</td><td class="n">${isForSale({category:c.key})?mxn(rv):'—'}</td></tr>`;
+  }).join('');
+
+  const recent = [
+    ...usageRows.map(r=>({date:r.date, when:r.ts||0, txt:`${kindLabel(r.kind)} · ${r.item}`, sub: r.kind==='sale'? mxn(rowRevenueMXN(r)) : '', q:-num(r.qty)})),
+    ...logRows.map(r=>({date:r.date, when:r.ts||0, txt:`${L('Recibido','Received')} · ${r.item}`, sub: usd(num(r.qty)*num(r.cost)), q:num(r.qty)}))
+  ].sort((a,b)=> (b.date||'').localeCompare(a.date||'') || b.when-a.when).slice(0,8);
+  document.getElementById('recentList').innerHTML = recent.map(x=>`<div class="row"><div class="l"><b>${esc(x.txt)}</b><small>${fmtDate(x.date)}${x.sub?' · '+x.sub:''}</small></div><div class="r">${x.q>0?'+':''}${x.q}</div></div>`).join('') || `<div class="empty">${L('Aún no hay movimientos.','No activity yet.')}</div>`;
+}
+
+function tripFigsHTML(st){
+  return `<div class="fig"><small>${L('Ventas','Sales')}</small><b>${mxn(st.revMXN)}</b></div>
+    <div class="fig"><small>${L('En dólares','In dollars')}</small><b>${usd(st.revUSD)}</b></div>
+    <div class="fig"><small>${L('Costo de lo vendido','Cost of goods')}</small><b>${usd(st.costUSD)}</b></div>
+    <div class="fig good"><small>${L('Ganancia','Profit')}</small><b>${usd(st.profitUSD)}</b></div>
+    <div class="fig"><small>${L('Comisión papá','Dad\'s commission')} (${st.pct}%)</small><b>${usd(st.comm)}</b></div>
+    <div class="fig"><small>${L('Costo del viaje','Trip cost')}</small><b>${usd(st.travel)}</b></div>
+    <div class="fig good"><small>${L('Te queda','You keep')}</small><b>${usd(st.net)}</b></div>`;
+}
+
+function renderCatChips(){
+  const used = CATS.filter(c => invItems.some(it=>catOf(it)===c.key));
+  document.getElementById('catChips').innerHTML = `<button class="chip" data-cat="all" aria-pressed="${invCat==='all'}">${L('Todo','All')} · ${invItems.length}</button>` +
+    used.map(c=>`<button class="chip" data-cat="${c.key}" aria-pressed="${invCat===c.key}">${esc(catLabel(c.key))} · ${invItems.filter(it=>catOf(it)===c.key).length}</button>`).join('');
+}
+function renderInv(){
+  renderCatChips();
+  const q = norm(document.getElementById('invSearch').value);
+  const sale = invItems.filter(it=>isForSale(it) && !isSet(it));
+  document.getElementById('kpiInv').innerHTML =
+    kpi(L('Productos','Products'), invItems.filter(it=>!isSet(it)).length, L(`${invItems.filter(isSet).length} sets de regalo`,`${invItems.filter(isSet).length} gift sets`)) +
+    kpi(L('Piezas en mano','Pieces on hand'), sale.reduce((s,it)=>s+Math.max(0,onHand(it)),0), L('para vender','for sale')) +
+    kpi(L('Agotados','Sold out'), sale.filter(it=>onHand(it)<=0).length, '', sale.some(it=>onHand(it)<=0)?'bad':'') +
+    kpi(L('Margen promedio','Average margin'), (()=>{ const r=sale.reduce((s,it)=>s+num(it.price)/settings.rate,0); const c=sale.reduce((s,it)=>s+num(it.cost),0); return r? Math.round((r-c)/r*100)+'%':'—'; })(), L('precio vs. costo','price vs. cost'));
+  let rows = '';
+  CATS.forEach(c => {
+    if (invCat!=='all' && invCat!==c.key) return;
+    const items = invItems.filter(it => catOf(it)===c.key && (!q || norm(it.name).includes(q) || norm(it.sku).includes(q) || norm(it.alt).includes(q) || norm(it.brand).includes(q)))
+      .sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+    if (!items.length) return;
+    rows += `<tr class="grouphead"><td colspan="8">${esc(catLabel(c.key))}</td></tr>`;
+    rows += items.map(it => {
+      const s = status(it), oh = onHand(it), sale = isForSale(it);
+      const pe = profitEach(it);
+      const inout = isSet(it) ? `<small>${L('se arma','built')}</small>` : `${receivedFor(it)} / ${outDirect(it)+outViaSets(it)}`;
+      return `<tr class="click" data-edit="${it.id}">
+        <td><b style="font-weight:500">${esc(it.name||L('(sin nombre)','(no name)'))}</b><small><span class="code">${esc(it.sku)}</span>${it.alt?` · ${esc(it.alt)}`:''}${it.brand?` · ${esc(it.brand)}`:''}</small></td>
+        <td class="hide-sm">${esc(catLabel(catOf(it)))}</td>
+        <td class="n"><span class="big">${oh}</span></td>
+        <td class="n hide-sm">${inout}</td>
+        <td class="n">${usd(costOf(it))}</td>
+        <td class="n">${sale ? (num(it.price)? mxn(num(it.price)) : `<span class="badge b-low">${L('Falta','Missing')}</span>`) : '—'}</td>
+        <td class="n hide-sm">${sale && num(it.price) ? `<span style="color:${pe>=0?'var(--good)':'var(--bad)'}">${usd(pe)}</span><small>${Math.round(pe/(num(it.price)/settings.rate)*100)}%</small>` : '—'}</td>
+        <td><span class="badge ${s.cls}">${s.txt}</span></td></tr>`;
+    }).join('');
+  });
+  document.getElementById('invBody').innerHTML = rows || `<tr><td colspan="8" class="empty">${L('No hay productos que coincidan.','No matching products.')}</td></tr>`;
+}
+
+function renderSets(){
+  const sets = invItems.filter(isSet);
+  document.getElementById('setCards').innerHTML = sets.map(set => {
+    const can = onHand(set), cost = costOf(set), price = num(set.price);
+    const looseMXN = set.components.reduce((s,x)=>{ const ci=findItem(x.sku); return s + (ci?num(ci.price)*num(x.qty||1):0); },0);
+    return `<div class="trip ${can>0?'active':''}">
+      <div class="panel-head"><div><span class="code">${esc(set.sku)}</span><h3>${esc(set.name)}</h3></div><button class="btn small" data-edit="${set.id}">${L('Editar','Edit')}</button></div>
+      <div class="figs">
+        <div class="fig"><small>${L('Puedes armar','You can make')}</small><b>${can}</b></div>
+        <div class="fig"><small>${L('Precio','Price')}</small><b>${price?mxn(price):'—'}</b></div>
+        <div class="fig"><small>${L('Costo','Cost')}</small><b>${usd(cost)}</b></div>
+        <div class="fig good"><small>${L('Ganancia','Profit')}</small><b>${price?usd(price/settings.rate-cost):'—'}</b></div>
+      </div>
+      <div class="rows">${set.components.map(x=>{ const ci=findItem(x.sku); return `<div class="row"><div class="l"><b>${esc(ci?ci.name:x.sku)}</b><small>${esc(x.sku)}${num(x.qty)>1?' · ×'+x.qty:''}</small></div><div class="r">${ci?onHand(ci):0} ${L('en mano','on hand')}</div></div>`; }).join('')}</div>
+      ${looseMXN?`<p class="note">${L(`Sueltas valen ${mxn(looseMXN)}; el set da ${mxn(looseMXN-price)} de descuento.`,`Sold loose: ${mxn(looseMXN)}; the set gives ${mxn(looseMXN-price)} off.`)}</p>`:''}
+    </div>`;
+  }).join('') || `<div class="empty">${L('Aún no hay sets.','No sets yet.')}</div>`;
+}
+
+function renderRec(){
+  const rows = [...logRows].sort((a,b)=>(b.date||'').localeCompare(a.date||'') || (b.ts||0)-(a.ts||0));
+  const total = logRows.reduce((s,r)=>s+num(r.qty)*num(r.cost),0);
+  const units = logRows.reduce((s,r)=>s+num(r.qty),0);
+  const bySup = {}; logRows.forEach(r=>{ const k=(r.supplier||L('Sin tienda','No store')).split(' (')[0]; bySup[k]=(bySup[k]||0)+num(r.qty)*num(r.cost); });
+  const top = Object.entries(bySup).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('kpiRec').innerHTML = kpi(L('Total comprado','Total bought'), usd(total), L(`${logRows.length} registros`,`${logRows.length} entries`)) + kpi(L('Unidades recibidas','Units received'), units, '') + (top? kpi(L('Donde más compras','Top store'), esc(top[0]), usd(top[1])) : '');
+  document.getElementById('recBody').innerHTML = rows.map(r=>`<tr class="click" data-editrec="${r.id}"><td>${fmtDate(r.date)}</td><td>${esc(r.item)}<small class="code">${esc(r.sku)}</small></td><td class="hide-sm">${esc(r.supplier)}</td><td class="n">${num(r.qty)}</td><td class="n">${usd(num(r.cost))}</td><td class="n">${usd(num(r.qty)*num(r.cost))}</td><td><button class="iconbtn" data-delrec="${r.id}" aria-label="Borrar">×</button></td></tr>`).join('')
+    || `<tr><td colspan="7" class="empty">${L('Aún no hay compras registradas.','No purchases logged yet.')}</td></tr>`;
+}
+
+function renderHist(){
+  const tf = document.getElementById('histTrip').value, kf = document.getElementById('histKind').value;
+  const rows = usageRows.filter(r => (tf==='__all' || (r.trip||'')===tf) && (kf==='__all' || (r.kind||'use')===kf))
+    .sort((a,b)=>(b.date||'').localeCompare(a.date||'') || (b.ts||0)-(a.ts||0));
+  const sales = saleRows(rows);
+  const rev = sales.reduce((s,r)=>s+rowRevenueMXN(r),0);
+  const prof = sales.reduce((s,r)=>s+rowProfitUSD(r),0);
+  const byPay = {}; sales.forEach(r=>{ const k=payLabel(r.payment)||'—'; byPay[k]=(byPay[k]||0)+rowRevenueMXN(r); });
+  document.getElementById('kpiHist').innerHTML = kpi(L('Vendido','Sold'), mxn(rev), usd(rev/settings.rate)+' USD','feature') + kpi(L('Ganancia','Profit'), usd(prof), L('antes de comisión','before commission'),'good') +
+    kpi(L('Piezas vendidas','Pieces sold'), sales.reduce((s,r)=>s+num(r.qty),0), L(`${rows.length - sales.length} salidas sin venta`,`${rows.length-sales.length} non-sale outs`)) +
+    kpi(L('Por forma de pago','By payment'), Object.keys(byPay).length? Object.entries(byPay).map(([k,v])=>`${esc(k)}`).join(' · ') : '—', Object.entries(byPay).map(([k,v])=>mxn(v)).join(' · '));
+  document.getElementById('histBody').innerHTML = rows.map(r=>{
+    const p = rowProfitUSD(r);
+    return `<tr><td>${fmtDate(r.date)}<small>${esc((tripById(r.trip)||{}).name||'')}</small></td><td>${esc(r.item)}<small class="code">${esc(r.sku)}</small>${r.notes?`<small>${esc(r.notes)}</small>`:''}</td><td><span class="badge ${r.kind==='sale'?'b-ok':r.kind==='damaged'?'b-out':'b-muted'}">${kindLabel(r.kind)}</span></td><td class="n">${num(r.qty)}</td><td class="n">${r.kind==='sale'?mxn(rowRevenueMXN(r)):'—'}</td><td class="n hide-sm" style="color:${p>=0?'var(--good)':'var(--bad)'}">${usd(p)}</td><td class="hide-sm">${esc(payLabel(r.payment))}</td><td><button class="iconbtn" data-delhist="${r.id}" aria-label="Borrar">×</button></td></tr>`;
+  }).join('') || `<tr><td colspan="8" class="empty">${L('Nada aquí todavía. Las ventas aparecen cuando finalizas una en "Vender".','Nothing here yet. Sales appear once you finish one in "Sell".')}</td></tr>`;
+}
+
+const EXP_CATS = [['licenses','Licencias y suscripciones','Licenses & subscriptions'],['supplies','Empaque y suministros','Packaging & supplies'],['shipping','Envíos','Shipping'],['travel','Viajes','Travel'],['marketing','Publicidad','Marketing'],['legal','Legal','Legal fees'],['insurance','Seguro','Insurance'],['other','Otro','Other']];
+function expCatLabel(k){ const c=EXP_CATS.find(c=>c[0]===k)||EXP_CATS[7]; return L(c[1],c[2]); }
+function billingLabel(b){ return ({monthly:L('Mensual','Monthly'), yearly:L('Anual','Yearly')})[b] || L('Una vez','One-time'); }
+function renderExp(){
+  const total = expRows.reduce((s,r)=>s+num(r.cost),0);
+  const monthly = expRows.reduce((s,r)=>s+monthlyEquiv(r),0);
+  const onetime = expRows.filter(r=>r.billing!=='monthly'&&r.billing!=='yearly').reduce((s,r)=>s+num(r.cost),0);
+  document.getElementById('kpiExp').innerHTML = kpi(L('Total registrado','Total logged'), usd(total), L(`${expRows.length} gastos`,`${expRows.length} expenses`)) + kpi(L('Fijo cada mes','Fixed every month'), usd(monthly), L(`${usd(monthly*12)} al año`,`${usd(monthly*12)} a year`)) + kpi(L('Pagos únicos','One-time costs'), usd(onetime), '') + kpi(L('Presupuesto restante','Budget left'), usd(budget-total), '', budget-total<0?'bad':'good');
+  const pct = budget ? Math.min(100, total/budget*100) : 0;
+  const m = document.getElementById('budgetMeter'); m.firstElementChild.style.width = pct+'%'; m.classList.toggle('over', total>budget);
+  document.getElementById('budgetText').textContent = `${usd(total)} / ${usd(budget)}`;
+  const bi = document.getElementById('budgetInput'); if (document.activeElement!==bi) bi.value = budget;
+  const used = EXP_CATS.filter(c=>expRows.some(r=>(r.category||'other')===c[0]));
+  document.getElementById('expChips').innerHTML = `<button class="chip" data-expcat="all" aria-pressed="${expCat==='all'}">${L('Todo','All')}</button>` + used.map(c=>`<button class="chip" data-expcat="${c[0]}" aria-pressed="${expCat===c[0]}">${esc(L(c[1],c[2]))} · ${usd(expRows.filter(r=>(r.category||'other')===c[0]).reduce((s,r)=>s+num(r.cost),0))}</button>`).join('');
+  const rows = expRows.filter(r=>expCat==='all'||(r.category||'other')===expCat).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  document.getElementById('expBody').innerHTML = rows.map(r=>`<tr class="click" data-editexp="${r.id}"><td>${fmtDate(r.date)}</td><td>${esc(r.desc)}</td><td class="hide-sm">${esc(expCatLabel(r.category))}</td><td class="hide-sm">${esc(r.vendor)}</td><td class="n">${usd(num(r.cost))}</td><td>${billingLabel(r.billing)}</td><td class="n hide-sm">${monthlyEquiv(r)?usd(monthlyEquiv(r)):'—'}</td><td><button class="iconbtn" data-delexp="${r.id}" aria-label="Borrar">×</button></td></tr>`).join('')
+    || `<tr><td colspan="8" class="empty">${L('Sin gastos en esta categoría.','No expenses in this category.')}</td></tr>`;
+}
+
+function renderTrips(){
+  const unassigned = rowsForTrip('');
+  const cards = trips.slice().reverse().map(x => {
+    const st = tripStats(x.id), active = x.id===settings.activeTrip;
+    return `<div class="trip ${active?'active':''}">
+      <div class="panel-head"><div><span class="code">${active?L('Viaje activo','Active trip'):[fmtDate(x.start),fmtDate(x.end)].filter(Boolean).join(' → ')}</span><h3>${esc(x.name)}</h3></div>
+        <div class="toolbar">${active?'':`<button class="btn small" data-activate="${x.id}">${L('Activar','Make active')}</button>`}<button class="btn small" data-edittrip="${x.id}">${L('Editar','Edit')}</button></div></div>
+      ${active && (x.start||x.end)?`<span class="code" style="color:var(--muted)">${[fmtDate(x.start),fmtDate(x.end)].filter(Boolean).join(' → ')}</span>`:''}
+      <div class="figs">${tripFigsHTML(st)}</div>
+      <p class="note">${L(`${st.count} ventas · ${st.units} piezas · ${st.bags} bolsas → comisión al ${st.pct}%`,`${st.count} sales · ${st.units} pieces · ${st.bags} bags → ${st.pct}% commission`)}${st.lossUSD?L(` · regalos/muestras/dañados: ${usd(st.lossUSD)}`,` · gifts/samples/damaged: ${usd(st.lossUSD)}`):''}${x.notes?'<br>'+esc(x.notes):''}</p>
+    </div>`;
+  }).join('');
+  document.getElementById('tripCards').innerHTML = cards + (unassigned.length? `<div class="trip"><h3>${L('Sin viaje','No trip')}</h3><p class="note">${L(`${unassigned.length} salidas sin viaje asignado.`,`${unassigned.length} outs with no trip.`)}</p></div>`:'');
+}
+
+function renderSettings(){
+  const map = {setRate:'rate', setT1:'t1', setT2at:'t2at', setT2:'t2', setT3at:'t3at', setT3:'t3'};
+  Object.entries(map).forEach(([id,k])=>{ const el=document.getElementById(id); if(document.activeElement!==el) el.value = settings[k]; });
+}
+
+function renderCart(){
+  const body = document.getElementById('cartBody');
+  body.innerHTML = cart.map((c,i)=>{
+    const it = findItem(c.sku); const avail = it?onHand(it):0;
+    return `<tr><td>${esc(it?it.name:c.sku)}<small class="code">${esc(c.sku)}</small></td><td class="n">${avail}${c.qty>avail?` <span class="badge b-out">${L('no alcanza','not enough')}</span>`:''}</td>
+      <td class="n"><input class="qty" type="number" min="1" step="1" value="${c.qty}" data-cartqty="${i}"></td>
+      <td class="n"><input type="number" min="0" step="1" value="${c.price}" data-cartprice="${i}" ${saleKind!=='sale'?'disabled':''}></td>
+      <td class="n">${saleKind==='sale'?mxn(c.qty*num(c.price)):'—'}</td><td><button class="iconbtn" data-cartdel="${i}" aria-label="Quitar">×</button></td></tr>`;
+  }).join('') || `<tr><td colspan="6" class="empty">${L('Escanea o busca un producto para empezar.','Scan or search a product to start.')}</td></tr>`;
+  renderCartSum();
+  document.querySelectorAll('#kindSeg button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.kind===saleKind));
+}
+
+function renderCartSum(){
+  const totMXN = cart.reduce((s,c)=>s+c.qty*num(c.price),0);
+  const totCost = cart.reduce((s,c)=>{ const it=findItem(c.sku); return s+(it?costOf(it)*c.qty:0); },0);
+  const pieces = cart.reduce((s,c)=>s+c.qty,0);
+  document.getElementById('cartSum').innerHTML = saleKind==='sale'
+    ? `<span>${L('Piezas','Pieces')}: <b>${pieces}</b></span><span>${L('Total','Total')}: <b>${mxn(totMXN)}</b></span><span>${L('Ganancia','Profit')}: <b style="color:var(--good)">${usd(totMXN/settings.rate - totCost)}</b></span>`
+    : `<span>${L('Piezas','Pieces')}: <b>${pieces}</b></span><span>${L('Costo que se pierde','Cost written off')}: <b>${usd(totCost)}</b></span>`;
+  document.getElementById('cartDone').textContent = saleKind==='sale' ? L('Finalizar venta','Finish sale') : L('Registrar salida','Log it');
+}
+
+function renderAll(){
+  applyLang();
+  renderTripSelect();
+  renderResumen(); renderInv(); renderSets(); renderRec(); renderHist(); renderExp(); renderTrips(); renderSettings(); renderCart();
+}
+
+// ───────────────────────── NAV ─────────────────────────
+function show(view){
+  currentView = view;
+  document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected', b.dataset.view===view));
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.id==='view-'+view));
+  try { localStorage.setItem('aguilar_view', view); } catch(e) {}
+  if (view==='vender') setTimeout(()=>document.getElementById('sellScan').focus(),50);
+  if (view==='recepciones') setTimeout(()=>document.getElementById('recScan').focus(),50);
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view)));
+
+// ───────────────────────── DIALOG ─────────────────────────
+const dlg = document.getElementById('dlg');
+let dlgSubmit = null;
+function field(id, label, value, opts){
+  opts = opts||{};
+  const full = opts.full ? ' full' : '';
+  if (opts.select) return `<div class="field${full}"><label for="${id}">${esc(label)}</label><select id="${id}">${opts.select.map(o=>`<option value="${esc(o[0])}" ${String(o[0])===String(value)?'selected':''}>${esc(o[1])}</option>`).join('')}</select>${opts.hint?`<span class="hint">${esc(opts.hint)}</span>`:''}</div>`;
+  if (opts.area) return `<div class="field${full}"><label for="${id}">${esc(label)}</label><textarea id="${id}" rows="2">${esc(value)}</textarea></div>`;
+  return `<div class="field${full}"><label for="${id}">${esc(label)}</label><input id="${id}" type="${opts.type||'text'}" value="${esc(value)}" ${opts.step?`step="${opts.step}"`:''} ${opts.list?`list="${opts.list}"`:''} ${opts.required?'required':''}>${opts.hint?`<span class="hint">${esc(opts.hint)}</span>`:''}</div>`;
+}
+function openDlg(title, bodyHTML, onSave, leftHTML){
+  document.getElementById('dlgTitle').textContent = title;
+  document.getElementById('dlgBody').innerHTML = bodyHTML;
+  document.getElementById('dlgLeft').innerHTML = leftHTML||'';
+  dlgSubmit = onSave;
+  dlg.showModal();
+  const first = dlg.querySelector('.dlg-body input, .dlg-body select'); if (first) first.focus();
+}
+document.getElementById('dlgForm').addEventListener('submit', e => {
+  if (e.submitter && e.submitter.value === 'ok' && dlgSubmit) {
+    const ok = dlgSubmit();
+    if (ok === false) { e.preventDefault(); return; }
+    scheduleSave(); renderAll();
+  }
+});
+const v = id => { const el=document.getElementById(id); return el ? el.value.trim() : ''; };
+
+function itemOptions(filter){ return invItems.filter(filter||(()=>true)).sort((a,b)=>String(a.name).localeCompare(String(b.name))).map(it=>[it.sku, `${it.name} (${it.sku})`]); }
+
+function editItem(it, preset){
+  const isNew = !it; const setMode = (preset&&preset.set) || (it && isSet(it));
+  it = it || {id:uid(), sku:(preset&&preset.sku)||'', name:'', type:'product', category: setMode?'sets':'bbw', brand:'', reorder: setMode?0:1, cost:'', price:'', components: setMode?[{sku:'',qty:1}]:undefined};
+  const catOpts = CATS.filter(c=> setMode ? c.key==='sets' : c.key!=='sets').map(c=>[c.key, L(c.es,c.en)]);
+  let html = field('fName', L('Nombre','Name'), it.name, {full:true, required:true}) +
+    field('fSku', L('Código (SKU)','Code (SKU)'), it.sku, {required:true, hint:L('El que imprimes en la etiqueta','The one on your label')}) +
+    field('fAlt', L('Código alterno','Alternate code'), it.alt||'', {hint:L('Otro código que también escanea (opcional)','Another code that also scans (optional)')}) +
+    field('fCat', L('Categoría','Category'), catOf(it), {select:catOpts}) +
+    field('fBrand', L('Marca','Brand'), it.brand||'') +
+    (setMode ? '' : field('fCost', L('Costo por pieza (USD)','Cost each (USD)'), it.cost, {type:'number', step:'0.01'})) +
+    field('fPrice', L('Precio de venta (MXN)','Sale price (MXN)'), it.price||'', {type:'number', step:'1', hint: setMode?'':L('Déjalo vacío si no se vende','Leave empty if not for sale')}) +
+    (setMode ? '' : field('fReorder', L('Avisarme cuando queden','Warn me when this many left'), it.reorder||0, {type:'number', step:'1'}));
+  if (setMode) {
+    const opts = itemOptions(x=>!isSet(x) && isForSale(x));
+    html += `<div class="comps"><label class="code">${L('Lleva','Contains')}</label><div id="compRows">${(it.components||[]).map(c=>compRow(opts,c)).join('')}</div><button type="button" class="btn small" id="addComp">+ ${L('Agregar botella','Add bottle')}</button></div>`;
+  }
+  if (!isNew && !setMode) {
+    html += `<p class="note full" style="grid-column:1/-1">${L(`Entró ${receivedFor(it)} · salió ${outDirect(it)+outViaSets(it)} · en mano ${onHand(it)}. Para cambiar cuántos tienes, registra una compra o una salida.`,`In ${receivedFor(it)} · out ${outDirect(it)+outViaSets(it)} · on hand ${onHand(it)}. To change how many you have, log a purchase or an outgoing item.`)}</p>`;
+  }
+  const left = isNew ? '' : `<button type="button" class="btn danger" id="delItem">${L('Borrar producto','Delete product')}</button>`;
+  openDlg(isNew ? (setMode?L('Nuevo set','New set'):L('Nuevo producto','New product')) : it.name, html, () => {
+    const sku = v('fSku').toUpperCase();
+    if (!v('fName') || !sku) { toast(L('Falta nombre o código','Name or code missing')); return false; }
+    const dup = invItems.find(x=>x.id!==it.id && (norm(x.sku)===sku || (x.alt && norm(x.alt)===sku)));
+    if (dup) { toast(L(`Ese código ya es de: ${dup.name}`,`That code already belongs to: ${dup.name}`)); return false; }
+    const oldCodes = isNew ? [] : codesOf(it);
+    it.name = v('fName'); it.sku = sku; it.alt = v('fAlt').toUpperCase(); it.category = v('fCat'); it.brand = v('fBrand');
+    it.price = v('fPrice') === '' ? '' : num(v('fPrice'));
+    it.type = it.category==='suministros' ? 'supply' : it.category==='equipo' ? 'equipment' : 'product';
+    if (setMode) {
+      it.components = [...document.querySelectorAll('#compRows .comprow')].map(r=>({sku:r.querySelector('select').value, qty:Math.max(1,num(r.querySelector('input').value))})).filter(c=>c.sku);
+      it.cost = '';
+    } else { it.cost = v('fCost'); it.reorder = num(v('fReorder')); }
+    // keep history linked if the main code changed
+    if (!isNew && oldCodes[0] && oldCodes[0]!==sku && !it.alt) {
+      logRows.forEach(r=>{ if(norm(r.sku)===oldCodes[0]) r.sku = sku; });
+      usageRows.forEach(r=>{ if(norm(r.sku)===oldCodes[0]) r.sku = sku; });
+    }
+    logRows.forEach(r=>{ if(codesOf(it).includes(norm(r.sku))) r.item = it.name; });
+    if (isNew) invItems.push(it);
+    toast(L('Guardado','Saved'));
+  }, left);
+  if (setMode) {
+    const opts = itemOptions(x=>!isSet(x) && isForSale(x));
+    document.getElementById('addComp').addEventListener('click', ()=>{ document.getElementById('compRows').insertAdjacentHTML('beforeend', compRow(opts,{sku:'',qty:1})); });
+    document.getElementById('compRows').addEventListener('click', e=>{ if(e.target.dataset.delcomp!==undefined) e.target.closest('.comprow').remove(); });
+  }
+  const del = document.getElementById('delItem');
+  if (del) del.addEventListener('click', ()=>{
+    const hist = receivedFor(it)+outDirect(it);
+    if (!confirm(L(`¿Borrar "${it.name}"?`+(hist?` Su historial (${hist} movimientos) se queda en Recepciones e Historial.`:''), `Delete "${it.name}"?`+(hist?` Its history (${hist} moves) stays in Receiving and History.`:'')))) return;
+    invItems = invItems.filter(x=>x.id!==it.id);
+    invItems.forEach(s=>{ if(isSet(s)) s.components = s.components.filter(c=>norm(c.sku)!==norm(it.sku)); });
+    dlg.close(); scheduleSave(); renderAll(); toast(L('Producto borrado','Product deleted'));
+  });
+}
+function compRow(opts, c){ return `<div class="comprow"><select><option value="">${L('Elige…','Choose…')}</option>${opts.map(o=>`<option value="${esc(o[0])}" ${norm(o[0])===norm(c.sku)?'selected':''}>${esc(o[1])}</option>`).join('')}</select><input type="number" min="1" value="${c.qty||1}" aria-label="Cantidad"><button type="button" class="iconbtn" data-delcomp aria-label="Quitar">×</button></div>`; }
+
+function editRec(r, preset){
+  const isNew = !r;
+  r = r || {id:uid(), date:todayStr(), supplier:'', item:'', sku:(preset&&preset.sku)||'', qty:1, cost:''};
+  const known = findItem(r.sku);
+  if (isNew && known) { r.item = known.name; r.cost = known.cost; }
+  const sups = [...new Set(logRows.map(x=>x.supplier).filter(Boolean))];
+  const html = `<datalist id="supList">${sups.map(s=>`<option value="${esc(s)}">`).join('')}</datalist><datalist id="itemList">${invItems.filter(x=>!isSet(x)).map(x=>`<option value="${esc(x.sku)}">${esc(x.name)}</option>`).join('')}</datalist>` +
+    field('rSku', L('Código (SKU)','Code (SKU)'), r.sku, {list:'itemList', required:true, hint:L('Elige uno existente o escribe uno nuevo','Pick an existing one or type a new one')}) +
+    field('rItem', L('Producto','Product'), r.item, {hint:L('Si el código es nuevo, se crea el producto','If the code is new, the product is created')}) +
+    field('rDate', L('Fecha','Date'), r.date, {type:'date'}) +
+    field('rSup', L('Tienda','Store'), r.supplier, {list:'supList'}) +
+    field('rQty', L('Cantidad','Quantity'), r.qty, {type:'number', step:'1'}) +
+    field('rCost', L('Costo por pieza (USD)','Cost each (USD)'), r.cost, {type:'number', step:'0.01', hint:L('Incluye impuesto si quieres verlo en la ganancia','Include tax to see it in profit')});
+  openDlg(isNew?L('Agregar compra','Add purchase'):L('Editar compra','Edit purchase'), html, () => {
+    const sku = v('rSku').toUpperCase(); if (!sku) { toast(L('Falta el código','Code missing')); return false; }
+    let it = findItem(sku);
+    r.sku = it ? it.sku : sku; r.item = v('rItem') || (it?it.name:sku); r.date = v('rDate'); r.supplier = v('rSup'); r.qty = num(v('rQty')); r.cost = v('rCost');
+    if (!it) { invItems.push({id:uid(), sku, name:r.item, type:'product', category:'otros', brand:'', reorder:1, cost:r.cost, price:''}); toast(L('Producto nuevo creado. Ponle precio en Inventario.','New product created. Add its price in Inventory.')); }
+    else { if (!it.cost && r.cost) it.cost = r.cost; }
+    if (isNew) { r.ts = Date.now(); logRows.push(r); }
+  });
+  document.getElementById('rSku').addEventListener('change', ()=>{ const k=findItem(v('rSku')); if(k){ if(!v('rItem')) document.getElementById('rItem').value=k.name; if(!v('rCost')) document.getElementById('rCost').value=k.cost||''; } });
+}
+
+function editExp(r){
+  const isNew = !r;
+  r = r || {id:uid(), date:todayStr(), desc:'', category:'supplies', costtype:'overhead', vendor:'', cost:'', billing:'onetime'};
+  const html = field('eDesc', L('Descripción','Description'), r.desc, {full:true, required:true}) +
+    field('eDate', L('Fecha','Date'), r.date, {type:'date'}) + field('eCost', L('Costo (USD)','Cost (USD)'), r.cost, {type:'number', step:'0.01'}) +
+    field('eCat', L('Categoría','Category'), r.category||'other', {select:EXP_CATS.map(c=>[c[0],L(c[1],c[2])])}) +
+    field('eBill', L('Cobro','Billing'), r.billing||'onetime', {select:[['onetime',L('Una vez','One-time')],['monthly',L('Mensual','Monthly')],['yearly',L('Anual','Yearly')]]}) +
+    field('eVendor', L('Proveedor','Vendor'), r.vendor) +
+    field('eType', L('Tipo de costo','Cost type'), r.costtype||'overhead', {select:[['overhead',L('Operación','Overhead')],['cogs',L('Producto / empaque','Product / packaging')]]});
+  openDlg(isNew?L('Agregar gasto','Add expense'):L('Editar gasto','Edit expense'), html, () => {
+    if (!v('eDesc')) { toast(L('Falta la descripción','Description missing')); return false; }
+    Object.assign(r, {desc:v('eDesc'), date:v('eDate'), cost:v('eCost'), category:v('eCat'), billing:v('eBill'), vendor:v('eVendor'), costtype:v('eType')});
+    if (isNew) expRows.push(r);
+  });
+}
+
+function editTrip(x){
+  const isNew = !x;
+  x = x || {id:uid(), name:L(`Viaje ${trips.length+1}`,`Trip ${trips.length+1}`), start:todayStr(), end:'', travel:0, notes:''};
+  const html = field('tName', L('Nombre','Name'), x.name, {full:true, required:true}) + field('tStart', L('Salida','Start'), x.start, {type:'date'}) + field('tEnd', L('Regreso','End'), x.end, {type:'date'}) +
+    field('tTravel', L('Costo del viaje (USD)','Trip cost (USD)'), x.travel, {type:'number', step:'0.01', hint:L('Boletos, gasolina, etc. Pon 0 si papá lo paga.','Tickets, gas, etc. Use 0 if Dad covers it.')}) +
+    field('tNotes', L('Notas','Notes'), x.notes, {area:true, full:true});
+  const left = (!isNew && trips.length>1) ? `<button type="button" class="btn danger" id="delTrip">${L('Borrar viaje','Delete trip')}</button>` : '';
+  openDlg(isNew?L('Nuevo viaje','New trip'):x.name, html, () => {
+    Object.assign(x, {name:v('tName')||x.name, start:v('tStart'), end:v('tEnd'), travel:num(v('tTravel')), notes:v('tNotes')});
+    if (isNew) { trips.push(x); settings.activeTrip = x.id; toast(L('Viaje creado y activado','Trip created and made active')); }
+  }, left);
+  const d = document.getElementById('delTrip');
+  if (d) d.addEventListener('click', ()=>{
+    if (!confirm(L('¿Borrar este viaje? Sus ventas quedan guardadas como "Sin viaje".','Delete this trip? Its sales stay saved as "No trip".'))) return;
+    usageRows.forEach(r=>{ if(r.trip===x.id) r.trip=''; });
+    trips = trips.filter(t=>t.id!==x.id);
+    if (settings.activeTrip===x.id) settings.activeTrip = trips[trips.length-1].id;
+    dlg.close(); scheduleSave(); renderAll();
+  });
+}
+
+// ───────────────────────── SELL / SCAN ─────────────────────────
+function searchItems(q, filter){
+  q = norm(q); if (!q) return [];
+  return invItems.filter(it => (filter?filter(it):true) && (norm(it.name).includes(q) || norm(it.sku).includes(q) || norm(it.alt).includes(q) || norm(it.brand).includes(q))).slice(0,8);
+}
+function addToCart(it){
+  const ex = cart.find(c=>norm(c.sku)===norm(it.sku));
+  if (ex) ex.qty += 1; else cart.push({sku:it.sku, qty:1, price:num(it.price)});
+  const msg = document.getElementById('sellMsg');
+  const oh = onHand(it); const inCart = cart.find(c=>norm(c.sku)===norm(it.sku)).qty;
+  msg.className = 'msg ' + (inCart>oh ? 'err' : 'ok');
+  msg.textContent = inCart>oh ? L(`⚠ ${it.name}: solo tienes ${oh} en mano`,`⚠ ${it.name}: you only have ${oh} on hand`) : `✓ ${it.name} ${num(it.price)?'· '+mxn(num(it.price)):''}`;
+  renderCart();
+}
+const sellScan = document.getElementById('sellScan'), sellSug = document.getElementById('sellSuggest');
+sellScan.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const code = sellScan.value; const it = findItem(code);
+  if (it) { if (!isForSale(it) && saleKind==='sale') { document.getElementById('sellMsg').className='msg err'; document.getElementById('sellMsg').textContent = L(`${it.name} es suministro, no se vende. Cambia a "Uso / muestra".`,`${it.name} is a supply, not for sale. Switch to "Use / sample".`); } else addToCart(it); sellScan.value=''; sellSug.hidden=true; return; }
+  const m = searchItems(code);
+  if (m.length===1) { addToCart(m[0]); sellScan.value=''; sellSug.hidden=true; return; }
+  const msg = document.getElementById('sellMsg'); msg.className='msg err';
+  msg.textContent = m.length ? L('Elige uno de la lista.','Pick one from the list.') : L(`No encontré "${code}". Revisa el código o agrégalo en Inventario.`,`Couldn't find "${code}". Check the code or add it in Inventory.`);
+});
+sellScan.addEventListener('input', () => {
+  const m = searchItems(sellScan.value);
+  sellSug.hidden = !m.length || sellScan.value.length<2;
+  sellSug.innerHTML = m.map(it=>`<button type="button" data-pick="${it.id}"><span>${esc(it.name)} <span class="code">${esc(it.sku)}</span></span><span>${onHand(it)} ${L('en mano','on hand')}${num(it.price)?' · '+mxn(num(it.price)):''}</span></button>`).join('');
+});
+sellSug.addEventListener('click', e => { const b=e.target.closest('[data-pick]'); if(!b) return; const it=invItems.find(x=>x.id===b.dataset.pick); if(it) addToCart(it); sellScan.value=''; sellSug.hidden=true; sellScan.focus(); });
+document.getElementById('cartBody').addEventListener('input', e => {
+  const q = e.target.dataset.cartqty, p = e.target.dataset.cartprice;
+  const i = q!==undefined ? +q : p!==undefined ? +p : -1; if (i<0) return;
+  if (q!==undefined) cart[i].qty = Math.max(1, Math.round(num(e.target.value))||1);
+  if (p!==undefined) cart[i].price = num(e.target.value);
+  const cell = e.target.closest('tr').children[4];
+  if (saleKind==='sale') cell.textContent = mxn(cart[i].qty*num(cart[i].price));
+  renderCartSum();
+});
+document.getElementById('cartBody').addEventListener('change', () => renderCart());
+document.getElementById('cartBody').addEventListener('click', e => { const d=e.target.dataset.cartdel; if(d!==undefined){ cart.splice(+d,1); renderCart(); } });
+document.getElementById('cartClear').addEventListener('click', ()=>{ cart=[]; renderCart(); document.getElementById('sellMsg').textContent=''; });
+document.getElementById('kindSeg').addEventListener('click', e => { const b=e.target.closest('[data-kind]'); if(!b) return; saleKind=b.dataset.kind; renderCart(); });
+document.getElementById('cartDone').addEventListener('click', () => {
+  if (!cart.length) { toast(L('No hay nada en la venta','Nothing in the sale yet')); return; }
+  const short = cart.filter(c=>{ const it=findItem(c.sku); return !it || c.qty>onHand(it); });
+  if (short.length && !confirm(L('Algunos productos no alcanzan según tu inventario. ¿Registrar de todos modos?','Some items show less stock than you are selling. Log it anyway?'))) return;
+  const saleId = uid(), date = todayStr(), pay = document.getElementById('payMethod').value, note = document.getElementById('cartNote').value.trim();
+  let total = 0;
+  cart.forEach(c => {
+    const it = findItem(c.sku);
+    usageRows.push({id:uid(), saleId, ts:Date.now(), date, item: it?it.name:c.sku, sku: it?it.sku:c.sku, qty:c.qty, notes:note, kind:saleKind, price: saleKind==='sale'?num(c.price):'', payment: saleKind==='sale'?pay:'', trip:settings.activeTrip});
+    total += c.qty*num(c.price);
+  });
+  toast(saleKind==='sale' ? L(`Venta registrada: ${mxn(total)}`,`Sale logged: ${mxn(total)}`) : L('Salida registrada','Logged'));
+  cart = []; document.getElementById('cartNote').value=''; document.getElementById('sellMsg').textContent='';
+  scheduleSave(); renderAll(); sellScan.focus();
+});
+
+const recScan = document.getElementById('recScan');
+recScan.addEventListener('keydown', e => {
+  if (e.key!=='Enter') return; e.preventDefault();
+  const code = recScan.value.trim(); if (!code) return;
+  const it = findItem(code); const msg = document.getElementById('recMsg');
+  if (it && !isSet(it)) {
+    logRows.push({id:uid(), ts:Date.now(), date:todayStr(), supplier:'', item:it.name, sku:it.sku, qty:1, cost:it.cost||''});
+    msg.className='msg ok'; msg.textContent = L(`+1 ${it.name} · ahora tienes ${onHand(it)}`,`+1 ${it.name} · you now have ${onHand(it)}`);
+    scheduleSave(); renderAll();
+  } else if (it) { msg.className='msg err'; msg.textContent = L('Los sets no se reciben: recibe las botellas sueltas.','Sets aren\'t received: receive the loose bottles.'); }
+  else { msg.className='msg err'; msg.textContent = L('Código nuevo: llena los datos de la compra.','New code: fill in the purchase details.'); editRec(null,{sku:code.toUpperCase()}); }
+  recScan.value='';
+});
+
+// ───────────────────────── EVENTS ─────────────────────────
+document.getElementById('addItemBtn').addEventListener('click', ()=>editItem(null));
+document.getElementById('addSetBtn').addEventListener('click', ()=>editItem(null,{set:true}));
+document.getElementById('addRecBtn').addEventListener('click', ()=>editRec(null));
+document.getElementById('addExpBtn').addEventListener('click', ()=>editExp(null));
+document.getElementById('addTripBtn').addEventListener('click', ()=>editTrip(null));
+document.getElementById('invBody').addEventListener('click', e=>{ const r=e.target.closest('[data-edit]'); if(r) editItem(invItems.find(x=>x.id===r.dataset.edit)); });
+document.getElementById('setCards').addEventListener('click', e=>{ const r=e.target.closest('[data-edit]'); if(r) editItem(invItems.find(x=>x.id===r.dataset.edit)); });
+document.getElementById('catChips').addEventListener('click', e=>{ const c=e.target.closest('[data-cat]'); if(c){ invCat=c.dataset.cat; renderInv(); } });
+document.getElementById('invSearch').addEventListener('input', renderInv);
+document.getElementById('recBody').addEventListener('click', e=>{
+  const d=e.target.closest('[data-delrec]');
+  if (d) { e.stopPropagation(); const r=logRows.find(x=>x.id===d.dataset.delrec); if(r && confirm(L(`¿Borrar la compra de ${r.qty} × ${r.item}?`,`Delete the purchase of ${r.qty} × ${r.item}?`))){ logRows=logRows.filter(x=>x!==r); scheduleSave(); renderAll(); } return; }
+  const t=e.target.closest('[data-editrec]'); if(t) editRec(logRows.find(x=>x.id===t.dataset.editrec));
+});
+document.getElementById('histBody').addEventListener('click', e=>{ const d=e.target.closest('[data-delhist]'); if(!d) return; const r=usageRows.find(x=>x.id===d.dataset.delhist); if(r && confirm(L(`¿Borrar esta salida (${r.qty} × ${r.item})? El stock regresa.`,`Delete this entry (${r.qty} × ${r.item})? The stock comes back.`))){ usageRows=usageRows.filter(x=>x!==r); scheduleSave(); renderAll(); } });
+document.getElementById('histTrip').addEventListener('change', renderHist);
+document.getElementById('histKind').addEventListener('change', renderHist);
+document.getElementById('expBody').addEventListener('click', e=>{
+  const d=e.target.closest('[data-delexp]');
+  if (d) { e.stopPropagation(); const r=expRows.find(x=>x.id===d.dataset.delexp); if(r && confirm(L(`¿Borrar "${r.desc}"?`,`Delete "${r.desc}"?`))){ expRows=expRows.filter(x=>x!==r); scheduleSave(); renderAll(); } return; }
+  const t=e.target.closest('[data-editexp]'); if(t) editExp(expRows.find(x=>x.id===t.dataset.editexp));
+});
+document.getElementById('expChips').addEventListener('click', e=>{ const c=e.target.closest('[data-expcat]'); if(c){ expCat=c.dataset.expcat; renderExp(); } });
+document.getElementById('budgetInput').addEventListener('input', e=>{ budget=num(e.target.value); scheduleSave(); renderExp(); renderResumen(); });
+document.getElementById('tripCards').addEventListener('click', e=>{
+  const a=e.target.closest('[data-activate]'); if(a){ settings.activeTrip=a.dataset.activate; scheduleSave(); renderAll(); toast(L('Viaje activado','Trip made active')); return; }
+  const t=e.target.closest('[data-edittrip]'); if(t) editTrip(trips.find(x=>x.id===t.dataset.edittrip));
+});
+document.getElementById('tripSelect').addEventListener('change', e=>{ settings.activeTrip=e.target.value; scheduleSave(); renderAll(); });
+['setRate','setT1','setT2at','setT2','setT3at','setT3'].forEach(id=>{
+  const k = {setRate:'rate', setT1:'t1', setT2at:'t2at', setT2:'t2', setT3at:'t3at', setT3:'t3'}[id];
+  document.getElementById(id).addEventListener('input', e=>{ const n=num(e.target.value); if(n>0 || k!=='rate'){ settings[k]=n; scheduleSave(); renderAll(); } });
+});
+document.getElementById('langBtn').addEventListener('click', ()=>{ lang = lang==='es'?'en':'es'; try{localStorage.setItem('aguilar_lang',lang);}catch(e){} renderAll(); });
+document.getElementById('themeBtn').addEventListener('click', ()=>{
+  const cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  const next = cur==='dark'?'light':'dark'; document.documentElement.dataset.theme = next; try{localStorage.setItem('aguilar_theme',next);}catch(e){}
+});
+try { const th = localStorage.getItem('aguilar_theme'); if (th) document.documentElement.dataset.theme = th; } catch(e) {}
+function download(name, text, type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500); }
+document.getElementById('exportBtn').addEventListener('click', ()=> download(`aguilar-respaldo-${todayStr()}.json`, JSON.stringify({exported:new Date().toISOString(), invItems, logRows, usageRows, expRows, budget, trips, settings}, null, 2), 'application/json'));
+document.getElementById('exportCsvBtn').addEventListener('click', ()=>{
+  const q = s => '"' + String(s==null?'':s).replace(/"/g,'""') + '"';
+  const lines = [['SKU','Alt','Name','Category','Brand','On hand','Received','Out','Cost USD','Price MXN','Profit each USD'].map(q).join(',')]
+    .concat(invItems.map(it=>[it.sku,it.alt,it.name,catLabel(catOf(it)),it.brand,onHand(it),isSet(it)?'':receivedFor(it),isSet(it)?outDirect(it):outDirect(it)+outViaSets(it),round2(costOf(it)),it.price,num(it.price)?round2(profitEach(it)):''].map(q).join(',')));
+  download(`aguilar-inventario-${todayStr()}.csv`, '﻿'+lines.join('\n'), 'text/csv');
+});
+document.getElementById('refreshBtn').addEventListener('click', ()=>{ loadAll().then(()=>toast(L('Datos recargados','Data reloaded'))); });
+
+// ───────────────────────── START ─────────────────────────
+(function(){
+  let start = 'resumen';
+  try { start = localStorage.getItem('aguilar_view') || 'resumen'; } catch(e) {}
+  if (!document.getElementById('view-'+start)) start = 'resumen';
+  applyLang(); show(start); renderCart();
+  loadAll();
+})();
+
+</script>
+</body>
+</html>
